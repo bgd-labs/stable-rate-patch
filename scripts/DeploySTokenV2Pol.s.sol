@@ -6,7 +6,6 @@ import "forge-std/Script.sol";
 import {StableDebtToken} from '../src/v2PolStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol';
 import {AaveV2Polygon} from 'aave-address-book/AaveV2Polygon.sol';
 import {DataTypes} from '../src/v2PolStableDebtToken/StableDebtToken/contracts/protocol/libraries/types/DataTypes.sol';
-import {IERC20Detailed} from '../src/v2PolStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
 
 contract BaseDeploy {
