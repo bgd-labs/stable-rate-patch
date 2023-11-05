@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: agpl-3.0
-pragma solidity >=0.6.12;
+pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "forge-std/Script.sol";
-import {StableDebtToken} from '../src/v2PolStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol';
+import {StableDebtToken} from '../src/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol';
 import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
-import {DataTypes} from '../src/v2PolStableDebtToken/StableDebtToken/contracts/protocol/libraries/types/DataTypes.sol';
-import {IERC20Detailed} from '../src/v2PolStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+import {IERC20Detailed} from '../src/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+import {IPool} from '../src/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol';
 
 
 contract BaseDeploy {
@@ -22,6 +22,7 @@ contract BaseDeploy {
       }
 
       new StableDebtToken(
+        IPool(address(AaveV3Arbitrum.POOL))
       );
     }
   }
