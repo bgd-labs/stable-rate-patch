@@ -36,7 +36,7 @@ contract V3PolSTokenPayload {
   }
 
   function getTokensToUpdate() public pure returns (TokenToUpdate[] memory){
-    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](13);
+    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](4);
 
     tokensToUpdate[0] = TokenToUpdate({
       underlyingAsset: AaveV3PolygonAssets.DAI_UNDERLYING,
