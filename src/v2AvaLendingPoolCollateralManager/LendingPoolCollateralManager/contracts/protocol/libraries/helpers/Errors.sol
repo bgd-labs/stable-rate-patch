@@ -103,6 +103,7 @@ library Errors {
   string public constant LP_NOT_CONTRACT = '78';
   string public constant SDT_STABLE_DEBT_OVERFLOW = '79';
   string public constant SDT_BURN_EXCEEDS_BALANCE = '80';
+  string public constant LPCM_ON_GRACE_PERIOD = '81';
 
   enum CollateralManagerErrors {
     NO_ERROR,
@@ -114,6 +115,7 @@ library Errors {
     NO_ACTIVE_RESERVE,
     HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD,
     INVALID_EQUAL_ASSETS_TO_SWAP,
-    FROZEN_RESERVE
+    FROZEN_RESERVE,
+    ON_GRACE_PERIOD
   }
 }
