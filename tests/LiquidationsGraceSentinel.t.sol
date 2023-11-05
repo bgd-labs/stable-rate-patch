@@ -5,7 +5,9 @@ pragma experimental ABIEncoderV2;
 import 'forge-std/Test.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {LendingPoolCollateralManager} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol';
+import {IERC20} from 'forge-std/interfaces/IERC20.sol';
 import {LiquidationsGraceSentinel} from '../src/LiquidationsGraceSentinel.sol';
+import {ILiquidationsGraceSentinel} from '../src/ILiquidationsGraceSentinel.sol';
 import {Ownable} from '../src/Ownable.sol';
 
 contract MockPriceProvider {
@@ -32,6 +34,33 @@ contract LiquidationsGraceSentinelTest is Test {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18507320);
   }
 
+  function _forcePrice(address oracleAdmin, address asset, int256 price) internal {
+    MockPriceProvider mockPriceProvider = new MockPriceProvider(price);
+
+    vm.startPrank(oracleAdmin);
+    address[] memory assets = new address[](1);
+    assets[0] = asset;
+    address[] memory sources = new address[](1);
+    sources[0] = address(mockPriceProvider);
+    AaveV2Ethereum.ORACLE.setAssetSources(assets, sources);
+    vm.stopPrank();
+  }
+
+  function _setGracePeriod(
+    ILiquidationsGraceSentinel sentinel,
+    address sentinelAdmin,
+    address asset,
+    uint40 timestamp
+  ) internal {
+    vm.startPrank(sentinelAdmin);
+    address[] memory assets = new address[](1);
+    assets[0] = asset;
+    uint40[] memory until = new uint40[](1);
+    until[0] = timestamp;
+    sentinel.setGracePeriods(assets, until);
+    vm.stopPrank();
+  }
+
   function testLiquidationsGraceSentinel() public {
     vm.startPrank(EXECUTOR_LVL_1);
 
@@ -46,8 +75,36 @@ contract LiquidationsGraceSentinelTest is Test {
       address(newCollateralManager)
     );
 
-    MockPriceProvider mockPriceProvider = new MockPriceProvider(18653082074480230550);
-
     vm.stopPrank();
+
+    vm.startPrank(GUARDIAN);
+    AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
+    vm.stopPrank();
+
+    _forcePrice(EXECUTOR_LVL_1, AaveV2EthereumAssets.WBTC_UNDERLYING, 25053082074480230550);
+
+    address holderWbtcDebt = 0x1111567E0954E74f6bA7c4732D534e75B81DC42E;
+
+    deal(AaveV2EthereumAssets.WBTC_UNDERLYING, address(this), 2000 * 1e8);
+
+    IERC20(AaveV2EthereumAssets.WBTC_UNDERLYING).approve(
+      address(AaveV2Ethereum.POOL),
+      type(uint256).max
+    );
+
+    _setGracePeriod(
+      sentinel,
+      GUARDIAN,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      uint40(block.timestamp) + 20
+    );
+
+    AaveV2Ethereum.POOL.liquidationCall(
+      AaveV2EthereumAssets.WETH_UNDERLYING,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      holderWbtcDebt,
+      type(uint256).max,
+      false
+    );
   }
 }

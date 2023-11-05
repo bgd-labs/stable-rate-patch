@@ -99,8 +99,10 @@ contract LendingPoolCollateralManager is
 
     if (
       address(LIQUIDATIONS_GRACE_SENTINEL) != address(0) && 
-      LIQUIDATIONS_GRACE_SENTINEL.gracePeriodUntil(collateralAsset) >= uint40(block.timestamp) &&
-      LIQUIDATIONS_GRACE_SENTINEL.gracePeriodUntil(debtAsset) >= uint40(block.timestamp)
+      (
+        LIQUIDATIONS_GRACE_SENTINEL.gracePeriodUntil(collateralAsset) >= uint40(block.timestamp) ||
+        LIQUIDATIONS_GRACE_SENTINEL.gracePeriodUntil(debtAsset) >= uint40(block.timestamp)
+      )
     ) {
       return (uint256(Errors.CollateralManagerErrors.ON_GRACE_PERIOD), Errors.LPCM_ON_GRACE_PERIOD);
     }  
