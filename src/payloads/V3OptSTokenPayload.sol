@@ -9,7 +9,7 @@ interface GetIncentivesController {
   function getIncentivesController() external returns (address);
 }
 
-contract V3ArbSTokenPayload {
+contract V3OptSTokenPayload {
   struct TokenToUpdate {
     address underlyingAsset;
     address newSTokenImpl;
@@ -36,7 +36,7 @@ contract V3ArbSTokenPayload {
   }
 
   function getTokensToUpdate() public pure returns (TokenToUpdate[] memory){
-    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](4);
+    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](3);
 
     tokensToUpdate[0] = TokenToUpdate({
       underlyingAsset: AaveV3OptimismAssets.DAI_UNDERLYING,
