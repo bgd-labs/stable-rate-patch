@@ -9,13 +9,11 @@ import {DataTypes} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/p
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
 
-contract BaseDeployEthereum {
-  function _deploy(address underlyingAsset, string memory name, string memory symbol) internal {
+contract BaseDeploy {
+  function _deploy() internal {
     address[] memory reserves = AaveV2Ethereum.POOL.getReservesList();
 
     for (uint256 i = 0; i < reserves.length; i++) {
-      DataTypes.ReserveData memory reserveData = AaveV2Ethereum.POOL.getReserveData(reserves[i]);
-
       (,,,,,,, bool stableBorrowRateEnabled,,) =
                   AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(reserves[i]);
       (
@@ -28,21 +26,18 @@ contract BaseDeployEthereum {
         continue;
       }
 
-
-
       new StableDebtToken(
         address(AaveV2Ethereum.POOL),
         reserves[i],
-        IERC20Detailed(stableDebtTokenAddress).name,
-        IERC20Detailed(stableDebtTokenAddress).symbol,
-        AaveV2Ethereum.DEFAULT_INCENTIVES_CONTROLLER
+        IERC20Detailed(stableDebtTokenAddress).name(),
+        IERC20Detailed(stableDebtTokenAddress).symbol(),
+        address(0) // we leave as address 0 because all the static tokens where deployed with 0 for incentives controller
       );
     }
   }
 }
 
-
-contract DeploySTokensEthereum is BaseDeployEthereum, Script {
+contract DeploySTokensEthereum is BaseDeploy, Script {
   function run() public {
     vm.startBroadcast();
 
