@@ -4,7 +4,6 @@ pragma experimental ABIEncoderV2;
 
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {MiscEthereum} from "aave-address-book/MiscEthereum.sol";
-import {IERC20Detailed} from '../v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
 contract V2EthTokenPayload {
   struct TokenToUpdate {
@@ -24,7 +23,7 @@ contract V2EthTokenPayload {
     }
   }
 
-  function getTokensToUpdate() public returns (TokenToUpdate[] memory){
+  function getTokensToUpdate() public pure returns (TokenToUpdate[] memory){
     TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](13);
 
     tokensToUpdate[0] = TokenToUpdate({
