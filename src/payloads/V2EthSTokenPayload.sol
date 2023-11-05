@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 
-contract V2EthTokenPayload {
+contract V2EthSTokenPayload {
   struct TokenToUpdate {
     address underlyingAsset;
     address newSTokenImpl;

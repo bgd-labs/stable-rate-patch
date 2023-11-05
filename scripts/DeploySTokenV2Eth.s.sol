@@ -7,6 +7,7 @@ import {StableDebtToken} from '../src/v2EthStableDebtToken/StableDebtToken/contr
 import {AaveV2Ethereum} from 'aave-address-book/AaveV2Ethereum.sol';
 import {DataTypes} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/libraries/types/DataTypes.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+import {V2EthSTokenPayload} from "../src/payloads/V2EthSTokenPayload.sol";
 
 contract BaseDeploy {
   function _deploy() internal {
@@ -47,6 +48,16 @@ contract DeploySTokensV2Ethereum is BaseDeploy, Script {
     vm.startBroadcast();
 
     _deploy();
+
+    vm.stopBroadcast();
+  }
+}
+
+contract DeployPayloadV2Eth is Script {
+  function run() public {
+    vm.startBroadcast();
+
+    new V2EthSTokenPayload();
 
     vm.stopBroadcast();
   }
