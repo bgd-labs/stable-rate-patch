@@ -34,7 +34,14 @@ download-all-etherscan :;
 	cast etherscan-source --chain 10 -d etherscan/v3OptStableDebtToken 0x6b4E260b765B3cA1514e618C0215A6B7839fF93e
 	cast etherscan-source --chain 43114 -d etherscan/v3AvaStableDebtToken 0x893411580e590D62dDBca8a703d61Cc4A8c7b2b9
 
+	cast etherscan-source --chain 1 -d etherscan/v2EthPoolConfigurator 0x3a95ee42f080ff7289c8b4a14eb483a8644d7521
+	cast etherscan-source --chain 137 -d etherscan/v2PolPoolConfigurator 0xf70a4d422e772926852ba9044026f169e6ad9492
+	cast etherscan-source --chain 43114 -d etherscan/v2AvaPoolConfigurator 0xc7938af7ec68c3d5ac3a396e28661b3e366b8fcf
+
 diff-contracts :;
+	make git-diff before=etherscan/v2EthPoolConfigurator after=etherscan/v2PolPoolConfigurator out=v2EthPolPoolConfigurator
+	make git-diff before=etherscan/v2PolPoolConfigurator after=etherscan/v2AvaPoolConfigurator out=v2PolAvaPoolConfigurator
+	make git-diff before=etherscan/v2EthPoolConfigurator after=etherscan/v2AvaPoolConfigurator out=v2EthAvaPoolConfigurator
 	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=src/v2EthLendingPoolCollateralManager out=v2EthLendingPoolCollateralManager
 
 storage-diff :;
