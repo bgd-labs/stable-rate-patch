@@ -4,7 +4,7 @@
   "scripts": {
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write",
-    "clean-storage-report": "ts-node ./js-scripts/preprocess-storage-report.ts"
+    "clean-storage-report": "ts-node ./js_scripts/preprocess-storage-report.ts"
   },
   "repository": {
     "type": "git",
