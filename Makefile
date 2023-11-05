@@ -39,10 +39,27 @@ download-all-etherscan :;
 	cast etherscan-source --chain 43114 -d etherscan/v2AvaPoolConfigurator 0xc7938af7ec68c3d5ac3a396e28661b3e366b8fcf
 
 diff-contracts :;
+	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=src/v2EthLendingPoolCollateralManager out=v2EthLendingPoolCollateralManager
+	make git-diff before=etherscan/v2PolLendingPoolCollateralManager after=src/v2PolLendingPoolCollateralManager out=v2PolLendingPoolCollateralManager
+	make git-diff before=etherscan/v2AvaLendingPoolCollateralManager after=src/v2AvaLendingPoolCollateralManager out=v2AvaLendingPoolCollateralManager
+
+	make git-diff before=etherscan/v2EthStableDebtToken after=src/v2EthStableDebtToken out=v2EthStableDebtToken
+	make git-diff before=etherscan/v2PolStableDebtToken after=src/v2PolStableDebtToken out=v2PolStableDebtToken
+	make git-diff before=etherscan/v2AvaStableDebtToken after=src/v2AvaStableDebtToken out=v2AvaStableDebtToken
+
+	make git-diff before=etherscan/v3PolPool after=src/v3PolPool out=v3PolPool
+	make git-diff before=etherscan/v3ArbPool after=src/v3ArbPool out=v3ArbPool
+	make git-diff before=etherscan/v3OptPool after=src/v3OptPool out=v3OptPool
+	make git-diff before=etherscan/v3AvaPool after=src/v3AvaPool out=v3AvaPool
+
+	make git-diff before=etherscan/v3PolStableDebtToken after=src/v3PolStableDebtToken out=v3PolStableDebtToken
+	make git-diff before=etherscan/v3ArbStableDebtToken after=src/v3ArbStableDebtToken out=v3ArbStableDebtToken
+	make git-diff before=etherscan/v3OptStableDebtToken after=src/v3OptStableDebtToken out=v3OptStableDebtToken
+	make git-diff before=etherscan/v3AvaStableDebtToken after=src/v3AvaStableDebtToken out=v3AvaStableDebtToken
+
 	make git-diff before=etherscan/v2EthPoolConfigurator after=etherscan/v2PolPoolConfigurator out=v2EthPolPoolConfigurator
 	make git-diff before=etherscan/v2PolPoolConfigurator after=etherscan/v2AvaPoolConfigurator out=v2PolAvaPoolConfigurator
 	make git-diff before=etherscan/v2EthPoolConfigurator after=etherscan/v2AvaPoolConfigurator out=v2EthAvaPoolConfigurator
-	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=src/v2EthLendingPoolCollateralManager out=v2EthLendingPoolCollateralManager
 
 storage-diff :;
 	forge inspect etherscan/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2EthLendingPoolCollateralManager_layout.md
