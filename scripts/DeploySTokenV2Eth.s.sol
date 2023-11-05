@@ -37,7 +37,7 @@ contract BaseDeploy {
   }
 }
 
-contract DeploySTokensEthereum is BaseDeploy, Script {
+contract DeploySTokensV2Ethereum is BaseDeploy, Script {
   function run() public {
     vm.startBroadcast();
 

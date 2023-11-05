@@ -27,7 +27,7 @@ contract BaseDeploy {
   }
 }
 
-contract DeploySTokensAvax is BaseDeploy, Script {
+contract DeploySTokensV2Avax is BaseDeploy, Script {
   function run() public {
     vm.startBroadcast();
 

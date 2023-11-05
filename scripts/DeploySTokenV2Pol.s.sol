@@ -27,7 +27,7 @@ contract BaseDeploy {
   }
 }
 
-contract DeploySTokensPol is BaseDeploy, Script {
+contract DeploySTokensV2Pol is BaseDeploy, Script {
   function run() public {
     vm.startBroadcast();
 
