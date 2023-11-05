@@ -4,19 +4,21 @@ pragma solidity 0.6.12;
 interface ILiquidationsGraceSentinel {
   /**
    * @dev Emitted when a new grace period is set
-   * @param aToken The address of an Aave aToken
+   * @param asset Address of the underlying asset listed on Aave
    * @param until Timestamp until the grace period will be activated
    **/
-  event GracePeriodSet(address indexed aToken, uint40 until);
+  event GracePeriodSet(address indexed asset, uint40 until);
 
   /**
    * @dev Returns until when a grace period is enabled
-   * @param aToken Aave aToken address
+   * @param asset Address of the underlying asset listed on Aave
    **/
-  function gracePeriodUntil(address aToken) external view returns (uint40);
+  function gracePeriodUntil(address asset) external view returns (uint40);
 
-  /// @notice Function to set grace period to one or multiple Aave aTokens
-  /// @param aTokens Aave aToken addresses
+  /// @notice Function to set grace period to one or multiple Aave underlyings
+  /// @dev To enable a grace period, a timestamp in the future should be set,
+  ///      To disable a grace period, any timestamp in the past works, like 0
+  /// @param assets Address of the underlying asset listed on Aave
   /// @param until Timestamp when the liquidations' grace period will end
-  function setGracePeriods(address[] calldata aTokens, uint40[] calldata until) external;
+  function setGracePeriods(address[] calldata assets, uint40[] calldata until) external;
 }
