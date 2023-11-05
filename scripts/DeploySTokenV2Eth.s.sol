@@ -16,11 +16,8 @@ contract BaseDeploy {
     for (uint256 i = 0; i < reserves.length; i++) {
       (,,,,,,, bool stableBorrowRateEnabled,,) =
                   AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(reserves[i]);
-      (
-        address aTokenAddress,
-        address stableDebtTokenAddress,
-        address variableDebtTokenAddress
-      ) = AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(reserves[i]);
+      (,address stableDebtTokenAddress,) =
+                  AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(reserves[i]);
 
       if (!stableBorrowRateEnabled) {
         continue;
