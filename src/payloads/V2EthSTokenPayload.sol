@@ -3,7 +3,6 @@ pragma solidity >=0.6.12;
 pragma experimental ABIEncoderV2;
 
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
-import {MiscEthereum} from "aave-address-book/MiscEthereum.sol";
 
 contract V2EthTokenPayload {
   struct TokenToUpdate {
