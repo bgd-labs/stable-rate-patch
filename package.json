@@ -1,9 +1,10 @@
 {
-  "name": "bgd-forge-template",
+  "name": "stable-rate-patch",
   "version": "1.0.0",
   "scripts": {
     "lint": "prettier ./",
-    "lint:fix": "npm run lint -- --write"
+    "lint:fix": "npm run lint -- --write",
+    "clean-storage-report": "ts-node ./js-scripts/preprocess-storage-report.ts"
   },
   "repository": {
     "type": "git",
