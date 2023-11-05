@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import 'forge-std/Script.sol';
-import {StableDebtToken} from '../src/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol';
+import {StableDebtToken} from '../src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol';
 import {AaveV3Optimism} from 'aave-address-book/AaveV3Optimism.sol';
-import {IPool} from '../src/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol';
+import {IPool} from '../src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol';
 import {IERC20Detailed} from '../src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
 contract BaseDeploy {
