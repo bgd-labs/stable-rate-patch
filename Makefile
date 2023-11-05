@@ -16,9 +16,9 @@ git-diff :
 	@printf '%s\n%s\n%s\n' "\`\`\`diff" "$$(git diff --no-index --diff-algorithm=patience --ignore-space-at-eol ${before} ${after})" "\`\`\`" > diffs/${out}.md
 
 download-all-etherscan :;
-	cast etherscan-source --chain 1 -d etherscan/v2EthPool 0x085E34722e04567Df9E6d2c32e82fd74f3342e79
-	cast etherscan-source --chain 137 -d etherscan/v2PolPool 0x1685d81212580dd4cda287616c2f6f4794927e18
-	cast etherscan-source --chain 43114 -d etherscan/v2AvaPool 0x102bf2c03c1901adba191457a8c4a4ef18b40029
+	cast etherscan-source --chain 1 -d etherscan/v2EthLendingPoolCollateralManager 0xbd4765210d4167CE2A5b87280D9E8Ee316D5EC7C
+	cast etherscan-source --chain 137 -d etherscan/v2PolLendingPoolCollateralManager 0xa39599424642d9fd35e475ef802eddf798dc555b
+	cast etherscan-source --chain 43114 -d etherscan/v2AvaLendingPoolCollateralManager 0xa9c1bb836752a2Dfb3694ca084D8ffBB07768771
 
 	cast etherscan-source --chain 1 -d etherscan/v2EthStableDebtToken 0xD23A44eB2db8AD0817c994D3533528C030279F7c
 	cast etherscan-source --chain 137 -d etherscan/v2PolStableDebtToken 0x72a053fa208eaafa53adb1a1ea6b4b2175b5735e
