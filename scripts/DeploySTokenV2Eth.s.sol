@@ -34,6 +34,7 @@ contract BaseDeploy {
 
       console.log(
         IERC20Detailed(stableDebtTokenAddress).symbol(),
+        reserves[i],
         stableDebtTokenAddress,
         address(newStableDebtImpl)
       );

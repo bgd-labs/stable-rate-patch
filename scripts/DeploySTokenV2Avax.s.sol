@@ -16,12 +16,21 @@ contract BaseDeploy {
     for (uint256 i = 0; i < reserves.length; i++) {
       (,,,,,,, bool stableBorrowRateEnabled,,) =
                   AaveV2Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(reserves[i]);
+      (, address stableDebtTokenAddress, ) = AaveV2Avalanche
+        .AAVE_PROTOCOL_DATA_PROVIDER
+        .getReserveTokensAddresses(reserves[i]);
 
       if (!stableBorrowRateEnabled) {
         continue;
       }
 
-      new StableDebtToken(
+      StableDebtToken newStableDebtImpl = new StableDebtToken();
+
+      console.log(
+        IERC20Detailed(stableDebtTokenAddress).symbol(),
+        reserves[i],
+        stableDebtTokenAddress,
+        address(newStableDebtImpl)
       );
     }
   }
