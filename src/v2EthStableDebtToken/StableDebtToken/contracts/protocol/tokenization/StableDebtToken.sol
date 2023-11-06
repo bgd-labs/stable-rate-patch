@@ -79,79 +79,18 @@ contract StableDebtToken is IStableDebtToken, DebtTokenBase {
     return accountBalance.rayMul(cumulatedInterest);
   }
 
-  struct MintLocalVars {
-    uint256 previousSupply;
-    uint256 nextSupply;
-    uint256 amountInRay;
-    uint256 newStableRate;
-    uint256 currentAvgStableRate;
-  }
 
   /**
-   * @dev Mints debt token to the `onBehalfOf` address.
+   * @dev DEPRECATED: Was used for minting debt token on borrow and rebalanceStableBorrowRate actions.
    * -  Only callable by the LendingPool
-   * - The resulting rate is the weighted average between the rate of the new debt
-   * and the rate of the previous debt
-   * @param user The address receiving the borrowed underlying, being the delegatee in case
-   * of credit delegate, or same as `onBehalfOf` otherwise
-   * @param onBehalfOf The address receiving the debt tokens
-   * @param amount The amount of debt tokens to mint
-   * @param rate The rate of the debt being minted
    **/
   function mint(
-    address user,
-    address onBehalfOf,
-    uint256 amount,
-    uint256 rate
+    address,
+    address,
+    uint256,
+    uint256
   ) external override onlyLendingPool returns (bool) {
-    MintLocalVars memory vars;
-
-    if (user != onBehalfOf) {
-      _decreaseBorrowAllowance(onBehalfOf, user, amount);
-    }
-
-    (, uint256 currentBalance, uint256 balanceIncrease) = _calculateBalanceIncrease(onBehalfOf);
-
-    vars.previousSupply = totalSupply();
-    vars.currentAvgStableRate = _avgStableRate;
-    vars.nextSupply = _totalSupply = vars.previousSupply.add(amount);
-
-    vars.amountInRay = amount.wadToRay();
-
-    vars.newStableRate = _usersStableRate[onBehalfOf]
-      .rayMul(currentBalance.wadToRay())
-      .add(vars.amountInRay.rayMul(rate))
-      .rayDiv(currentBalance.add(amount).wadToRay());
-
-    require(vars.newStableRate <= type(uint128).max, Errors.SDT_STABLE_DEBT_OVERFLOW);
-    _usersStableRate[onBehalfOf] = vars.newStableRate;
-
-    //solium-disable-next-line
-    _totalSupplyTimestamp = _timestamps[onBehalfOf] = uint40(block.timestamp);
-
-    // Calculates the updated average stable rate
-    vars.currentAvgStableRate = _avgStableRate = vars
-      .currentAvgStableRate
-      .rayMul(vars.previousSupply.wadToRay())
-      .add(rate.rayMul(vars.amountInRay))
-      .rayDiv(vars.nextSupply.wadToRay());
-
-    _mint(onBehalfOf, amount.add(balanceIncrease), vars.previousSupply);
-
-    emit Transfer(address(0), onBehalfOf, amount);
-
-    emit Mint(
-      user,
-      onBehalfOf,
-      amount,
-      currentBalance,
-      balanceIncrease,
-      vars.newStableRate,
-      vars.currentAvgStableRate,
-      vars.nextSupply
-    );
-
-    return currentBalance == 0;
+    revert('STABLE_BORROWING_DEPRECATED');
   }
 
   /**
