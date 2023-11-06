@@ -13,7 +13,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
   address constant USER_1 = address(1249182);
   address constant USER_2 = address(3568);
 
-  address COLLATERAL_TOKEN = AaveV2EthereumAssets.WETH_UNDERLYING;
+  address COLLATERAL_TOKEN = AaveV2EthereumAssets.DAI_UNDERLYING;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18511827);
@@ -63,7 +63,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, type(uint256).max, newBorrower, 0);
 
     hoax(newBorrower);
-    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 1, 0, newBorrower);
+    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 2, 0, newBorrower);
 
     AaveV2Ethereum.POOL.rebalanceStableBorrowRate(underlying, debtor);
 
