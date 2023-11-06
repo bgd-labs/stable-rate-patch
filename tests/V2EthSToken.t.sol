@@ -50,23 +50,18 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     }
   }
 
-//  function testTokensDontWorkAfterPayload() public {
-//    StableToken[] memory newTokenImpl = _deploy();
-//    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
-//
-//    for (uint256 i = 0; i < newTokenImpl.length; i++) {
-//      if (newTokenImpl[i].newSTImpl != address(0)) {
-//        hoax(EXECUTOR); // executor lvl 1
-//        AaveV2Ethereum.POOL_CONFIGURATOR.updateStableDebtToken(
-//          newTokenImpl[i].underlying,
-//          newTokenImpl[i].newSTImpl
-//        );
-//
-//        // test token
-//      }
-//    }
-//  }
+  //  function testTokensDontWorkAfterPayload() public {
+  //    StableToken[] memory newTokenImpl = _deploy();
+  //    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
+  //
+  //    for (uint256 i = 0; i < newTokenImpl.length; i++) {
+  //      if (newTokenImpl[i].newSTImpl != address(0)) {
 
+  //
+  //        // test token
+  //      }
+  //    }
+  //  }
 
   function _enableBorrowingToken(address underlying) internal {
     hoax(EXECUTOR);
@@ -86,8 +81,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
       deal(underlying, user, 1_000_000_000e6);
     } else if (underlying == AaveV2EthereumAssets.WBTC_UNDERLYING) {
       deal(underlying, user, 1_000_000_000e8);
-
-    }else {
+    } else {
       deal(underlying, user, 1_000_000_000 ether);
     }
   }
@@ -100,7 +94,12 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     vm.startPrank(debtor);
 
     IERC20Detailed(COLLATERAL_TOKEN).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
-    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, IERC20Detailed(COLLATERAL_TOKEN).balanceOf(debtor), debtor, 0);
+    AaveV2Ethereum.POOL.deposit(
+      COLLATERAL_TOKEN,
+      IERC20Detailed(COLLATERAL_TOKEN).balanceOf(debtor),
+      debtor,
+      0
+    );
 
     // debtor takes stable debt
     if (
@@ -110,8 +109,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
       AaveV2Ethereum.POOL.borrow(stableUnderlying, 100e6, 1, 0, debtor);
     } else if (stableUnderlying == AaveV2EthereumAssets.WBTC_UNDERLYING) {
       AaveV2Ethereum.POOL.borrow(stableUnderlying, 100e8, 1, 0, debtor);
-
-    }else {
+    } else {
       AaveV2Ethereum.POOL.borrow(stableUnderlying, 100 ether, 1, 0, debtor);
     }
 
@@ -119,7 +117,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
   }
 
   function _rebalance(address newBorrower, address debtor, address underlying) internal {
-    (address aTokenAddress, , ) = AaveV2Ethereum
+    (address aTokenAddress, address stableToken, ) = AaveV2Ethereum
       .AAVE_PROTOCOL_DATA_PROVIDER
       .getReserveTokensAddresses(underlying);
 
@@ -131,13 +129,36 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
     vm.startPrank(newBorrower);
     IERC20Detailed(COLLATERAL_TOKEN).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
-    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, IERC20Detailed(COLLATERAL_TOKEN).balanceOf(newBorrower), newBorrower, 0);
-    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 1, 0, newBorrower);
+    AaveV2Ethereum.POOL.deposit(
+      COLLATERAL_TOKEN,
+      IERC20Detailed(COLLATERAL_TOKEN).balanceOf(newBorrower),
+      newBorrower,
+      0
+    );
+
+    console.log(IERC20Detailed(stableToken).name());
+
+    uint256 amountToBorrow;
+    if (
+      underlying == AaveV2EthereumAssets.USDC_UNDERLYING ||
+      underlying == AaveV2EthereumAssets.USDT_UNDERLYING
+    ) {
+      amountToBorrow = 10000e6;
+    } else if (underlying == AaveV2EthereumAssets.WBTC_UNDERLYING) {
+      amountToBorrow = 1e8;
+    } else {
+      amountToBorrow = 1 ether;
+    }
+
+    AaveV2Ethereum.POOL.borrow(underlying, amountToBorrow, 1, 0, newBorrower);
 
     vm.stopPrank();
 
     AaveV2Ethereum.POOL.rebalanceStableBorrowRate(underlying, debtor);
   }
 
-  function _updateImplementation(address stableToken, address newImpl) internal {}
+  function _updateImplementation(address underlying, address newImpl) internal {
+    hoax(EXECUTOR); // executor lvl 1
+    AaveV2Ethereum.POOL_CONFIGURATOR.updateStableDebtToken(underlying, newImpl);
+  }
 }
