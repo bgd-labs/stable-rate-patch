@@ -1,5 +1,11 @@
 # Stable Rate Patch
 
+## Summary
+
+Repository containing different developments concerning the Aave incident described [HERE](https://governance.aave.com/t/aave-v2-v3-security-incident-04-11-2023/15335/26).
+- Stable Debt Token upgraded implementations, stopping minting.
+- Liquidations Grace Sentinel.
+
 ## Diffs
 
 All the diffs between the etherscan downloaded and modified contracts can be found [HERE](./diffs). These include both the source code diffs and the storage layout diffs. The storage layout diff files end with `layout_diffs`.
