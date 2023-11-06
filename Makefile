@@ -79,6 +79,10 @@ diff-deployed-contracts :;
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x3b2a77058a1eb4403a90b94585fab16bc512e703 after=etherscan/deployed/v2UsdcStableDebtToken out=deployed/v2UsdcStableDebtToken
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x595c33538215dc4b092f35afc85d904631263f4f after=etherscan/deployed/v2LusdStableDebtToken out=deployed/v2LusdStableDebtToken
 
+	cast etherscan-source --chain 1 -d etherscan/v2EthPoolConfigurator 0x3a95ee42f080ff7289c8b4a14eb483a8644d7521
+	cast etherscan-source --chain 137 -d etherscan/v2PolPoolConfigurator 0xf70a4d422e772926852ba9044026f169e6ad9492
+	cast etherscan-source --chain 43114 -d etherscan/v2AvaPoolConfigurator 0xc7938af7ec68c3d5ac3a396e28661b3e366b8fcf
+
 diff-contracts :;
 	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=src/v2EthLendingPoolCollateralManager out=v2EthLendingPoolCollateralManager
 	make git-diff before=etherscan/v2PolLendingPoolCollateralManager after=src/v2PolLendingPoolCollateralManager out=v2PolLendingPoolCollateralManager
