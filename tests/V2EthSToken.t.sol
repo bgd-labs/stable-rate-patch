@@ -76,11 +76,23 @@ contract V2EthSTokenTest is BaseDeploy, Test {
           _unfreezeTokens(newTokenImpl[i].underlying);
           _enableBorrowingToken(newTokenImpl[i].underlying);
 
+
           _supplyTokens(newTokenImpl[i].underlying, USER_3);
           _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
           _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
           _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
-          _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
+//          _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
+
+          uint256 availableLiquidity = IERC20Detailed(newTokenImpl[i].underlying).balanceOf(aToken);
+          address[] memory assets = new address[](1);
+          assets[0] = newTokenImpl[i].underlying;
+          uint256[] memory amounts = new uint256[](1);
+          amounts[0] = availableLiquidity;
+          uint256[] memory modes = new uint256[](1);
+          modes[0] = 0;
+
+          AaveV2Ethereum.POOL.flashLoan(
+            USER_3, assets, amounts, modes, USER_3, bytes(''), 0);
 
           _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
 
