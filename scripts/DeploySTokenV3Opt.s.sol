@@ -6,6 +6,7 @@ import {StableDebtToken} from '../src/v3OptStableDebtToken/StableDebtToken/lib/a
 import {AaveV3Optimism} from 'aave-address-book/AaveV3Optimism.sol';
 import {IPool} from '../src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol';
 import {IERC20Detailed} from '../src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+import {V3OptSTokenPayload} from "../src/payloads/V3OptSTokenPayload.sol";
 
 contract BaseDeploy {
   function _deploy() internal {
@@ -40,6 +41,16 @@ contract DeploySTokensV3Opt is BaseDeploy, Script {
     vm.startBroadcast();
 
     _deploy();
+
+    vm.stopBroadcast();
+  }
+}
+
+contract DeployPayloadV3Opt is Script {
+  function run() public {
+    vm.startBroadcast();
+
+    new V3OptSTokenPayload();
 
     vm.stopBroadcast();
   }
