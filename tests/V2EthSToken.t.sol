@@ -19,6 +19,8 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
   address COLLATERAL_TOKEN = AaveV2EthereumAssets.DAI_UNDERLYING;
 
+  address EXECUTOR = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
+
   address payload;
 
   function setUp() public {
@@ -37,10 +39,13 @@ contract V2EthSTokenTest is BaseDeploy, Test {
           .AAVE_PROTOCOL_DATA_PROVIDER
           .getReserveTokensAddresses(newTokenImpl[i].underlying);
 
+        _unfreezeTokens(newTokenImpl[i].underlying);
+        _enableBorrowingToken(newTokenImpl[i].underlying);
+
         // test token
         console.log(IERC20Detailed(stableDebtTokenAddress).symbol());
         _generateStableDebt(newTokenImpl[i].underlying, USER_1);
-        //        _rebalance(USER_2, USER_1, newTokenImpl[i].underlying);
+        _rebalance(USER_2, USER_1, newTokenImpl[i].underlying);
       }
     }
   }
@@ -51,7 +56,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 //
 //    for (uint256 i = 0; i < newTokenImpl.length; i++) {
 //      if (newTokenImpl[i].newSTImpl != address(0)) {
-//        hoax(0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A); // executor lvl 1
+//        hoax(EXECUTOR); // executor lvl 1
 //        AaveV2Ethereum.POOL_CONFIGURATOR.updateStableDebtToken(
 //          newTokenImpl[i].underlying,
 //          newTokenImpl[i].newSTImpl
@@ -62,9 +67,20 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 //    }
 //  }
 
+
+  function _enableBorrowingToken(address underlying) internal {
+    hoax(EXECUTOR);
+    AaveV2Ethereum.POOL_CONFIGURATOR.enableBorrowingOnReserve(underlying, true);
+  }
+
+  function _unfreezeTokens(address underlying) internal {
+    hoax(EXECUTOR);
+    AaveV2Ethereum.POOL_CONFIGURATOR.unfreezeReserve(underlying);
+  }
+
   function _dealUnderlying(address user, address underlying) internal {
     if (
-      underlying == AaveV2EthereumAssets.DAI_UNDERLYING ||
+      underlying == AaveV2EthereumAssets.USDC_UNDERLYING ||
       underlying == AaveV2EthereumAssets.USDT_UNDERLYING
     ) {
       deal(underlying, user, 1_000_000_000e6);
@@ -88,7 +104,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
     // debtor takes stable debt
     if (
-      stableUnderlying == AaveV2EthereumAssets.DAI_UNDERLYING ||
+      stableUnderlying == AaveV2EthereumAssets.USDC_UNDERLYING ||
       stableUnderlying == AaveV2EthereumAssets.USDT_UNDERLYING
     ) {
       AaveV2Ethereum.POOL.borrow(stableUnderlying, 100e6, 1, 0, debtor);
@@ -115,8 +131,8 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
     vm.startPrank(newBorrower);
     IERC20Detailed(COLLATERAL_TOKEN).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
-    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, type(uint256).max, newBorrower, 0);
-    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 2, 0, newBorrower);
+    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, IERC20Detailed(COLLATERAL_TOKEN).balanceOf(newBorrower), newBorrower, 0);
+    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 1, 0, newBorrower);
 
     vm.stopPrank();
 
