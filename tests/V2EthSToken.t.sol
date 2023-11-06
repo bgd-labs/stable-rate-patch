@@ -9,6 +9,7 @@ import {DataTypes} from 'aave-address-book/AaveV2.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 import {SafeERC20, IERC20} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/dependencies/openzeppelin/contracts/SafeERC20.sol';
+import {IExecutor} from './utils/IExecutor.sol';
 
 import {V2EthSTokenPayload} from '../src/payloads/V2EthSTokenPayload.sol';
 
@@ -31,7 +32,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
   address EXECUTOR = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
 
-  V2EthSTokenPayload payload;
+  address payload = 0x37DF9bd44728e513472D5d44793118cBaE975E12;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18515102);
@@ -39,7 +40,6 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     // unpause pool
     hoax(MiscEthereum.PROTOCOL_GUARDIAN);
     AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
-    payload = new V2EthSTokenPayload();
   }
 
   function testRebalanceBeforePayload() public {
@@ -103,17 +103,8 @@ contract V2EthSTokenTest is BaseDeploy, Test {
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
         _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
 
-        console2.log(
-          'Rev:',
-          IDebt(0xe91D55AB2240594855aBd11b3faAE801Fd4c4687).DEBT_TOKEN_REVISION()
-        );
-        hoax(EXECUTOR);
-        address(payload).delegatecall(abi.encodeWithSignature('execute()'));
-        //        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
-        console2.log(
-          'Rev 2:',
-          IDebt(0xe91D55AB2240594855aBd11b3faAE801Fd4c4687).DEBT_TOKEN_REVISION()
-        );
+        hoax(0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5);
+        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
         AaveV2Ethereum.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
@@ -128,6 +119,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
+        uint256 snapshot = vm.snapshot();
         (address aToken, address stableDebtTokenAddress, ) = AaveV2Ethereum
           .AAVE_PROTOCOL_DATA_PROVIDER
           .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -137,7 +129,8 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
         _supplyTokens(newTokenImpl[i].underlying, USER_3);
 
-        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
+        hoax(0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5);
+        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         // debtor supplies collateral
         _supplyTokens(COLLATERAL_TOKEN, USER_1);
@@ -149,6 +142,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
         AaveV2Ethereum.POOL.borrow(newTokenImpl[i].underlying, 5, 1, 0, USER_1);
 
         vm.stopPrank();
+        vm.revertTo(snapshot);
       }
     }
   }
@@ -160,6 +154,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
       if (newTokenImpl[i].newSTImpl == address(0)) {
         continue;
       }
+      uint256 snapshot = vm.snapshot();
       (address aToken, address stableDebtTokenAddress, ) = AaveV2Ethereum
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -174,11 +169,13 @@ contract V2EthSTokenTest is BaseDeploy, Test {
       hoax(USER_1);
       AaveV2Ethereum.POOL.borrow(newTokenImpl[i].underlying, 10, 2, 0, USER_1);
 
-      _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
+      hoax(0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5);
+      IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
       hoax(USER_1);
       vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
       AaveV2Ethereum.POOL.swapBorrowRateMode(newTokenImpl[i].underlying, 2);
+      vm.revertTo(snapshot);
     }
   }
 
