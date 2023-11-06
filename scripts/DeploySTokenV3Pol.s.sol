@@ -19,6 +19,8 @@ contract BaseDeploy {
     address[] memory reserves = AaveV3Polygon.POOL.getReservesList();
     StableToken[] memory deployedImpl = new StableToken[](reserves.length);
 
+    StableDebtToken newStableDebtImpl = new StableDebtToken(IPool(address(AaveV3Polygon.POOL)));
+
     for (uint256 i = 0; i < reserves.length; i++) {
       (, , , , , , , bool stableBorrowRateEnabled, , ) = AaveV3Polygon
         .AAVE_PROTOCOL_DATA_PROVIDER
@@ -31,8 +33,6 @@ contract BaseDeploy {
         continue;
       }
 
-      StableDebtToken newStableDebtImpl = new StableDebtToken(IPool(address(AaveV3Polygon.POOL)));
-
       console.log(
         IERC20Detailed(stableDebtTokenAddress).symbol(),
         reserves[i],
@@ -41,9 +41,9 @@ contract BaseDeploy {
       );
 
       deployedImpl[i] = StableToken({
-        underlying : reserves[i],
-        stableToken : stableDebtTokenAddress,
-        newSTImpl : address(newStableDebtImpl)
+        underlying: reserves[i],
+        stableToken: stableDebtTokenAddress,
+        newSTImpl: address(newStableDebtImpl)
       });
     }
     return deployedImpl;

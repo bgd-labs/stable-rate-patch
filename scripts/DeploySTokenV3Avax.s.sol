@@ -6,11 +6,20 @@ import {StableDebtToken} from '../src/v3AvaStableDebtToken/StableDebtToken/lib/a
 import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 import {IPool} from '../src/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol';
 import {IERC20Detailed} from '../src/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import {V3AvaxSTokenPayload} from "../src/payloads/V3AvaxSTokenPayload.sol";
+import {V3AvaxSTokenPayload} from '../src/payloads/V3AvaxSTokenPayload.sol';
+
+struct StableToken {
+  address underlying;
+  address stableToken;
+  address newSTImpl;
+}
 
 contract BaseDeploy {
-  function _deploy() internal {
+  function _deploy() internal returns (StableToken[] memory) {
     address[] memory reserves = AaveV3Avalanche.POOL.getReservesList();
+    StableToken[] memory deployedImpl = new StableToken[](reserves.length);
+
+    StableDebtToken newStableDebtImpl = new StableDebtToken(IPool(address(AaveV3Avalanche.POOL)));
 
     for (uint256 i = 0; i < reserves.length; i++) {
       (, , , , , , , bool stableBorrowRateEnabled, , ) = AaveV3Avalanche
@@ -24,15 +33,19 @@ contract BaseDeploy {
         continue;
       }
 
-      StableDebtToken newStableDebtImpl = new StableDebtToken(IPool(address(AaveV3Avalanche.POOL)));
-
       console.log(
         IERC20Detailed(stableDebtTokenAddress).symbol(),
         reserves[i],
         stableDebtTokenAddress,
         address(newStableDebtImpl)
       );
+      deployedImpl[i] = StableToken({
+        underlying: reserves[i],
+        stableToken: stableDebtTokenAddress,
+        newSTImpl: address(newStableDebtImpl)
+      });
     }
+    return deployedImpl;
   }
 }
 
