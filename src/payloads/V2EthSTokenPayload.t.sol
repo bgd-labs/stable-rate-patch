@@ -91,7 +91,7 @@ contract TestV2 is ProtocolV2TestBase {
       _withdraw(config, POOL, UTILIZER, IERC20(config.underlying).balanceOf(config.aToken));
 
       // 4. rebalance position
-      if(shouldRevert) vm.expectRevert();
+      if(shouldRevert) vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
       POOL.rebalanceStableBorrowRate(config.underlying, STABLE_BORROWER);
       vm.revertTo(snapshot);
     }
