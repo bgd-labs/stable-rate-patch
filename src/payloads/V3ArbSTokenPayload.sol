@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {AaveV3Arbitrum, AaveV3ArbitrumAssets} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {V3TokenPayload} from './V3TokenPayload.sol';
 
-contract V3ArbSTokenPayload {
+contract V3ArbSTokenPayload is V3TokenPayload {
   constructor() V3TokenPayload(AaveV3Arbitrum.POOL_CONFIGURATOR) {}
 
   function getTokensToUpdate() public pure override returns (TokenToUpdate[] memory) {
