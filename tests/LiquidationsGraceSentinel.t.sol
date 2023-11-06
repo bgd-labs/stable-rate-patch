@@ -3,12 +3,13 @@ pragma solidity >=0.6.12;
 pragma experimental ABIEncoderV2;
 
 import 'forge-std/Test.sol';
-import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
-import {LendingPoolCollateralManager} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol';
 import {IERC20} from 'forge-std/interfaces/IERC20.sol';
-import {LiquidationsGraceSentinel} from '../src/LiquidationsGraceSentinel.sol';
+import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {ILiquidationsGraceSentinel} from '../src/ILiquidationsGraceSentinel.sol';
+import {LendingPoolCollateralManager} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol';
+import {LiquidationsGraceSentinel} from '../src/LiquidationsGraceSentinel.sol';
 import {Ownable} from '../src/Ownable.sol';
+import {Errors} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/libraries/helpers/Errors.sol';
 
 contract MockPriceProvider {
   int256 public immutable PRICE;
@@ -32,6 +33,55 @@ contract LiquidationsGraceSentinelTest is Test {
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18507320);
+
+    // Unpausing v2 Ethereum, as that is the current state
+    vm.startPrank(GUARDIAN);
+    AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
+    vm.stopPrank();
+  }
+
+  function testNoLiquidationsWithGraceActive() public {
+    vm.startPrank(EXECUTOR_LVL_1);
+
+    LiquidationsGraceSentinel sentinel = new LiquidationsGraceSentinel();
+    Ownable(sentinel).transferOwnership(GUARDIAN);
+
+    LendingPoolCollateralManager newCollateralManager = new LendingPoolCollateralManager(
+      address(sentinel)
+    );
+
+    AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolCollateralManager(
+      address(newCollateralManager)
+    );
+
+    vm.stopPrank();
+
+    _forcePrice(EXECUTOR_LVL_1, AaveV2EthereumAssets.WBTC_UNDERLYING, 25053082074480230550);
+
+    address holderWbtcDebt = 0x1111567E0954E74f6bA7c4732D534e75B81DC42E;
+
+    deal(AaveV2EthereumAssets.WBTC_UNDERLYING, address(this), 2000 * 1e8);
+
+    IERC20(AaveV2EthereumAssets.WBTC_UNDERLYING).approve(
+      address(AaveV2Ethereum.POOL),
+      type(uint256).max
+    );
+
+    _setGracePeriod(
+      sentinel,
+      GUARDIAN,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      uint40(block.timestamp) + 20
+    );
+
+    vm.expectRevert(bytes(Errors.LPCM_ON_GRACE_PERIOD));
+    AaveV2Ethereum.POOL.liquidationCall(
+      AaveV2EthereumAssets.WETH_UNDERLYING,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      holderWbtcDebt,
+      type(uint256).max,
+      false
+    );
   }
 
   function _forcePrice(address oracleAdmin, address asset, int256 price) internal {
@@ -59,52 +109,5 @@ contract LiquidationsGraceSentinelTest is Test {
     until[0] = timestamp;
     sentinel.setGracePeriods(assets, until);
     vm.stopPrank();
-  }
-
-  function testLiquidationsGraceSentinel() public {
-    vm.startPrank(EXECUTOR_LVL_1);
-
-    LiquidationsGraceSentinel sentinel = new LiquidationsGraceSentinel();
-    Ownable(sentinel).transferOwnership(GUARDIAN);
-
-    LendingPoolCollateralManager newCollateralManager = new LendingPoolCollateralManager(
-      address(sentinel)
-    );
-
-    AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolCollateralManager(
-      address(newCollateralManager)
-    );
-
-    vm.stopPrank();
-
-    vm.startPrank(GUARDIAN);
-    AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
-    vm.stopPrank();
-
-    _forcePrice(EXECUTOR_LVL_1, AaveV2EthereumAssets.WBTC_UNDERLYING, 25053082074480230550);
-
-    address holderWbtcDebt = 0x1111567E0954E74f6bA7c4732D534e75B81DC42E;
-
-    deal(AaveV2EthereumAssets.WBTC_UNDERLYING, address(this), 2000 * 1e8);
-
-    IERC20(AaveV2EthereumAssets.WBTC_UNDERLYING).approve(
-      address(AaveV2Ethereum.POOL),
-      type(uint256).max
-    );
-
-    _setGracePeriod(
-      sentinel,
-      GUARDIAN,
-      AaveV2EthereumAssets.WBTC_UNDERLYING,
-      uint40(block.timestamp) + 20
-    );
-
-    AaveV2Ethereum.POOL.liquidationCall(
-      AaveV2EthereumAssets.WETH_UNDERLYING,
-      AaveV2EthereumAssets.WBTC_UNDERLYING,
-      holderWbtcDebt,
-      type(uint256).max,
-      false
-    );
   }
 }
