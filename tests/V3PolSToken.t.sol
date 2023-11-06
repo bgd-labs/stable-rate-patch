@@ -6,8 +6,7 @@ import {BaseDeploy, StableDebtToken} from '../scripts/DeploySTokenV3Pol.s.sol';
 import {AaveV3Polygon, AaveV3PolygonAssets} from 'aave-address-book/AaveV3Polygon.sol';
 import {DataTypes} from 'aave-address-book/AaveV3.sol';
 import {MiscPolygon} from 'aave-address-book/MiscPolygon.sol';
-import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import "aave-helpers/lib/aave-address-book/src/MiscPolygon.sol";
+import {IERC20Detailed} from '../src/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
   struct TokenToUpdate {
     address underlyingAsset;
