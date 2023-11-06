@@ -10,8 +10,10 @@ import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contra
 import {V2EthSTokenPayload} from "../src/payloads/V2EthSTokenPayload.sol";
 
 contract BaseDeploy {
-  function _deploy() internal {
+  function _deploy() internal returns (address[] memory) {
     address[] memory reserves = AaveV2Ethereum.POOL.getReservesList();
+
+    address[] memory deployedImpl = new address[](reserves.length);
 
     for (uint256 i = 0; i < reserves.length; i++) {
       (, , , , , , , bool stableBorrowRateEnabled, , ) = AaveV2Ethereum
@@ -39,7 +41,10 @@ contract BaseDeploy {
         stableDebtTokenAddress,
         address(newStableDebtImpl)
       );
+
+      deployedImpl[i] = address(newStableDebtImpl);
     }
+    return deployedImpl;
   }
 }
 
