@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 import {AaveV3Polygon, AaveV3PolygonAssets} from 'aave-address-book/AaveV3Polygon.sol';
 import {GovernanceV3Polygon} from 'aave-address-book/GovernanceV3Polygon.sol';
-import {IPool, IPoolConfigurator} from 'aave-address-book/AaveV3.sol';
+import {IPool, IPoolConfigurator, IReserveInterestRateStrategy} from 'aave-address-book/AaveV3.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/ProtocolV3TestBase.sol';
 import {IERC20} from 'solidity-utils/contracts/oz-common/interfaces/IERC20.sol';
 import {V3PolSTokenPayload, V3TokenPayload} from './V3PolSTokenPayload.sol';
@@ -33,39 +33,31 @@ contract TestV3 is ProtocolV3TestBase {
     POOL_CONFIGURATOR.setSupplyCap(underlying, 0);
   }
 
-
   function testRebalanceRate() public {
     ReserveConfig[] memory configs = _getReservesConfigs(POOL);
     V3TokenPayload.TokenToUpdate[] memory tokens = payload.getTokensToUpdate();
+    ReserveConfig memory goodCollateral = _findReserveConfig(configs, COLLATERAL_ASSET);
+    _removeSupplyCap(goodCollateral.underlying);
+    _deposit(goodCollateral, POOL, STABLE_BORROWER, 1000e6);
+
     // increase supply of asset
     for (uint256 i; i < tokens.length; i++) {
-      ReserveConfig memory goodCollateral = _findReserveConfig(
-        configs,
-        COLLATERAL_ASSET
-      );
-      uint256 amount = 10_000_000_000e18;
       uint256 snapshot = vm.snapshot();
-
-      _removeSupplyCap(goodCollateral.underlying);
       ReserveConfig memory config = _findReserveConfig(configs, tokens[i].underlyingAsset);
 
       // 0. prepare reserve
       _unfreezeToken(config.underlying);
       config.isFrozen = false;
 
-      // 1. temporarily bump total supply
-      uint256 totalATokenSupply = IERC20(config.aToken).totalSupply();
-      _deposit(config, POOL, UTILIZER, totalATokenSupply* 3);
+      // 1. prepare position
+      this._borrow(config, POOL, STABLE_BORROWER, 1, true);
 
-      // 2. borrow 20% stable
-      _deposit(goodCollateral, POOL, STABLE_BORROWER, 1_000_000e6);
-      this._borrow(config, POOL, STABLE_BORROWER, IERC20(config.underlying).balanceOf(config.aToken) / 5, true);
-
-      // 3. wihdraw liquidity
-      _withdraw(config, POOL, UTILIZER, IERC20(config.underlying).balanceOf(config.aToken));
-
-      // 5. rebalance position
-      vm.expectRevert();
+      // 2. rebalance position
+      vm.mockCall(
+        config.interestRateStrategy,
+        abi.encodeWithSelector(IReserveInterestRateStrategy.calculateInterestRates.selector),
+        abi.encode(10000 * 1e27, 100, 100)
+      );
       POOL.rebalanceStableBorrowRate(config.underlying, STABLE_BORROWER);
       vm.revertTo(snapshot);
     }
