@@ -5,7 +5,7 @@ import {AaveV3Arbitrum, AaveV3ArbitrumAssets} from 'aave-address-book/AaveV3Arbi
 import {ConfiguratorInputTypes} from 'aave-address-book/AaveV3.sol';
 import {IERC20Detailed} from '../v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
-interface GetIncentivesController {
+interface IGetIncentivesController {
   function getIncentivesController() external returns (address);
 }
 
@@ -24,7 +24,7 @@ contract V3ArbSTokenPayload {
 
       ConfiguratorInputTypes.UpdateDebtTokenInput memory input = ConfiguratorInputTypes.UpdateDebtTokenInput({
         asset: tokensToUpdate[i].underlyingAsset,
-        incentivesController: GetIncentivesController(tokensToUpdate[i].stableTokenProxy).getIncentivesController(),
+        incentivesController: IGetIncentivesController(tokensToUpdate[i].stableTokenProxy).getIncentivesController(),
         name: IERC20Detailed(tokensToUpdate[i].stableTokenProxy).name(),
         symbol: IERC20Detailed(tokensToUpdate[i].stableTokenProxy).symbol(),
         implementation:tokensToUpdate[i].newSTokenImpl,
