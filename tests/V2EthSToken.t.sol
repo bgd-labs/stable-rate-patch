@@ -2,7 +2,7 @@
 pragma solidity >=0.6.12;
 
 import 'forge-std/Test.sol';
-import {BaseDeploy,StableToken} from '../scripts/DeploySTokenV2Eth.s.sol';
+import {BaseDeploy, StableToken} from '../scripts/DeploySTokenV2Eth.s.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {DataTypes} from 'aave-address-book/AaveV2.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
@@ -30,7 +30,6 @@ contract V2EthSTokenTest is BaseDeploy, Test {
   }
 
   function testTokensWorkBeforePayload() public {
-
     StableToken[] memory newTokenImpl = _deploy();
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
@@ -40,13 +39,13 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
         // test token
         console.log(IERC20Detailed(stableDebtTokenAddress).symbol());
-        _generateStableDebt(newTokenImpl[i].underlying, USER_1 );
-//        _rebalance(USER_2, USER_1, newTokenImpl[i].underlying);
+        _generateStableDebt(newTokenImpl[i].underlying, USER_1);
+        //        _rebalance(USER_2, USER_1, newTokenImpl[i].underlying);
       }
     }
   }
-  function testTokensDontWorkAfterPayload() public {
 
+  function testTokensDontWorkAfterPayload() public {
     StableToken[] memory newTokenImpl = _deploy();
     TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
 
@@ -61,11 +60,20 @@ contract V2EthSTokenTest is BaseDeploy, Test {
         // test token
       }
     }
-
   }
 
   function _dealUnderlying(address user, address underlying) internal {
-    deal(underlying, user, 1_000_000_000 ether);
+    if (
+      underlying == AaveV2EthereumAssets.DAI_UNDERLYING ||
+      underlying == AaveV2EthereumAssets.USDT_UNDERLYING
+    ) {
+      deal(underlying, user, 1_000_000_000e6);
+    } else if (underlying == AaveV2EthereumAssets.WBTC_UNDERLYING) {
+      deal(underlying, user, 1_000_000_000e8);
+
+    }else {
+      deal(underlying, user, 1_000_000_000 ether);
+    }
   }
 
   // generate revalancing for asset
@@ -90,9 +98,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
       .getReserveTokensAddresses(underlying);
 
     // get available liquidity
-    uint256 availableLiquidity = IERC20Detailed(underlying).balanceOf(
-      aTokenAddress
-    );
+    uint256 availableLiquidity = IERC20Detailed(underlying).balanceOf(aTokenAddress);
 
     // new borrower borrows to move utilization to max
     _dealUnderlying(newBorrower, COLLATERAL_TOKEN);
@@ -105,10 +111,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     vm.stopPrank();
 
     AaveV2Ethereum.POOL.rebalanceStableBorrowRate(underlying, debtor);
-
   }
 
-  function _updateImplementation(address stableToken, address newImpl) internal {
-
-  }
+  function _updateImplementation(address stableToken, address newImpl) internal {}
 }
