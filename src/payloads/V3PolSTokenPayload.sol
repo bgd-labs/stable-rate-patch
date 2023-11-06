@@ -25,7 +25,7 @@ contract V3PolSTokenPayload is V3TokenPayload {
       stableTokenProxy: AaveV3PolygonAssets.USDT_S_TOKEN,
       newSTokenImpl: address(0) // TODO: fill with deployed address
     });
-    tokensToUpdate[2] = TokenToUpdate({
+    tokensToUpdate[3] = TokenToUpdate({
       underlyingAsset: AaveV3PolygonAssets.EURS_UNDERLYING,
       stableTokenProxy: AaveV3PolygonAssets.EURS_S_TOKEN,
       newSTokenImpl: address(0) // TODO: fill with deployed address
