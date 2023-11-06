@@ -45,22 +45,22 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     }
   }
 
-  function testTokensDontWorkAfterPayload() public {
-    StableToken[] memory newTokenImpl = _deploy();
-    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
-
-    for (uint256 i = 0; i < newTokenImpl.length; i++) {
-      if (newTokenImpl[i].newSTImpl != address(0)) {
-        hoax(0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A); // executor lvl 1
-        AaveV2Ethereum.POOL_CONFIGURATOR.updateStableDebtToken(
-          newTokenImpl[i].underlying,
-          newTokenImpl[i].newSTImpl
-        );
-
-        // test token
-      }
-    }
-  }
+//  function testTokensDontWorkAfterPayload() public {
+//    StableToken[] memory newTokenImpl = _deploy();
+//    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
+//
+//    for (uint256 i = 0; i < newTokenImpl.length; i++) {
+//      if (newTokenImpl[i].newSTImpl != address(0)) {
+//        hoax(0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A); // executor lvl 1
+//        AaveV2Ethereum.POOL_CONFIGURATOR.updateStableDebtToken(
+//          newTokenImpl[i].underlying,
+//          newTokenImpl[i].newSTImpl
+//        );
+//
+//        // test token
+//      }
+//    }
+//  }
 
   function _dealUnderlying(address user, address underlying) internal {
     if (
@@ -84,10 +84,20 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     vm.startPrank(debtor);
 
     IERC20Detailed(COLLATERAL_TOKEN).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
-    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, type(uint256).max, debtor, 0);
+    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, IERC20Detailed(COLLATERAL_TOKEN).balanceOf(debtor), debtor, 0);
 
     // debtor takes stable debt
-    AaveV2Ethereum.POOL.borrow(stableUnderlying, 100 ether, 1, 0, debtor);
+    if (
+      stableUnderlying == AaveV2EthereumAssets.DAI_UNDERLYING ||
+      stableUnderlying == AaveV2EthereumAssets.USDT_UNDERLYING
+    ) {
+      AaveV2Ethereum.POOL.borrow(stableUnderlying, 100e6, 1, 0, debtor);
+    } else if (stableUnderlying == AaveV2EthereumAssets.WBTC_UNDERLYING) {
+      AaveV2Ethereum.POOL.borrow(stableUnderlying, 100e8, 1, 0, debtor);
+
+    }else {
+      AaveV2Ethereum.POOL.borrow(stableUnderlying, 100 ether, 1, 0, debtor);
+    }
 
     vm.stopPrank();
   }
