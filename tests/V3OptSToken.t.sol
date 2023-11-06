@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import 'forge-std/Test.sol';
-import {BaseDeploy, StableDebtToken,StableToken} from '../scripts/DeploySTokenV3Opt.s.sol';
+import {BaseDeploy, StableDebtToken, StableToken} from '../scripts/DeploySTokenV3Opt.s.sol';
 import {AaveV3Optimism, AaveV3OptimismAssets} from 'aave-address-book/AaveV3Optimism.sol';
 import {DataTypes} from 'aave-address-book/AaveV3.sol';
 import {MiscOptimism} from 'aave-address-book/MiscOptimism.sol';
@@ -10,6 +10,8 @@ import {GovernanceV3Optimism} from 'aave-address-book/GovernanceV3Optimism.sol';
 import {IERC20} from 'solidity-utils/contracts/oz-common/interfaces/IERC20.sol';
 import {ConfiguratorInputTypes, IPoolConfigurator} from 'aave-address-book/AaveV3.sol';
 import {IERC20Detailed} from '../src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+
+import {IExecutor} from './utils/IExecutor.sol';
 
 interface IGetIncentivesController {
   function getIncentivesController() external returns (address);
@@ -23,8 +25,12 @@ contract V3OptSTokenTest is BaseDeploy, Test {
 
   address EXECUTOR = GovernanceV3Optimism.EXECUTOR_LVL_1;
 
+  address PAYLOADS_CONTROLLER = 0x0E1a3Af1f9cC76A62eD31eDedca291E63632e7c4;
+
+  address payload = 0x4B02E9A575DFf2783568cE3DFD354736388D813d;
+
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('optimism'), 111849394);
+    vm.createSelectFork(vm.rpcUrl('optimism'), 111852513);
 
     // unpause pool
     hoax(MiscOptimism.PROTOCOL_GUARDIAN);
@@ -50,14 +56,8 @@ contract V3OptSTokenTest is BaseDeploy, Test {
         deal(newTokenImpl[i].underlying, USER_3, totalLiquidity * 11);
 
         vm.startPrank(USER_3);
-        IERC20(newTokenImpl[i].underlying).approve(
-          address(AaveV3Optimism.POOL),
-          0
-        );
-        IERC20(newTokenImpl[i].underlying).approve(
-          address(AaveV3Optimism.POOL),
-          type(uint256).max
-        );
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Optimism.POOL), 0);
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Optimism.POOL), type(uint256).max);
         AaveV3Optimism.POOL.deposit(newTokenImpl[i].underlying, totalLiquidity * 2, USER_3, 0);
         vm.stopPrank();
 
@@ -74,6 +74,8 @@ contract V3OptSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
+        uint256 snapshot = vm.snapshot();
+
         (address aToken, , ) = AaveV3Optimism.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
           newTokenImpl[i].underlying
         );
@@ -88,24 +90,20 @@ contract V3OptSTokenTest is BaseDeploy, Test {
         deal(newTokenImpl[i].underlying, USER_3, totalLiquidity * 11);
 
         vm.startPrank(USER_3);
-        IERC20(newTokenImpl[i].underlying).approve(
-          address(AaveV3Optimism.POOL),
-          0
-        );
-        IERC20(newTokenImpl[i].underlying).approve(
-          address(AaveV3Optimism.POOL),
-          type(uint256).max
-        );
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Optimism.POOL), 0);
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Optimism.POOL), type(uint256).max);
         AaveV3Optimism.POOL.deposit(newTokenImpl[i].underlying, totalLiquidity * 2, USER_3, 0);
         vm.stopPrank();
 
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
         _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
 
-        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl, newTokenImpl[i].stableToken);
+        hoax(PAYLOADS_CONTROLLER);
+        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
         AaveV3Optimism.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
+        vm.revertTo(snapshot);
       }
     }
   }
@@ -115,6 +113,8 @@ contract V3OptSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
+        uint256 snapshot = vm.snapshot();
+
         (address aToken, address stableDebtTokenAddress, ) = AaveV3Optimism
           .AAVE_PROTOCOL_DATA_PROVIDER
           .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -127,7 +127,8 @@ contract V3OptSTokenTest is BaseDeploy, Test {
 
         _supplyTokens(newTokenImpl[i].underlying, USER_3);
 
-        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl, newTokenImpl[i].stableToken);
+        hoax(PAYLOADS_CONTROLLER);
+        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         // debtor supplies collateral
         _supplyTokens(COLLATERAL_TOKEN, USER_1);
@@ -139,6 +140,7 @@ contract V3OptSTokenTest is BaseDeploy, Test {
         AaveV3Optimism.POOL.borrow(newTokenImpl[i].underlying, 5, 1, 0, USER_1);
 
         vm.stopPrank();
+        vm.revertTo(snapshot);
       }
     }
   }
@@ -150,6 +152,8 @@ contract V3OptSTokenTest is BaseDeploy, Test {
       if (newTokenImpl[i].newSTImpl == address(0)) {
         continue;
       }
+      uint256 snapshot = vm.snapshot();
+
       (address aToken, address stableDebtTokenAddress, ) = AaveV3Optimism
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -167,11 +171,13 @@ contract V3OptSTokenTest is BaseDeploy, Test {
       hoax(USER_1);
       AaveV3Optimism.POOL.borrow(newTokenImpl[i].underlying, 10, 2, 0, USER_1);
 
-      _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl, newTokenImpl[i].stableToken);
+      hoax(PAYLOADS_CONTROLLER);
+      IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
       hoax(USER_1);
       vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
       AaveV3Optimism.POOL.swapBorrowRateMode(newTokenImpl[i].underlying, 2);
+      vm.revertTo(snapshot);
     }
   }
 
@@ -248,14 +254,14 @@ contract V3OptSTokenTest is BaseDeploy, Test {
   ) internal {
     ConfiguratorInputTypes.UpdateDebtTokenInput memory input = ConfiguratorInputTypes
       .UpdateDebtTokenInput({
-      asset: underlying,
-      incentivesController: IGetIncentivesController(currentStableProxy)
-    .getIncentivesController(),
-      name: IERC20Detailed(currentStableProxy).name(),
-      symbol: IERC20Detailed(currentStableProxy).symbol(),
-      implementation: newImpl,
-      params: bytes('')
-    });
+        asset: underlying,
+        incentivesController: IGetIncentivesController(currentStableProxy)
+          .getIncentivesController(),
+        name: IERC20Detailed(currentStableProxy).name(),
+        symbol: IERC20Detailed(currentStableProxy).symbol(),
+        implementation: newImpl,
+        params: bytes('')
+      });
 
     hoax(EXECUTOR); // executor lvl 1
     AaveV3Optimism.POOL_CONFIGURATOR.updateStableDebtToken(input);
