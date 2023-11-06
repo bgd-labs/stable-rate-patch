@@ -2,4 +2,4 @@ out
 lib
 cache
 node_modules
-src
+src/V*

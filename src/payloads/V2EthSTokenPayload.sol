@@ -11,7 +11,6 @@ contract V2EthSTokenPayload {
   }
 
   function execute() external {
-
     TokenToUpdate[] memory tokensToUpdate = getTokensToUpdate();
 
     for (uint256 i = 0; i < tokensToUpdate.length; i++) {
@@ -22,7 +21,7 @@ contract V2EthSTokenPayload {
     }
   }
 
-  function getTokensToUpdate() public pure returns (TokenToUpdate[] memory){
+  function getTokensToUpdate() public pure returns (TokenToUpdate[] memory) {
     TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](13);
 
     tokensToUpdate[0] = TokenToUpdate({
