@@ -25,7 +25,7 @@ contract V3ArbSTokenPayload is V3TokenPayload {
       stableTokenProxy: AaveV3ArbitrumAssets.USDT_S_TOKEN,
       newSTokenImpl: address(0) // TODO: fill with deployed address
     });
-    tokensToUpdate[2] = TokenToUpdate({
+    tokensToUpdate[3] = TokenToUpdate({
       underlyingAsset: AaveV3ArbitrumAssets.EURS_UNDERLYING,
       stableTokenProxy: AaveV3ArbitrumAssets.EURS_S_TOKEN,
       newSTokenImpl: address(0) // TODO: fill with deployed address
