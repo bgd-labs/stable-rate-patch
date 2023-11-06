@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 import 'forge-std/Test.sol';
 import {BaseDeploy, StableToken} from '../scripts/DeploySTokenV2Eth.s.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
-import {DataTypes} from 'aave-address-book/AaveV2.sol';
+import {DataTypes, IDefaultInterestRateStrategy} from 'aave-address-book/AaveV2.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 import {SafeERC20, IERC20} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/dependencies/openzeppelin/contracts/SafeERC20.sol';
@@ -59,51 +59,41 @@ contract V2EthSTokenTest is BaseDeploy, Test {
   //      }
   //    }
 
-    function testRebalanceAfterPayload() public {
-      StableToken[] memory newTokenImpl = _deploy();
-      TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
+  function testRebalanceAfterPayload() public {
+    StableToken[] memory newTokenImpl = _deploy();
 
-      for (uint256 i = 0; i < newTokenImpl.length; i++) {
+    for (uint256 i = 0; i < newTokenImpl.length; i++) {
+      if (newTokenImpl[i].newSTImpl != address(0)) {
+        (address aToken, address stableDebtTokenAddress, ) = AaveV2Ethereum
+          .AAVE_PROTOCOL_DATA_PROVIDER
+          .getReserveTokensAddresses(newTokenImpl[i].underlying);
 
-        if (newTokenImpl[i].newSTImpl != address(0)
-        ) {
-          DataTypes.ReserveData memory data = AaveV2Ethereum.POOL.getReserveData(newTokenImpl[i].underlying);
+        _unfreezeTokens(newTokenImpl[i].underlying);
+        _enableBorrowingToken(newTokenImpl[i].underlying);
 
-          (address aToken, address stableDebtTokenAddress, ) = AaveV2Ethereum
-            .AAVE_PROTOCOL_DATA_PROVIDER
-            .getReserveTokensAddresses(newTokenImpl[i].underlying);
+        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
 
-          _unfreezeTokens(newTokenImpl[i].underlying);
-          _enableBorrowingToken(newTokenImpl[i].underlying);
+        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
 
+        vm.startPrank(aToken);
+        SafeERC20.safeTransfer(
+          IERC20(newTokenImpl[i].underlying),
+          address(1),
+          IERC20Detailed(newTokenImpl[i].underlying).balanceOf(aToken)
+        );
+        vm.stopPrank();
 
-          _supplyTokens(newTokenImpl[i].underlying, USER_3);
-          _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
-          _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
-          _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
-//          _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
+        DataTypes.ReserveData memory data = AaveV2Ethereum.POOL.getReserveData(
+          newTokenImpl[i].underlying
+        );
 
-          uint256 availableLiquidity = IERC20Detailed(newTokenImpl[i].underlying).balanceOf(aToken);
-          address[] memory assets = new address[](1);
-          assets[0] = newTokenImpl[i].underlying;
-          uint256[] memory amounts = new uint256[](1);
-          amounts[0] = availableLiquidity;
-          uint256[] memory modes = new uint256[](1);
-          modes[0] = 0;
-
-          AaveV2Ethereum.POOL.flashLoan(
-            USER_3, assets, amounts, modes, USER_3, bytes(''), 0);
-
-          _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
-
-          vm.mockCall(
-            data.interestRateStrategyAddress,
-            abi.encodeWithSignature('getMaxVariableBorrowRate()'),
-            abi.encode(100000)
-          );
-          vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
-          AaveV2Ethereum.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
-        }
+        vm.mockCall(
+          data.interestRateStrategyAddress,
+          abi.encodeWithSelector(IDefaultInterestRateStrategy.getMaxVariableBorrowRate.selector),
+          abi.encode(1000 * 1e27)
+        );
+        vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
+        AaveV2Ethereum.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
       }
     }
 
