@@ -9,11 +9,17 @@ import {DataTypes} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/p
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 import {V2EthSTokenPayload} from "../src/payloads/V2EthSTokenPayload.sol";
 
+struct StableToken {
+  address underlying;
+  address stableToken;
+  address newSTImpl;
+}
+
 contract BaseDeploy {
-  function _deploy() internal returns (address[] memory) {
+  function _deploy() internal returns (StableToken[] memory) {
     address[] memory reserves = AaveV2Ethereum.POOL.getReservesList();
 
-    address[] memory deployedImpl = new address[](reserves.length);
+    StableToken[] memory deployedImpl = new StableToken[](reserves.length);
 
     for (uint256 i = 0; i < reserves.length; i++) {
       (, , , , , , , bool stableBorrowRateEnabled, , ) = AaveV2Ethereum
@@ -42,7 +48,11 @@ contract BaseDeploy {
         address(newStableDebtImpl)
       );
 
-      deployedImpl[i] = address(newStableDebtImpl);
+      deployedImpl[i] = StableToken({
+        underlying : reserves[i],
+        stableToken : stableDebtTokenAddress,
+        newSTImpl : address(newStableDebtImpl)
+      });
     }
     return deployedImpl;
   }

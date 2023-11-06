@@ -1,37 +1,51 @@
 // SPDX-License-Identifier: agpl-3.0
 pragma solidity >=0.6.12;
 
-import "forge-std/Test.sol";
-import {BaseDeploy} from "../scripts/DeploySTokenV2Eth.s.sol";
-pragma experimental ABIEncoderV2;
-
-import {StableDebtToken} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol';
-import {AaveV2Ethereum} from 'aave-address-book/AaveV2Ethereum.sol';
+import 'forge-std/Test.sol';
+import {BaseDeploy,StableToken} from '../scripts/DeploySTokenV2Eth.s.sol';
+import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
-import {DataTypes} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/libraries/types/DataTypes.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import {V2EthSTokenPayload} from "../src/payloads/V2EthSTokenPayload.sol";
+
 
 contract V2EthSTokenTest is BaseDeploy, Test {
-  address[] newTokenImpl;
+  address constant USER_1 = address(1249182);
+  address constant USER_2 = address(3568);
+
+  address COLLATERAL_TOKEN = AaveV2EthereumAssets.WETH_UNDERLYING;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18511827);
-    newTokenImpl = _deploy();
-
+    
     // unpause pool
     hoax(MiscEthereum.PROTOCOL_GUARDIAN);
-    AaveV2Ethereum.setPoolPause(false);
+    AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
   }
 
   function testNewTokensImpl() public {
-    for(uint256 i = 0; i < newTokenImpl.length; i++) {
-      if (newTokenImpl[i] != address(0)) {
-        
-      }
-    }
 
+    StableToken[] memory newTokenImpl = _deploy();
+    for (uint256 i = 0; i < newTokenImpl.length; i++) {
+      if (newTokenImpl[i].newSTImpl != address(0)) {}
+    }
+  }
+
+  function _dealUnderlying(address user, address underlying) internal {
+    deal(underlying, user, 10_000_000_000 ether);
   }
 
   // generate revalancing for asset
+  function _generateStableDebt(address stableUnderlying, address debtor) internal {
+    // debtor supplies collateral
+    _dealUnderlying(debtor, COLLATERAL_TOKEN);
+    hoax(debtor);
+    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, 1_000_000 ether, debtor, 0);
+
+    // debtor takes stable debt
+    hoax(debtor);
+    AaveV2Ethereum.POOL.borrow(stableUnderlying, 100_000 ether, 1, 0, debtor);
+
+  }
+
+  function _updateImplementation(address stableToken, address newImpl) internal {}
 }
