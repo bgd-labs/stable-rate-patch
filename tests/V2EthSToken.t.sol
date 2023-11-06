@@ -32,6 +32,8 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
   address EXECUTOR = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
 
+  address PAYLOADS_CONTROLLER = 0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5;
+
   address payload = 0x37DF9bd44728e513472D5d44793118cBaE975E12;
 
   function setUp() public {
@@ -103,7 +105,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
         _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
 
-        hoax(0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5);
+        hoax(PAYLOADS_CONTROLLER);
         IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));

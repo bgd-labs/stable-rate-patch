@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import 'forge-std/Test.sol';
-import {BaseDeploy, StableDebtToken,StableToken} from '../scripts/DeploySTokenV3Avax.s.sol';
+import {BaseDeploy, StableDebtToken, StableToken} from '../scripts/DeploySTokenV3Avax.s.sol';
 import {AaveV3Avalanche, AaveV3AvalancheAssets} from 'aave-address-book/AaveV3Avalanche.sol';
 import {DataTypes} from 'aave-address-book/AaveV3.sol';
 import {MiscAvalanche} from 'aave-address-book/MiscAvalanche.sol';
@@ -10,6 +10,7 @@ import {GovernanceV3Avalanche} from 'aave-address-book/GovernanceV3Avalanche.sol
 import {IERC20} from 'solidity-utils/contracts/oz-common/interfaces/IERC20.sol';
 import {ConfiguratorInputTypes, IPoolConfigurator} from 'aave-address-book/AaveV3.sol';
 import {IERC20Detailed} from '../src/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+import {IExecutor} from './utils/IExecutor.sol';
 
 interface IGetIncentivesController {
   function getIncentivesController() external returns (address);
@@ -23,8 +24,12 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
 
   address EXECUTOR = GovernanceV3Avalanche.EXECUTOR_LVL_1;
 
+  address PAYLOADS_CONTROLLER = 0x1140CB7CAfAcC745771C2Ea31e7B5C653c5d0B80;
+
+  address payload = 0x5c15edC83E044D0956fd3F845c15934aB8034BBA;
+
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('avalanche'), 37421738);
+    vm.createSelectFork(vm.rpcUrl('avalanche'), 37424458);
 
     // unpause pool
     hoax(MiscAvalanche.PROTOCOL_GUARDIAN);
@@ -36,9 +41,9 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
-        (address aToken, , ) = AaveV3Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
-          newTokenImpl[i].underlying
-        );
+        (address aToken, , ) = AaveV3Avalanche
+          .AAVE_PROTOCOL_DATA_PROVIDER
+          .getReserveTokensAddresses(newTokenImpl[i].underlying);
 
         _removeSupplyCap(COLLATERAL_TOKEN);
         _removeBorrowCap(newTokenImpl[i].underlying);
@@ -50,10 +55,7 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
         deal(newTokenImpl[i].underlying, USER_3, totalLiquidity * 11);
 
         vm.startPrank(USER_3);
-        IERC20(newTokenImpl[i].underlying).approve(
-          address(AaveV3Avalanche.POOL),
-          0
-        );
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Avalanche.POOL), 0);
         IERC20(newTokenImpl[i].underlying).approve(
           address(AaveV3Avalanche.POOL),
           type(uint256).max
@@ -74,9 +76,11 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
-        (address aToken, , ) = AaveV3Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
-          newTokenImpl[i].underlying
-        );
+        uint256 snapshot = vm.snapshot();
+
+        (address aToken, , ) = AaveV3Avalanche
+          .AAVE_PROTOCOL_DATA_PROVIDER
+          .getReserveTokensAddresses(newTokenImpl[i].underlying);
 
         _removeSupplyCap(COLLATERAL_TOKEN);
         _removeBorrowCap(newTokenImpl[i].underlying);
@@ -88,10 +92,7 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
         deal(newTokenImpl[i].underlying, USER_3, totalLiquidity * 11);
 
         vm.startPrank(USER_3);
-        IERC20(newTokenImpl[i].underlying).approve(
-          address(AaveV3Avalanche.POOL),
-          0
-        );
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Avalanche.POOL), 0);
         IERC20(newTokenImpl[i].underlying).approve(
           address(AaveV3Avalanche.POOL),
           type(uint256).max
@@ -102,10 +103,12 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
         _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
 
-        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl, newTokenImpl[i].stableToken);
+        hoax(PAYLOADS_CONTROLLER);
+        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
         AaveV3Avalanche.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
+        vm.revertTo(snapshot);
       }
     }
   }
@@ -115,6 +118,8 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
+        uint256 snapshot = vm.snapshot();
+
         (address aToken, address stableDebtTokenAddress, ) = AaveV3Avalanche
           .AAVE_PROTOCOL_DATA_PROVIDER
           .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -127,7 +132,8 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
 
         _supplyTokens(newTokenImpl[i].underlying, USER_3);
 
-        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl, newTokenImpl[i].stableToken);
+        hoax(PAYLOADS_CONTROLLER);
+        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
         // debtor supplies collateral
         _supplyTokens(COLLATERAL_TOKEN, USER_1);
@@ -139,6 +145,7 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
         AaveV3Avalanche.POOL.borrow(newTokenImpl[i].underlying, 5, 1, 0, USER_1);
 
         vm.stopPrank();
+        vm.revertTo(snapshot);
       }
     }
   }
@@ -150,6 +157,8 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
       if (newTokenImpl[i].newSTImpl == address(0)) {
         continue;
       }
+      uint256 snapshot = vm.snapshot();
+
       (address aToken, address stableDebtTokenAddress, ) = AaveV3Avalanche
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -167,11 +176,13 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
       hoax(USER_1);
       AaveV3Avalanche.POOL.borrow(newTokenImpl[i].underlying, 10, 2, 0, USER_1);
 
-      _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl, newTokenImpl[i].stableToken);
+      hoax(PAYLOADS_CONTROLLER);
+      IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
 
       hoax(USER_1);
       vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
       AaveV3Avalanche.POOL.swapBorrowRateMode(newTokenImpl[i].underlying, 2);
+      vm.revertTo(snapshot);
     }
   }
 
@@ -248,14 +259,14 @@ contract V3AvaxSTokenTest is BaseDeploy, Test {
   ) internal {
     ConfiguratorInputTypes.UpdateDebtTokenInput memory input = ConfiguratorInputTypes
       .UpdateDebtTokenInput({
-      asset: underlying,
-      incentivesController: IGetIncentivesController(currentStableProxy)
-    .getIncentivesController(),
-      name: IERC20Detailed(currentStableProxy).name(),
-      symbol: IERC20Detailed(currentStableProxy).symbol(),
-      implementation: newImpl,
-      params: bytes('')
-    });
+        asset: underlying,
+        incentivesController: IGetIncentivesController(currentStableProxy)
+          .getIncentivesController(),
+        name: IERC20Detailed(currentStableProxy).name(),
+        symbol: IERC20Detailed(currentStableProxy).symbol(),
+        implementation: newImpl,
+        params: bytes('')
+      });
 
     hoax(EXECUTOR); // executor lvl 1
     AaveV3Avalanche.POOL_CONFIGURATOR.updateStableDebtToken(input);
