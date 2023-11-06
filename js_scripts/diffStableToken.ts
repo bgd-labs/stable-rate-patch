@@ -169,7 +169,7 @@ async function getV3StableDebtImpl() {
 
 async function main() {
   diffV2EthStableImpl();
-  // getV3StableDebtImpl();
+  getV3StableDebtImpl();
 }
 
 main();
