@@ -5,7 +5,8 @@
     "lint": "prettier ./",
     "lint:fix": "npm run lint -- --write",
     "clean-storage-report": "ts-node ./js_scripts/preprocess-storage-report.ts",
-    "generate-stable-debt-diff": "ts-node ./js_scripts/diffStableToken.ts"
+    "generate-v2-eth-stable-debt-diff": "ts-node ./js_scripts/diffStableToken.ts",
+    "get-v3-stable-debt-impl": "ts-node ./js_scripts/getV3StableDebtImpl.ts"
   },
   "repository": {
     "type": "git",
