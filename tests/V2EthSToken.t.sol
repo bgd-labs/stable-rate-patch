@@ -17,14 +17,11 @@ struct TokenToUpdate {
 
 contract V2EthSTokenTest is BaseDeploy, Test {
   address constant USER_1 = address(1249182);
-  address constant USER_2 = address(3568);
   address constant USER_3 = address(13057);
 
   address COLLATERAL_TOKEN = AaveV2EthereumAssets.DAI_UNDERLYING;
 
   address EXECUTOR = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
-
-  address payload;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18511827);
