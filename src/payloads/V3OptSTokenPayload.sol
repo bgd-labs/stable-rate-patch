@@ -13,17 +13,17 @@ contract V3OptSTokenPayload is V3TokenPayload {
     tokensToUpdate[0] = TokenToUpdate({
       underlyingAsset: AaveV3OptimismAssets.DAI_UNDERLYING,
       stableTokenProxy: AaveV3OptimismAssets.DAI_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0x69713dA5fDfacf77E80C31F9B928Ec0Fc3716384
     });
     tokensToUpdate[1] = TokenToUpdate({
       underlyingAsset: AaveV3OptimismAssets.USDC_UNDERLYING,
       stableTokenProxy: AaveV3OptimismAssets.USDC_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0x69713dA5fDfacf77E80C31F9B928Ec0Fc3716384
     });
     tokensToUpdate[2] = TokenToUpdate({
       underlyingAsset: AaveV3OptimismAssets.USDT_UNDERLYING,
       stableTokenProxy: AaveV3OptimismAssets.USDT_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0x69713dA5fDfacf77E80C31F9B928Ec0Fc3716384
     });
 
     return tokensToUpdate;

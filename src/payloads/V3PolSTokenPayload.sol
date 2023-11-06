@@ -13,22 +13,22 @@ contract V3PolSTokenPayload is V3TokenPayload {
     tokensToUpdate[0] = TokenToUpdate({
       underlyingAsset: AaveV3PolygonAssets.DAI_UNDERLYING,
       stableTokenProxy: AaveV3PolygonAssets.DAI_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xF4294973B7E6F6C411dD8A388592E7c7D32F2486
     });
     tokensToUpdate[1] = TokenToUpdate({
       underlyingAsset: AaveV3PolygonAssets.USDC_UNDERLYING,
       stableTokenProxy: AaveV3PolygonAssets.USDC_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xF4294973B7E6F6C411dD8A388592E7c7D32F2486
     });
     tokensToUpdate[2] = TokenToUpdate({
       underlyingAsset: AaveV3PolygonAssets.USDT_UNDERLYING,
       stableTokenProxy: AaveV3PolygonAssets.USDT_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xF4294973B7E6F6C411dD8A388592E7c7D32F2486
     });
     tokensToUpdate[3] = TokenToUpdate({
       underlyingAsset: AaveV3PolygonAssets.EURS_UNDERLYING,
       stableTokenProxy: AaveV3PolygonAssets.EURS_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xF4294973B7E6F6C411dD8A388592E7c7D32F2486
     });
 
     return tokensToUpdate;
