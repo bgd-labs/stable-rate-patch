@@ -4,6 +4,7 @@ pragma solidity >=0.6.12;
 import 'forge-std/Test.sol';
 import {BaseDeploy,StableToken} from '../scripts/DeploySTokenV2Eth.s.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
+import {DataTypes} from 'aave-address-book/AaveV2.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
 
@@ -16,7 +17,7 @@ contract V2EthSTokenTest is BaseDeploy, Test {
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18511827);
-    
+
     // unpause pool
     hoax(MiscEthereum.PROTOCOL_GUARDIAN);
     AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
@@ -44,6 +45,27 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     // debtor takes stable debt
     hoax(debtor);
     AaveV2Ethereum.POOL.borrow(stableUnderlying, 100_000 ether, 1, 0, debtor);
+  }
+
+  function _rebalance(address newBorrower, address debtor, address underlying) internal {
+    (address aTokenAddress, , ) = AaveV2Ethereum
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveTokensAddresses(underlying);
+
+    // get available liquidity
+    uint256 availableLiquidity = IERC20Detailed(underlying).balanceOf(
+      aTokenAddress
+    );
+
+    // new borrower borrows to move utilization to max
+    _dealUnderlying(newBorrower, COLLATERAL_TOKEN);
+    hoax(newBorrower);
+    AaveV2Ethereum.POOL.deposit(COLLATERAL_TOKEN, type(uint256).max, newBorrower, 0);
+
+    hoax(newBorrower);
+    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 1, 0, newBorrower);
+
+    AaveV2Ethereum.POOL.rebalanceStableBorrowRate(underlying, debtor);
 
   }
 

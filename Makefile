@@ -57,3 +57,9 @@ deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV
 #deploy-owner-base :; forge script scripts/OwnershipUpdate.s.sol:Base --fork-url base $(common-flags)
 #deploy-owner-metis :; forge script scripts/OwnershipUpdate.s.sol:Metis --fork-url metis $(common-flags)
 #deploy-owner-gnosis :; forge script scripts/OwnershipUpdate.s.sol:Gnosis --fork-url gnosis $(common-flags)
+
+
+
+deploy-v2-arbitrum :; forge script scripts/deploy_scripts.s.sol:DeployArb --fork-url arbitrum $(common-flags)
+deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-url polygon $(common-flags)
+deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork-url optimism $(common-flags)
