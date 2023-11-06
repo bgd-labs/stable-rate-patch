@@ -7,6 +7,7 @@ import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethe
 import {DataTypes} from 'aave-address-book/AaveV2.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
+import {SafeERC20, IERC20} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/dependencies/openzeppelin/contracts/SafeERC20.sol';
 
 struct TokenToUpdate {
   address underlyingAsset;
@@ -14,6 +15,7 @@ struct TokenToUpdate {
 }
 
 contract V2EthSTokenTest is BaseDeploy, Test {
+
   address constant USER_1 = address(1249182);
   address constant USER_2 = address(3568);
   address constant USER_3 = address(13057);
@@ -32,10 +34,39 @@ contract V2EthSTokenTest is BaseDeploy, Test {
     AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
   }
 
-  function testTokensWorkBeforePayload() public {
-    StableToken[] memory newTokenImpl = _deploy();
-    for (uint256 i = 0; i < newTokenImpl.length; i++) {
-      if (newTokenImpl[i].newSTImpl != address(0)) {
+//  function testTokensWorkBeforePayload() public {
+//    StableToken[] memory newTokenImpl = _deploy();
+////    for (uint256 i = 0; i < newTokenImpl.length; i++) {
+//    uint256 i = 0;
+//      if (newTokenImpl[i].newSTImpl != address(0)) {
+//        (address aToken, address stableDebtTokenAddress, ) = AaveV2Ethereum
+//          .AAVE_PROTOCOL_DATA_PROVIDER
+//          .getReserveTokensAddresses(newTokenImpl[i].underlying);
+//
+//        _unfreezeTokens(newTokenImpl[i].underlying);
+//        _enableBorrowingToken(newTokenImpl[i].underlying);
+//
+//        // test token
+//        console.log(IERC20Detailed(stableDebtTokenAddress).symbol());
+//
+//        _supplyTokens(newTokenImpl[i].underlying, USER_3);
+//        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
+//        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
+//        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
+//        _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
+//        _rebalance(USER_2, USER_1, newTokenImpl[i].underlying);
+//      }
+////    }
+//  }
+
+    function testTokensDontWorkAfterPayload() public {
+      StableToken[] memory newTokenImpl = _deploy();
+      TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
+
+        uint256 i = 0;
+        if (newTokenImpl[i].newSTImpl != address(0)) {
+        _updateImplementation(newTokenImpl[i].underlying, newTokenImpl[i].newSTImpl);
+
         (address aToken, address stableDebtTokenAddress, ) = AaveV2Ethereum
           .AAVE_PROTOCOL_DATA_PROVIDER
           .getReserveTokensAddresses(newTokenImpl[i].underlying);
@@ -47,34 +78,35 @@ contract V2EthSTokenTest is BaseDeploy, Test {
         console.log(IERC20Detailed(stableDebtTokenAddress).symbol());
 
         _supplyTokens(newTokenImpl[i].underlying, USER_3);
-        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken);
+        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
+        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
+        _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
+        _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
         _rebalance(USER_2, USER_1, newTokenImpl[i].underlying);
-      }
+        }
     }
+
+  function _withdrawToken(address underlying, address user, address aToken) internal {
+    vm.startPrank(user);
+
+    uint256 availableLiquidity = IERC20Detailed(underlying).balanceOf(aToken);
+    AaveV2Ethereum.POOL.withdraw(underlying, availableLiquidity, user);
+
+    vm.stopPrank();
   }
-
-  //  function testTokensDontWorkAfterPayload() public {
-  //    StableToken[] memory newTokenImpl = _deploy();
-  //    TokenToUpdate[] memory tokensToUpdate = new TokenToUpdate[](newTokenImpl.length);
-  //
-  //    for (uint256 i = 0; i < newTokenImpl.length; i++) {
-  //      if (newTokenImpl[i].newSTImpl != address(0)) {
-
-  //
-  //        // test token
-  //      }
-  //    }
-  //  }
 
   function _supplyTokens(address underlying, address user) internal {
     _dealUnderlying(user, underlying);
-    IERC20Detailed(underlying).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
+
+    vm.startPrank(user);
+    SafeERC20.safeApprove(IERC20(underlying), address(AaveV2Ethereum.POOL), type(uint256).max);
     AaveV2Ethereum.POOL.deposit(
       underlying,
       IERC20Detailed(underlying).balanceOf(user),
       user,
       0
     );
+    vm.stopPrank();
   }
 
   function _enableBorrowingToken(address underlying) internal {
@@ -103,18 +135,9 @@ contract V2EthSTokenTest is BaseDeploy, Test {
   // generate revalancing for asset
   function _generateStableDebt(address stableUnderlying, address debtor, address aToken) internal {
     // debtor supplies collateral
-    _dealUnderlying(debtor, COLLATERAL_TOKEN);
+    _supplyTokens(COLLATERAL_TOKEN, debtor);
 
     vm.startPrank(debtor);
-
-    IERC20Detailed(COLLATERAL_TOKEN).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
-    AaveV2Ethereum.POOL.deposit(
-      COLLATERAL_TOKEN,
-      IERC20Detailed(COLLATERAL_TOKEN).balanceOf(debtor),
-      debtor,
-      0
-    );
-
     // get available liquidity
     uint256 availableLiquidity = IERC20Detailed(stableUnderlying).balanceOf(aToken);
     AaveV2Ethereum.POOL.borrow(stableUnderlying, availableLiquidity / 5, 1, 0, debtor);
@@ -123,30 +146,6 @@ contract V2EthSTokenTest is BaseDeploy, Test {
   }
 
   function _rebalance(address newBorrower, address debtor, address underlying) internal {
-    (address aTokenAddress, address stableToken, ) = AaveV2Ethereum
-      .AAVE_PROTOCOL_DATA_PROVIDER
-      .getReserveTokensAddresses(underlying);
-
-    // get available liquidity
-    uint256 availableLiquidity = IERC20Detailed(underlying).balanceOf(aTokenAddress);
-
-    // new borrower borrows to move utilization to max
-    _dealUnderlying(newBorrower, COLLATERAL_TOKEN);
-
-    vm.startPrank(newBorrower);
-
-    IERC20Detailed(COLLATERAL_TOKEN).approve(address(AaveV2Ethereum.POOL), type(uint256).max);
-    AaveV2Ethereum.POOL.deposit(
-      COLLATERAL_TOKEN,
-      IERC20Detailed(COLLATERAL_TOKEN).balanceOf(newBorrower),
-      newBorrower,
-      0
-    );
-
-    AaveV2Ethereum.POOL.borrow(underlying, availableLiquidity, 2, 0, newBorrower);
-
-    vm.stopPrank();
-
     AaveV2Ethereum.POOL.rebalanceStableBorrowRate(underlying, debtor);
   }
 
