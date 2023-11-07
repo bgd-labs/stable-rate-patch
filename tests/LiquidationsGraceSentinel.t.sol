@@ -6,7 +6,7 @@ import 'forge-std/Test.sol';
 import {IERC20} from 'forge-std/interfaces/IERC20.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {ILiquidationsGraceSentinel} from '../src/ILiquidationsGraceSentinel.sol';
-import {LiquidationSentinelDeployer, V2EthLiquidationSentinelPayload} from '../scripts/DeployLiquidationSentinel.s.sol';
+import {LiquidationSentinelDeployer, V2LiquidationSentinelPayload} from '../scripts/DeployLiquidationSentinel.s.sol';
 import {ILendingPoolCollateralManager} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol';
 import {LiquidationsGraceSentinel} from '../src/LiquidationsGraceSentinel.sol';
 import {Errors} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/libraries/helpers/Errors.sol';
@@ -80,7 +80,7 @@ contract LiquidationsGraceSentinelTest is Test {
       console2.log('payload deployed: ', payloadToExecute);
     }
 
-    address collateralManager = V2EthLiquidationSentinelPayload(payloadToExecute)
+    address collateralManager = V2LiquidationSentinelPayload(payloadToExecute)
       .NEW_COLLATERAL_MANAGER();
     ILiquidationsGraceSentinel sentinel = ILendingPoolCollateralManager(collateralManager)
       .LIQUIDATIONS_GRACE_SENTINEL();
