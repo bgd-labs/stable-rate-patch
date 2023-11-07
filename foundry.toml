@@ -41,5 +41,6 @@ base={key="${ETHERSCAN_API_KEY_BASE}",chain=8453}
 base-testnet={key="${ETHERSCAN_API_KEY_BASE}",chain=84531}
 gnosis={key="${ETHERSCAN_API_KEY_GNOSIS}",chain=100}
 gnosis-testnet={key="${ETHERSCAN_API_KEY_GNOSIS}",chain=10200, url='https://gnosis-chiado.blockscout.com/'}
+fantom={key="${ETHERSCAN_API_KEY_FANTOM}",chain=250}
 
 # See more config options https://github.com/gakonst/foundry/tree/master/config
