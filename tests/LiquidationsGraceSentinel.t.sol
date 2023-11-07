@@ -76,7 +76,7 @@ contract LiquidationsGraceSentinelTest is Test {
   function _executePayload() internal returns (ILiquidationsGraceSentinel) {
     address payloadToExecute = PAYLOAD;
     if (payloadToExecute == address(0)) {
-      payloadToExecute = LiquidationSentinelDeployer.deployProposal();
+      payloadToExecute = LiquidationSentinelDeployer.deployProposalEth();
       console2.log('payload deployed: ', payloadToExecute);
     }
 
