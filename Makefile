@@ -199,6 +199,8 @@ deploy-v3-fantom :; forge script scripts/DeploySTokenV3Ftm.s.sol:DeploySTokensV3
 deploy-v3-harmony :; forge script scripts/DeploySTokenV3Har.s.sol:DeploySTokensV3Har --fork-url harmony $(common-flags)
 
 
+deploy-v3-fantom-payload :; forge script scripts/DeploySTokenV3Ftm.s.sol:DeployPayloadV3Ftm --fork-url fantom $(common-flags)
+deploy-v3-harmony-payload :; forge script scripts/DeploySTokenV3Har.s.sol:DeployPayloadV3Har --fork-url harmony $(common-flags)
 
 deploy-v2-arbitrum :; forge script scripts/deploy_scripts.s.sol:DeployArb --fork-url arbitrum $(common-flags)
 deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-url polygon $(common-flags)
