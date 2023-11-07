@@ -103,7 +103,7 @@ library Errors {
   string public constant LP_NOT_CONTRACT = '78';
   string public constant SDT_STABLE_DEBT_OVERFLOW = '79';
   string public constant SDT_BURN_EXCEEDS_BALANCE = '80';
-  string public constant LPCM_ON_GRACE_PERIOD = '81';
+  string public constant LPCM_ON_GRACE_PERIOD = '82';
 
   enum CollateralManagerErrors {
     NO_ERROR,
