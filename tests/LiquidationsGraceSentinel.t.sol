@@ -60,7 +60,7 @@ contract LiquidationsGraceSentinelTest is Test {
       address(AaveV2Ethereum.POOL),
       type(uint256).max
     );
-    // check that liquidations was allowed before greace period activation
+    // check that liquidations was allowed before grace period activation
     uint256 snapshot = vm.snapshot();
     AaveV2Ethereum.POOL.liquidationCall(
       AaveV2EthereumAssets.WETH_UNDERLYING,
