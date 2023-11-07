@@ -35,6 +35,8 @@ download-all-etherscan :;
 	cast etherscan-source --chain 42161 -d etherscan/v3ArbStableDebtToken 0x0c2C95b24529664fE55D4437D7A31175CFE6c4f7
 	cast etherscan-source --chain 10 -d etherscan/v3OptStableDebtToken 0x6b4E260b765B3cA1514e618C0215A6B7839fF93e
 	cast etherscan-source --chain 43114 -d etherscan/v3AvaStableDebtToken 0x893411580e590D62dDBca8a703d61Cc4A8c7b2b9
+	cast etherscan-source --chain 250 -d etherscan/v3FanStableDebtToken 0x52a1ceb68ee6b7b5d13e0376a1e0e4423a8ce26e
+	cast etherscan-source --chain 1666600000 -d etherscan/v3HarStableDebtToken 0x52a1ceb68ee6b7b5d13e0376a1e0e4423a8ce26e
 
 	cast etherscan-source --chain 1 -d etherscan/v2EthPoolConfigurator 0x3a95ee42f080ff7289c8b4a14eb483a8644d7521
 	forge flatten etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol --output etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol
