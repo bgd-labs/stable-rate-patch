@@ -101,7 +101,7 @@ diff-contracts :;
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3ArbStableDebtToken out=v3PolArbStableDebtToken
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3OptStableDebtToken out=v3PolOptStableDebtToken
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3AvaStableDebtToken out=v3PolAvaStableDebtToken
-	make git-diff before=etherscan/v3FanHarStableDebtToken after=etherscan/v3PolStableDebtToken out=v3FanPolStableDebtToken
+	make git-diff before=etherscan/v3FanStableDebtToken after=etherscan/v3PolStableDebtToken out=v3FanPolStableDebtToken
 
 storage-diff :;
 	# LendingPoolCollateralManager
