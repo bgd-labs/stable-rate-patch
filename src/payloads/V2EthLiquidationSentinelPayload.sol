@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: agpl-3.0
 pragma solidity >=0.6.12;
 
 import {AaveV2Ethereum} from 'aave-address-book/AaveV2Ethereum.sol';
