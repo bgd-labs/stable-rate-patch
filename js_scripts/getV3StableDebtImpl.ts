@@ -1,8 +1,14 @@
 #!/usr/bin/env node
-
 import child_process from 'child_process';
 import dotenv from 'dotenv';
-import {AaveV3Polygon, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum} from "@bgd-labs/aave-address-book";
+import {
+  AaveV3Polygon,
+  AaveV3Avalanche,
+  AaveV3Optimism,
+  AaveV3Arbitrum,
+  AaveV3Fantom,
+  AaveV3Harmony
+} from '@bgd-labs/aave-address-book';
 dotenv.config();
 
 function runCmd(cmd: string) {
@@ -12,9 +18,10 @@ function runCmd(cmd: string) {
 }
 
 function getImpl(network: string, address: string) {
-  return runCmd(
-    `cast implementation --rpc-url ${network.toLocaleLowerCase()} ${address}`
-  ).replace('\n', '');
+  return runCmd(`cast implementation --rpc-url ${network.toLocaleLowerCase()} ${address}`).replace(
+    '\n',
+    ''
+  );
 }
 
 async function getV3StableDebtImpl() {
@@ -22,6 +29,8 @@ async function getV3StableDebtImpl() {
   const v3AvaStableTokens = [];
   const v3OptStableTokens = [];
   const v3ArbStableTokens = [];
+  const v3FanStableTokens = [];
+  const v3HarStableTokens = [];
 
   for (const [key, value] of Object.entries(AaveV3Polygon.ASSETS)) {
     // @ts-ignore
@@ -39,8 +48,28 @@ async function getV3StableDebtImpl() {
     // @ts-ignore
     v3ArbStableTokens.push(value.S_TOKEN);
   }
+  for (const [key, value] of Object.entries(AaveV3Fantom.ASSETS)) {
+    // @ts-ignore
+    v3FanStableTokens.push(value.S_TOKEN);
+  }
+  for (const [key, value] of Object.entries(AaveV3Harmony.ASSETS)) {
+    // @ts-ignore
+    v3HarStableTokens.push(value.S_TOKEN);
+  }
 
   // we see that all the stable debt impl for aave v3 are same in one network
+
+  console.log('Fantom stable debt impl addresses:');
+  for (let i = 0; i < v3FanStableTokens.length; i++) {
+    const addr = getImpl('fantom', v3FanStableTokens[i]);
+    console.log('impl: ', addr, ' proxy:', v3FanStableTokens[i]);
+  }
+
+  console.log('Harmony stable debt impl addresses:');
+  for (let i = 0; i < v3HarStableTokens.length; i++) {
+    const addr = getImpl('harmony', v3HarStableTokens[i]);
+    console.log('impl: ', addr, ' proxy:', v3HarStableTokens[i]);
+  }
 
   console.log('Polygon stable debt impl addresses:');
   for (let i = 0; i < v3PolStableTokens.length; i++) {
