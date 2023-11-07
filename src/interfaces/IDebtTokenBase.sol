@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.6.12;
+pragma solidity ^0.8.0;
+
+import {IPool} from 'aave-address-book/AaveV3.sol';
+import {IAaveIncentivesController} from './IAaveIncentivesController.sol';
 
 interface IDebtTokenBaseV2 {
-  function initialize(uint8 decimals, string memory name, string memory symbol) {
-    _setName(name);
-    _setSymbol(symbol);
-    _setDecimals(decimals);
-  } external;
+  function initialize(uint8 decimals, string memory name, string memory symbol) external;
 }
 
 interface IDebtTokenBaseV3 {
