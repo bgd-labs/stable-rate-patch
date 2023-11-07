@@ -28,7 +28,7 @@ library LiquidationSentinelDeployer {
     LendingPoolCollateralManager newCollateralManager = new LendingPoolCollateralManager(
       address(sentinel)
     );
-    return address(new V2EthLiquidationSentinelPayload(address(newCollateralManager)));
+    return address(new V2AvaLiquidationSentinelPayload(address(newCollateralManager)));
   }
 
   function deployProposalPol() internal returns (address) {
@@ -37,7 +37,7 @@ library LiquidationSentinelDeployer {
     LendingPoolCollateralManager newCollateralManager = new LendingPoolCollateralManager(
       address(sentinel)
     );
-    return address(new V2EthLiquidationSentinelPayload(address(newCollateralManager)));
+    return address(new V2PolLiquidationSentinelPayload(address(newCollateralManager)));
   }
 }
 
