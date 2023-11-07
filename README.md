@@ -6,6 +6,16 @@ Repository containing different developments concerning the Aave incident descri
 - Stable Debt Token upgraded implementations, stopping minting.
 - Liquidations Grace Sentinel.
 
+## Liquidation Grace Sentinel
+
+The Liquidation Grace Sentinel is a new feature introduced into Aave v2, allowing for the Aave Guardian to granularly (per asset) set a "grace period" for an asset.
+An asset being in "grace period" implies that liquidations involving it as collateral OR repaid debt can't be processed, so factually is a less aggressive pool-wide pause.
+
+The main objective of this mechanism, is to allow a gracefully unpause of an Aave v2 pool: if market conditions allow, a grace period of X minutes/hours/days can be set for when a pool will be unpaused.
+
+Same as with the pause mechanism (as they are complementary), the usage of the liquidation grace sentinel will be allowed only for the current `emergencyAdmin`` of the Aave v2 pool: the Aave Guardian.
+
+
 ## Diffs
 
 All the diffs between the etherscan downloaded and modified contracts can be found [HERE](./diffs). These include both the source code diffs and the storage layout diffs. The storage layout diff files end with `layout_diffs`.
