@@ -15,7 +15,9 @@ The main objective of this mechanism, is to allow a gracefully unpause of an Aav
 
 Same as with the pause mechanism (as they are complementary), the usage of the liquidation grace sentinel will be allowed only for the current `emergencyAdmin`` of the Aave v2 pool: the Aave Guardian.
 
-### Technical details
+
+### Technical details
+
 - In order to activate a grace period, the `setGracePeriods()` on `LiquidationsGraceSentinel` should be called with the assets affected, and timestamps in the future until which the grace period will be triggered.
 This should be done before the unpause.
 - The Liquidations Grace Sentinel requires an upgrade on the `LendingPoolCollateralManager` of Aave v2, introducing the condition to validate grace periods.
