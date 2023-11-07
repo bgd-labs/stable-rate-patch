@@ -8,7 +8,7 @@ import {DataTypes} from 'aave-address-book/AaveV3.sol';
 import {IERC20} from 'solidity-utils/contracts/oz-common/interfaces/IERC20.sol';
 import {ConfiguratorInputTypes, IPoolConfigurator} from 'aave-address-book/AaveV3.sol';
 import {IERC20Detailed} from '../src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-
+import {GovHelpers} from 'aave-helpers/GovHelpers.sol';
 
 interface IGetIncentivesController {
   function getIncentivesController() external returns (address);
@@ -22,10 +22,10 @@ contract V3HarSTokenTest is BaseDeploy, Test {
 
   address GUARDIAN = 0xb2f0C5f37f4beD2cB51C44653cD5D84866BDcd2D;
 
-  address payload = address(0); // TODO: add when deployed
+  address payload = 0x96F68837877fd0414B55050c9e794AECdBcfCA59;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('harmony'), 49389518);
+    vm.createSelectFork(vm.rpcUrl('harmony'), 49391567);
 
     // unpause pool
     hoax(GUARDIAN);
@@ -95,13 +95,7 @@ contract V3HarSTokenTest is BaseDeploy, Test {
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
         _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
 
-        //        hoax(GUARDIAN);
-        //        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
-        _updateImplementation(
-          newTokenImpl[i].underlying,
-          newTokenImpl[i].newSTImpl,
-          newTokenImpl[i].stableToken
-        );
+        GovHelpers.executePayload(vm, payload, GUARDIAN);
 
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
         AaveV3Harmony.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
@@ -130,13 +124,7 @@ contract V3HarSTokenTest is BaseDeploy, Test {
 
         _supplyTokens(newTokenImpl[i].underlying, USER_3);
 
-        //        hoax(GUARDIAN);
-        //        IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
-        _updateImplementation(
-          newTokenImpl[i].underlying,
-          newTokenImpl[i].newSTImpl,
-          newTokenImpl[i].stableToken
-        );
+        GovHelpers.executePayload(vm, payload, GUARDIAN);
 
         // debtor supplies collateral
         _supplyTokens(COLLATERAL_TOKEN, USER_1);
@@ -180,13 +168,7 @@ contract V3HarSTokenTest is BaseDeploy, Test {
       hoax(USER_1);
       AaveV3Harmony.POOL.borrow(newTokenImpl[i].underlying, 10, 2, 0, USER_1);
 
-      //      hoax(GUARDIAN);
-      //      IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
-      _updateImplementation(
-        newTokenImpl[i].underlying,
-        newTokenImpl[i].newSTImpl,
-        newTokenImpl[i].stableToken
-      );
+      GovHelpers.executePayload(vm, payload, GUARDIAN);
 
       hoax(USER_1);
       vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
@@ -268,14 +250,14 @@ contract V3HarSTokenTest is BaseDeploy, Test {
   ) internal {
     ConfiguratorInputTypes.UpdateDebtTokenInput memory input = ConfiguratorInputTypes
       .UpdateDebtTokenInput({
-      asset: underlying,
-      incentivesController: IGetIncentivesController(currentStableProxy)
-    .getIncentivesController(),
-      name: IERC20Detailed(currentStableProxy).name(),
-      symbol: IERC20Detailed(currentStableProxy).symbol(),
-      implementation: newImpl,
-      params: bytes('')
-    });
+        asset: underlying,
+        incentivesController: IGetIncentivesController(currentStableProxy)
+          .getIncentivesController(),
+        name: IERC20Detailed(currentStableProxy).name(),
+        symbol: IERC20Detailed(currentStableProxy).symbol(),
+        implementation: newImpl,
+        params: bytes('')
+      });
 
     hoax(GUARDIAN); // executor lvl 1
     AaveV3Harmony.POOL_CONFIGURATOR.updateStableDebtToken(input);
