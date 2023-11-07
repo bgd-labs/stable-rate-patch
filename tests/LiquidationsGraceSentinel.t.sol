@@ -6,10 +6,11 @@ import 'forge-std/Test.sol';
 import {IERC20} from 'forge-std/interfaces/IERC20.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {ILiquidationsGraceSentinel} from '../src/ILiquidationsGraceSentinel.sol';
-import {LendingPoolCollateralManager} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol';
+import {LiquidationSentinelDeployer, V2EthLiquidationSentinelPayload} from '../scripts/DeployLiquidationSentinel.s.sol';
+import {ILendingPoolCollateralManager} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol';
 import {LiquidationsGraceSentinel} from '../src/LiquidationsGraceSentinel.sol';
-import {Ownable} from '../src/Ownable.sol';
 import {Errors} from '../src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/libraries/helpers/Errors.sol';
+import {IExecutor} from './utils/IExecutor.sol';
 
 contract MockPriceProvider {
   int256 public immutable PRICE;
@@ -29,6 +30,9 @@ contract MockPriceProvider {
  */
 contract LiquidationsGraceSentinelTest is Test {
   address public constant EXECUTOR_LVL_1 = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
+  address public constant PAYLOADS_CONTROLLER = 0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5;
+
+  address public constant PAYLOAD = address(0); // TODO: set after deployment
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18507320);
@@ -38,17 +42,61 @@ contract LiquidationsGraceSentinelTest is Test {
     AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
   }
 
-  function testNoLiquidationsWithGraceActive(uint24 gracePeriod) public {
-    LiquidationsGraceSentinel sentinel = new LiquidationsGraceSentinel();
+  function testLiquidationWithGraceCollateralActive(uint24 gracePeriod) public {
+    address[] memory assetsInGrace = new address[](1);
+    assetsInGrace[0] = AaveV2EthereumAssets.WETH_UNDERLYING;
+    _testGracePeriod(gracePeriod, assetsInGrace);
+  }
 
-    LendingPoolCollateralManager newCollateralManager = new LendingPoolCollateralManager(
-      address(sentinel)
+  function testLiquidationWithGraceDebtActive(uint24 gracePeriod) public {
+    address[] memory assetsInGrace = new address[](1);
+    assetsInGrace[0] = AaveV2EthereumAssets.WBTC_UNDERLYING;
+    _testGracePeriod(gracePeriod, assetsInGrace);
+  }
+
+  function testLiquidationWithGraceDebtAndCollateralActive(uint24 gracePeriod) public {
+    address[] memory assetsInGrace = new address[](2);
+    assetsInGrace[0] = AaveV2EthereumAssets.WETH_UNDERLYING;
+    assetsInGrace[0] = AaveV2EthereumAssets.WBTC_UNDERLYING;
+    _testGracePeriod(gracePeriod, assetsInGrace);
+  }
+
+  function testCollateralManagerAndSentinelUpdatedAndOwnedByGuardian() public {
+    ILiquidationsGraceSentinel sentinel = _executePayload();
+    address collateralManager = address(
+      AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.getLendingPoolCollateralManager()
+    );
+    assertEq(
+      address(sentinel),
+      address(ILendingPoolCollateralManager(collateralManager).LIQUIDATIONS_GRACE_SENTINEL())
+    );
+    assertEq(LiquidationsGraceSentinel(address(sentinel)).owner(), AaveV2Ethereum.EMERGENCY_ADMIN);
+  }
+
+  function _executePayload() internal returns (ILiquidationsGraceSentinel) {
+    address payloadToExecute = PAYLOAD;
+    if (payloadToExecute == address(0)) {
+      payloadToExecute = LiquidationSentinelDeployer.deployProposal();
+      console2.log('payload deployed: ', payloadToExecute);
+    }
+
+    address collateralManager = V2EthLiquidationSentinelPayload(payloadToExecute)
+      .NEW_COLLATERAL_MANAGER();
+    ILiquidationsGraceSentinel sentinel = ILendingPoolCollateralManager(collateralManager)
+      .LIQUIDATIONS_GRACE_SENTINEL();
+    console2.log('collateral manager is:', collateralManager);
+    console2.log(
+      'sentinel is:',
+      address(ILendingPoolCollateralManager(collateralManager).LIQUIDATIONS_GRACE_SENTINEL())
     );
 
-    hoax(EXECUTOR_LVL_1);
-    AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolCollateralManager(
-      address(newCollateralManager)
-    );
+    hoax(PAYLOADS_CONTROLLER);
+    IExecutor(EXECUTOR_LVL_1).executeTransaction(payloadToExecute, 0, 'execute()', bytes(''), true);
+    return sentinel;
+  }
+
+  function _testGracePeriod(uint24 gracePeriod, address[] memory assetsInGrace) internal {
+    ILiquidationsGraceSentinel sentinel = _executePayload();
 
     _forcePrice(EXECUTOR_LVL_1, AaveV2EthereumAssets.WBTC_UNDERLYING, 25053082074480230550);
 
@@ -72,7 +120,8 @@ contract LiquidationsGraceSentinelTest is Test {
     vm.revertTo(snapshot);
 
     uint40 initialTs = uint40(block.timestamp);
-    _setGracePeriod(sentinel, AaveV2EthereumAssets.WBTC_UNDERLYING, initialTs + gracePeriod);
+    hoax(AaveV2Ethereum.EMERGENCY_ADMIN);
+    _setGracePeriod(sentinel, assetsInGrace, initialTs + gracePeriod);
 
     // liquidations was not allowed during grace period
     vm.expectRevert(bytes(Errors.LPCM_ON_GRACE_PERIOD));
@@ -119,13 +168,11 @@ contract LiquidationsGraceSentinelTest is Test {
 
   function _setGracePeriod(
     ILiquidationsGraceSentinel sentinel,
-    address asset,
+    address[] memory assets,
     uint40 timestamp
   ) internal {
-    address[] memory assets = new address[](1);
-    assets[0] = asset;
-    uint40[] memory until = new uint40[](1);
-    until[0] = timestamp;
+    uint40[] memory until = new uint40[](assets.length);
+    for (uint256 i = 0; i < assets.length; i++) until[i] = timestamp;
     sentinel.setGracePeriods(assets, until);
   }
 }
