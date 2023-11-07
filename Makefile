@@ -8,6 +8,7 @@ update:; forge update
 # Build & test
 build  :; forge build --sizes
 test   :; forge test -vvv
+test-contract :; forge test --match-contract ${filter} -vvv
 
 # Utilities
 download :; cast etherscan-source --chain ${chain} -d src/etherscan/${chain}_${address} ${address}
@@ -209,3 +210,6 @@ deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV
 deploy-v2-arbitrum :; forge script scripts/deploy_scripts.s.sol:DeployArb --fork-url arbitrum $(common-flags)
 deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-url polygon $(common-flags)
 deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork-url optimism $(common-flags)
+
+deploy-sentinel-pol :; forge script scripts/DeployLiquidationSentinel.s.sol:DeployLiquidationSentinelPol --fork-url polygon $(common-flags)
+deploy-sentinel-ava :; forge script scripts/DeployLiquidationSentinel.s.sol:DeployLiquidationSentinelAva --fork-url avalanche $(common-flags)
