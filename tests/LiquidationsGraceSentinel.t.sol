@@ -29,32 +29,27 @@ contract MockPriceProvider {
  */
 contract LiquidationsGraceSentinelTest is Test {
   address public constant EXECUTOR_LVL_1 = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
-  address public constant GUARDIAN = 0xCA76Ebd8617a03126B6FB84F9b1c1A0fB71C2633;
+  address public constant GUARDIAN = AaveV2Ethereum.EMERGENCY_ADMIN;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18507320);
 
     // Unpausing v2 Ethereum, as that is the current state
-    vm.startPrank(GUARDIAN);
+    hoax(GUARDIAN);
     AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
-    vm.stopPrank();
   }
 
-  function testNoLiquidationsWithGraceActive() public {
-    vm.startPrank(EXECUTOR_LVL_1);
-
+  function testNoLiquidationsWithGraceActive(uint24 gracePeriod) public {
     LiquidationsGraceSentinel sentinel = new LiquidationsGraceSentinel();
-    Ownable(sentinel).transferOwnership(GUARDIAN);
 
     LendingPoolCollateralManager newCollateralManager = new LendingPoolCollateralManager(
       address(sentinel)
     );
 
+    hoax(EXECUTOR_LVL_1);
     AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolCollateralManager(
       address(newCollateralManager)
     );
-
-    vm.stopPrank();
 
     _forcePrice(EXECUTOR_LVL_1, AaveV2EthereumAssets.WBTC_UNDERLYING, 25053082074480230550);
 
@@ -67,14 +62,29 @@ contract LiquidationsGraceSentinelTest is Test {
       type(uint256).max
     );
 
-    _setGracePeriod(
-      sentinel,
-      GUARDIAN,
-      AaveV2EthereumAssets.WBTC_UNDERLYING,
-      uint40(block.timestamp) + 20
-    );
+    uint40 initialTs = uint40(block.timestamp);
+    _setGracePeriod(sentinel, AaveV2EthereumAssets.WBTC_UNDERLYING, initialTs + gracePeriod);
 
     vm.expectRevert(bytes(Errors.LPCM_ON_GRACE_PERIOD));
+    AaveV2Ethereum.POOL.liquidationCall(
+      AaveV2EthereumAssets.WETH_UNDERLYING,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      holderWbtcDebt,
+      type(uint256).max,
+      false
+    );
+
+    vm.warp(initialTs + gracePeriod);
+    vm.expectRevert(bytes(Errors.LPCM_ON_GRACE_PERIOD));
+    AaveV2Ethereum.POOL.liquidationCall(
+      AaveV2EthereumAssets.WETH_UNDERLYING,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      holderWbtcDebt,
+      type(uint256).max,
+      false
+    );
+
+    vm.warp(initialTs + gracePeriod + 1);
     AaveV2Ethereum.POOL.liquidationCall(
       AaveV2EthereumAssets.WETH_UNDERLYING,
       AaveV2EthereumAssets.WBTC_UNDERLYING,
@@ -98,16 +108,13 @@ contract LiquidationsGraceSentinelTest is Test {
 
   function _setGracePeriod(
     ILiquidationsGraceSentinel sentinel,
-    address sentinelAdmin,
     address asset,
     uint40 timestamp
   ) internal {
-    vm.startPrank(sentinelAdmin);
     address[] memory assets = new address[](1);
     assets[0] = asset;
     uint40[] memory until = new uint40[](1);
     until[0] = timestamp;
     sentinel.setGracePeriods(assets, until);
-    vm.stopPrank();
   }
 }
