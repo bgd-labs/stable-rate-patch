@@ -63,6 +63,11 @@ download-deployed-contracts :;
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2UsdcStableDebtToken 0x8DFF7Fda82976452b6FB957F549944e7af7A3e6F
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2LusdStableDebtToken 0x1363602E58e25929A15bE194a3D505Fd6F8BE751
 
+	cast etherscan-source --chain 137 -d etherscan/deployed/v3PolStableDebtToken 0xf4294973b7e6f6c411dd8a388592e7c7d32f2486
+	cast etherscan-source --chain 42161 -d etherscan/deployed/v3ArbStableDebtToken 0xCB7113D3d572613BbFCeCf80d1341cFFE2A92C00
+	cast etherscan-source --chain 43114 -d etherscan/deployed/v3AvaStableDebtToken 0xccf12894957E637Bd69693B12F3ba12b539C2D11
+	cast etherscan-source --chain 10 -d etherscan/deployed/v3OptStableDebtToken 0x69713dA5fDfacf77E80C31F9B928Ec0Fc3716384
+
 diff-deployed-contracts :;
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x9d4578c813d69745092a4f951753ed2b28056279 after=etherscan/deployed/v2UsdtStableDebtToken out=deployed/v2UsdtStableDebtToken
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x6ac108c4c3fe7f4d367513f599da1b9df7c43433 after=etherscan/deployed/v2WbtcStableDebtToken out=deployed/v2WbtcStableDebtToken
@@ -77,6 +82,11 @@ diff-deployed-contracts :;
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x7b3e7aea49a5f5d2514b9317d4cf58f828ac28c2 after=etherscan/deployed/v2RenStableDebtToken out=deployed/v2RenStableDebtToken
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x3b2a77058a1eb4403a90b94585fab16bc512e703 after=etherscan/deployed/v2UsdcStableDebtToken out=deployed/v2UsdcStableDebtToken
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x595c33538215dc4b092f35afc85d904631263f4f after=etherscan/deployed/v2LusdStableDebtToken out=deployed/v2LusdStableDebtToken
+
+	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/deployed/v3PolStableDebtToken out=deployed/v3PolStableDebtToken
+	make git-diff before=etherscan/v3ArbStableDebtToken after=etherscan/deployed/v3ArbStableDebtToken out=deployed/v3ArbStableDebtToken
+	make git-diff before=etherscan/v3AvaStableDebtToken after=etherscan/deployed/v3AvaStableDebtToken out=deployed/v3AvaStableDebtToken
+	make git-diff before=etherscan/v3OptStableDebtToken after=etherscan/deployed/v3OptStableDebtToken out=deployed/v3OptStableDebtToken
 
 diff-contracts :;
 	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=src/v2EthLendingPoolCollateralManager out=v2EthLendingPoolCollateralManager
