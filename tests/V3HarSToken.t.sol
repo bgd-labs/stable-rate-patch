@@ -20,12 +20,12 @@ contract V3HarSTokenTest is BaseDeploy, Test {
 
   address COLLATERAL_TOKEN = AaveV3HarmonyAssets.ONE_WBTC_UNDERLYING;
 
-  address GUARDIAN = 0x39CB97b105173b56b5a2b4b33AD25d6a50E6c949;
+  address GUARDIAN = 0xb2f0C5f37f4beD2cB51C44653cD5D84866BDcd2D;
 
   address payload = address(0); // TODO: add when deployed
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('harmony'), 49389025);
+    vm.createSelectFork(vm.rpcUrl('harmony'), 49389518);
 
     // unpause pool
     hoax(GUARDIAN);
