@@ -32,10 +32,10 @@ contract LiquidationsGraceSentinelTest is Test {
   address public constant EXECUTOR_LVL_1 = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
   address public constant PAYLOADS_CONTROLLER = 0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5;
 
-  address public constant PAYLOAD = address(0); // TODO: set after deployment
+  address public constant PAYLOAD = 0x6C43cd7DC9f8d6F9892b4757941F910E3c7f2244;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 18507320);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 18520228);
 
     // Unpausing v2 Ethereum, as that is the current state
     hoax(AaveV2Ethereum.EMERGENCY_ADMIN);
