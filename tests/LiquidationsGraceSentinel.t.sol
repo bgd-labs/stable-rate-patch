@@ -29,13 +29,12 @@ contract MockPriceProvider {
  */
 contract LiquidationsGraceSentinelTest is Test {
   address public constant EXECUTOR_LVL_1 = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
-  address public constant GUARDIAN = AaveV2Ethereum.EMERGENCY_ADMIN;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 18507320);
 
     // Unpausing v2 Ethereum, as that is the current state
-    hoax(GUARDIAN);
+    hoax(AaveV2Ethereum.EMERGENCY_ADMIN);
     AaveV2Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
   }
 
@@ -61,10 +60,21 @@ contract LiquidationsGraceSentinelTest is Test {
       address(AaveV2Ethereum.POOL),
       type(uint256).max
     );
+    // check that liquidations was allowed before greace period activation
+    uint256 snapshot = vm.snapshot();
+    AaveV2Ethereum.POOL.liquidationCall(
+      AaveV2EthereumAssets.WETH_UNDERLYING,
+      AaveV2EthereumAssets.WBTC_UNDERLYING,
+      holderWbtcDebt,
+      type(uint256).max,
+      false
+    );
+    vm.revertTo(snapshot);
 
     uint40 initialTs = uint40(block.timestamp);
     _setGracePeriod(sentinel, AaveV2EthereumAssets.WBTC_UNDERLYING, initialTs + gracePeriod);
 
+    // liquidations was not allowed during grace period
     vm.expectRevert(bytes(Errors.LPCM_ON_GRACE_PERIOD));
     AaveV2Ethereum.POOL.liquidationCall(
       AaveV2EthereumAssets.WETH_UNDERLYING,
@@ -84,6 +94,7 @@ contract LiquidationsGraceSentinelTest is Test {
       false
     );
 
+    // and allowed again when grace period end
     vm.warp(initialTs + gracePeriod + 1);
     AaveV2Ethereum.POOL.liquidationCall(
       AaveV2EthereumAssets.WETH_UNDERLYING,
