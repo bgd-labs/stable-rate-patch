@@ -55,7 +55,7 @@ download-deployed-contracts :;
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2ZrxStableDebtToken 0xffaCA447191d8196C8Cf96E5912b732063DE4307
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2BatStableDebtToken 0x49B6645a9aa05f1Be24893136100467276399470
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2EnjStableDebtToken 0x0fB427f800C5E39E7d8029e19F515300d4bb22C2
-	cast etherscan-source --chain 1 -d etherscan/deployed/v2KnctStableDebtToken 0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3
+	cast etherscan-source --chain 1 -d etherscan/deployed/v2KncStableDebtToken 0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2LinkStableDebtToken 0x1B80694AF3D4e617c747423f992F532B8baE098b
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2ManaStableDebtToken 0xe0bf71fF662e8bbeb911ACEa765f4b8be052F59b
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2MkrStableDebtToken 0xC4CFCE0b16199818Ad942a87902C9172ba005022
