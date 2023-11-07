@@ -114,91 +114,91 @@ diff-contracts :;
 	make git-diff before=etherscan/v3FanHarStableDebtToken after=etherscan/v3PolStableDebtToken out=v3FanPolStableDebtToken
 
 storage-diff :;
-	# # LendingPoolCollateralManager
+	# LendingPoolCollateralManager
 
-	# forge inspect etherscan/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2EthLendingPoolCollateralManager_layout.md
-	# npm run clean-storage-report v2EthLendingPoolCollateralManager_layout
-	# forge inspect src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/updated_v2EthLendingPoolCollateralManager_layout.md
-	# npm run clean-storage-report updated_v2EthLendingPoolCollateralManager_layout
-	# make git-diff before=reports/v2EthLendingPoolCollateralManager_layout.md after=reports/updated_v2EthLendingPoolCollateralManager_layout.md out=v2EthLendingPoolCollateralManager_layout_diff
+	forge inspect etherscan/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2EthLendingPoolCollateralManager_layout.md
+	npm run clean-storage-report v2EthLendingPoolCollateralManager_layout
+	forge inspect src/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/updated_v2EthLendingPoolCollateralManager_layout.md
+	npm run clean-storage-report updated_v2EthLendingPoolCollateralManager_layout
+	make git-diff before=reports/v2EthLendingPoolCollateralManager_layout.md after=reports/updated_v2EthLendingPoolCollateralManager_layout.md out=v2EthLendingPoolCollateralManager_layout_diff
 
-	# forge inspect etherscan/v2PolLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2PolLendingPoolCollateralManager_layout.md
-	# npm run clean-storage-report v2PolLendingPoolCollateralManager_layout
-	# forge inspect src/v2PolLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/updated_v2PolLendingPoolCollateralManager_layout.md
-	# npm run clean-storage-report updated_v2PolLendingPoolCollateralManager_layout
-	# make git-diff before=reports/v2PolLendingPoolCollateralManager_layout.md after=reports/updated_v2PolLendingPoolCollateralManager_layout.md out=v2PolLendingPoolCollateralManager_layout_diff
+	forge inspect etherscan/v2PolLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2PolLendingPoolCollateralManager_layout.md
+	npm run clean-storage-report v2PolLendingPoolCollateralManager_layout
+	forge inspect src/v2PolLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/updated_v2PolLendingPoolCollateralManager_layout.md
+	npm run clean-storage-report updated_v2PolLendingPoolCollateralManager_layout
+	make git-diff before=reports/v2PolLendingPoolCollateralManager_layout.md after=reports/updated_v2PolLendingPoolCollateralManager_layout.md out=v2PolLendingPoolCollateralManager_layout_diff
 
-	# forge inspect etherscan/v2AvaLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2AvaLendingPoolCollateralManager_layout.md
-	# npm run clean-storage-report v2AvaLendingPoolCollateralManager_layout
-	# forge inspect src/v2AvaLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/updated_v2AvaLendingPoolCollateralManager_layout.md
-	# npm run clean-storage-report updated_v2AvaLendingPoolCollateralManager_layout
-	# make git-diff before=reports/v2AvaLendingPoolCollateralManager_layout.md after=reports/updated_v2AvaLendingPoolCollateralManager_layout.md out=v2AvaLendingPoolCollateralManager_layout_diff
+	forge inspect etherscan/v2AvaLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2AvaLendingPoolCollateralManager_layout.md
+	npm run clean-storage-report v2AvaLendingPoolCollateralManager_layout
+	forge inspect src/v2AvaLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/updated_v2AvaLendingPoolCollateralManager_layout.md
+	npm run clean-storage-report updated_v2AvaLendingPoolCollateralManager_layout
+	make git-diff before=reports/v2AvaLendingPoolCollateralManager_layout.md after=reports/updated_v2AvaLendingPoolCollateralManager_layout.md out=v2AvaLendingPoolCollateralManager_layout_diff
 
-	# # v2 stable debt token
+	# v2 stable debt token
 
-	# forge inspect etherscan/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v2EthStableDebtToken_layout.md
-	# npm run clean-storage-report v2EthStableDebtToken_layout
-	# forge inspect src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v2EthStableDebtToken_layout.md
-	# npm run clean-storage-report updated_v2EthStableDebtToken_layout
-	# make git-diff before=reports/v2EthStableDebtToken_layout.md after=reports/updated_v2EthStableDebtToken_layout.md out=v2EthStableDebtToken_layout_diff
+	forge inspect etherscan/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v2EthStableDebtToken_layout.md
+	npm run clean-storage-report v2EthStableDebtToken_layout
+	forge inspect src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v2EthStableDebtToken_layout.md
+	npm run clean-storage-report updated_v2EthStableDebtToken_layout
+	make git-diff before=reports/v2EthStableDebtToken_layout.md after=reports/updated_v2EthStableDebtToken_layout.md out=v2EthStableDebtToken_layout_diff
 
-	# # v3 pools
+	# v3 pools
 
-	# forge inspect etherscan/v3PolPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/v3PolPool_layout.md
-	# npm run clean-storage-report v3PolPool_layout
-	# forge inspect src/v3PolPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/updated_v3PolPool_layout.md
-	# npm run clean-storage-report updated_v3PolPool_layout
-	# make git-diff before=reports/v3PolPool_layout.md after=reports/updated_v3PolPool_layout.md out=v3PolPool_layout_diff
+	forge inspect etherscan/v3PolPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/v3PolPool_layout.md
+	npm run clean-storage-report v3PolPool_layout
+	forge inspect src/v3PolPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/updated_v3PolPool_layout.md
+	npm run clean-storage-report updated_v3PolPool_layout
+	make git-diff before=reports/v3PolPool_layout.md after=reports/updated_v3PolPool_layout.md out=v3PolPool_layout_diff
 
-	# forge inspect etherscan/v3ArbPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/v3ArbPool_layout.md
-	# npm run clean-storage-report v3ArbPool_layout
-	# forge inspect src/v3ArbPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/updated_v3ArbPool_layout.md
-	# npm run clean-storage-report updated_v3ArbPool_layout
-	# make git-diff before=reports/v3ArbPool_layout.md after=reports/updated_v3ArbPool_layout.md out=v3ArbPool_layout_diff
+	forge inspect etherscan/v3ArbPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/v3ArbPool_layout.md
+	npm run clean-storage-report v3ArbPool_layout
+	forge inspect src/v3ArbPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/updated_v3ArbPool_layout.md
+	npm run clean-storage-report updated_v3ArbPool_layout
+	make git-diff before=reports/v3ArbPool_layout.md after=reports/updated_v3ArbPool_layout.md out=v3ArbPool_layout_diff
 
-	# forge inspect etherscan/v3OptPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/v3OptPool_layout.md
-	# npm run clean-storage-report v3OptPool_layout
-	# forge inspect src/v3OptPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/updated_v3OptPool_layout.md
-	# npm run clean-storage-report updated_v3OptPool_layout
-	# make git-diff before=reports/v3OptPool_layout.md after=reports/updated_v3OptPool_layout.md out=v3OptPool_layout_diff
+	forge inspect etherscan/v3OptPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/v3OptPool_layout.md
+	npm run clean-storage-report v3OptPool_layout
+	forge inspect src/v3OptPool/L2Pool/lib/aave-v3-core/contracts/protocol/pool/L2Pool.sol:L2Pool storage-layout --pretty > reports/updated_v3OptPool_layout.md
+	npm run clean-storage-report updated_v3OptPool_layout
+	make git-diff before=reports/v3OptPool_layout.md after=reports/updated_v3OptPool_layout.md out=v3OptPool_layout_diff
 
-	# forge inspect etherscan/v3AvaPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/v3AvaPool_layout.md
-	# npm run clean-storage-report v3AvaPool_layout
-	# forge inspect src/v3AvaPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/updated_v3AvaPool_layout.md
-	# npm run clean-storage-report updated_v3AvaPool_layout
-	# make git-diff before=reports/v3AvaPool_layout.md after=reports/updated_v3AvaPool_layout.md out=v3AvaPool_layout_diff
+	forge inspect etherscan/v3AvaPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/v3AvaPool_layout.md
+	npm run clean-storage-report v3AvaPool_layout
+	forge inspect src/v3AvaPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/updated_v3AvaPool_layout.md
+	npm run clean-storage-report updated_v3AvaPool_layout
+	make git-diff before=reports/v3AvaPool_layout.md after=reports/updated_v3AvaPool_layout.md out=v3AvaPool_layout_diff
 
-	# # v3 stable debt token
+	# v3 stable debt token
 
-	# forge inspect etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3PolStableDebtToken_layout.md
-	# npm run clean-storage-report v3PolStableDebtToken_layout
-	# forge inspect src/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3PolStableDebtToken_layout.md
-	# npm run clean-storage-report updated_v3PolStableDebtToken_layout
-	# make git-diff before=reports/v3PolStableDebtToken_layout.md after=reports/updated_v3PolStableDebtToken_layout.md out=v3PolStableDebtToken_layout_diff
+	forge inspect etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3PolStableDebtToken_layout.md
+	npm run clean-storage-report v3PolStableDebtToken_layout
+	forge inspect src/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3PolStableDebtToken_layout.md
+	npm run clean-storage-report updated_v3PolStableDebtToken_layout
+	make git-diff before=reports/v3PolStableDebtToken_layout.md after=reports/updated_v3PolStableDebtToken_layout.md out=v3PolStableDebtToken_layout_diff
 
-	# forge inspect etherscan/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3ArbStableDebtToken_layout.md
-	# npm run clean-storage-report v3ArbStableDebtToken_layout
-	# forge inspect src/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3ArbStableDebtToken_layout.md
-	# npm run clean-storage-report updated_v3ArbStableDebtToken_layout
-	# make git-diff before=reports/v3ArbStableDebtToken_layout.md after=reports/updated_v3ArbStableDebtToken_layout.md out=v3ArbStableDebtToken_layout_diff
+	forge inspect etherscan/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3ArbStableDebtToken_layout.md
+	npm run clean-storage-report v3ArbStableDebtToken_layout
+	forge inspect src/v3ArbStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3ArbStableDebtToken_layout.md
+	npm run clean-storage-report updated_v3ArbStableDebtToken_layout
+	make git-diff before=reports/v3ArbStableDebtToken_layout.md after=reports/updated_v3ArbStableDebtToken_layout.md out=v3ArbStableDebtToken_layout_diff
 
-	# forge inspect etherscan/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3OptStableDebtToken_layout.md
-	# npm run clean-storage-report v3OptStableDebtToken_layout
-	# forge inspect src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3OptStableDebtToken_layout.md
-	# npm run clean-storage-report updated_v3OptStableDebtToken_layout
-	# make git-diff before=reports/v3OptStableDebtToken_layout.md after=reports/updated_v3OptStableDebtToken_layout.md out=v3OptStableDebtToken_layout_diff
+	forge inspect etherscan/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3OptStableDebtToken_layout.md
+	npm run clean-storage-report v3OptStableDebtToken_layout
+	forge inspect src/v3OptStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3OptStableDebtToken_layout.md
+	npm run clean-storage-report updated_v3OptStableDebtToken_layout
+	make git-diff before=reports/v3OptStableDebtToken_layout.md after=reports/updated_v3OptStableDebtToken_layout.md out=v3OptStableDebtToken_layout_diff
 
-	# forge inspect etherscan/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3AvaStableDebtToken_layout.md
-	# npm run clean-storage-report v3AvaStableDebtToken_layout
-	# forge inspect src/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3AvaStableDebtToken_layout.md
-	# npm run clean-storage-report updated_v3AvaStableDebtToken_layout
-	# make git-diff before=reports/v3AvaStableDebtToken_layout.md after=reports/updated_v3AvaStableDebtToken_layout.md out=v3AvaStableDebtToken_layout_diff
+	forge inspect etherscan/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3AvaStableDebtToken_layout.md
+	npm run clean-storage-report v3AvaStableDebtToken_layout
+	forge inspect src/v3AvaStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3AvaStableDebtToken_layout.md
+	npm run clean-storage-report updated_v3AvaStableDebtToken_layout
+	make git-diff before=reports/v3AvaStableDebtToken_layout.md after=reports/updated_v3AvaStableDebtToken_layout.md out=v3AvaStableDebtToken_layout_diff
 
-	# forge inspect etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3FanStableDebtToken_layout.md
-	# npm run clean-storage-report v3FanStableDebtToken_layout
-	# forge inspect src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3FanHarStableDebtToken_layout.md
-	# npm run clean-storage-report updated_v3FanHarStableDebtToken_layout
-	# make git-diff before=reports/v3FanStableDebtToken_layout.md after=reports/updated_v3FanHarStableDebtToken_layout.md out=v3FanHarStableDebtToken_layout_diff
+	forge inspect etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3FanStableDebtToken_layout.md
+	npm run clean-storage-report v3FanStableDebtToken_layout
+	forge inspect src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3FanHarStableDebtToken_layout.md
+	npm run clean-storage-report updated_v3FanHarStableDebtToken_layout
+	make git-diff before=reports/v3FanStableDebtToken_layout.md after=reports/updated_v3FanHarStableDebtToken_layout.md out=v3FanHarStableDebtToken_layout_diff
 
 	forge inspect etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2EthPoolConfigurator_layout.md
 	npm run clean-storage-report v2EthPoolConfigurator_layout
