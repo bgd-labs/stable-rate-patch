@@ -195,13 +195,8 @@ common-flags := --legacy --ledger --mnemonic-indexes $(MNEMONIC_INDEX) --sender 
 
 
 deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV2Ethereum --fork-url mainnet $(common-flags)
-#deploy-owner-polygon :; forge script scripts/OwnershipUpdate.s.sol:Polygon --fork-url polygon $(common-flags)
-#deploy-owner-avalanche :; forge script scripts/OwnershipUpdate.s.sol:Avalanche --fork-url avalanche $(common-flags)
-#deploy-owner-arbitrum :; forge script scripts/OwnershipUpdate.s.sol:Arbitrum --fork-url arbitrum $(common-flags)
-#deploy-owner-optimism :; forge script scripts/OwnershipUpdate.s.sol:Optimism --fork-url optimism $(common-flags)
-#deploy-owner-base :; forge script scripts/OwnershipUpdate.s.sol:Base --fork-url base $(common-flags)
-#deploy-owner-metis :; forge script scripts/OwnershipUpdate.s.sol:Metis --fork-url metis $(common-flags)
-#deploy-owner-gnosis :; forge script scripts/OwnershipUpdate.s.sol:Gnosis --fork-url gnosis $(common-flags)
+deploy-v3-fantom :; forge script scripts/DeploySTokenV3Ftm.s.sol:DeploySTokensV3Ftm --fork-url fantom $(common-flags)
+deploy-v3-harmony :; forge script scripts/DeploySTokenV3Har.s.sol:DeploySTokensV3Har --fork-url harmony $(common-flags)
 
 
 

@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 import 'forge-std/Script.sol';
 import {StableDebtToken, IAaveIncentivesController} from '../src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol';
-import {AaveV3Fantom, AaveV3FantomAssets} from 'aave-address-book/AaveV3Fantom.sol';
+import {AaveV3Harmony, AaveV3HarmonyAssets} from 'aave-address-book/AaveV3Harmony.sol';
 import {IPool} from '../src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IPool.sol';
 import {IERC20Detailed} from '../src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import {V3FtmSTokenPayload} from '../src/payloads/V3FtmSTokenPayload.sol';
+import {V3HarSTokenPayload} from '../src/payloads/V3HarSTokenPayload.sol';
 
 struct StableToken {
   address underlying;
@@ -16,19 +16,20 @@ struct StableToken {
 
 contract BaseDeploy {
   function _deploy() internal returns (StableToken[] memory) {
-    address[] memory reserves = new address[](4);
-    reserves[0] = AaveV3FantomAssets.DAI_UNDERLYING;
-    reserves[1] = AaveV3FantomAssets.USDC_UNDERLYING;
-    reserves[2] = AaveV3FantomAssets.ETH_UNDERLYING;
-    reserves[3] = AaveV3FantomAssets.fUSDT_UNDERLYING;
+    address[] memory reserves = new address[](5);
+    reserves[0] = AaveV3HarmonyAssets.ONE_DAI_UNDERLYING;
+    reserves[1] = AaveV3HarmonyAssets.LINK_UNDERLYING;
+    reserves[2] = AaveV3HarmonyAssets.ONE_USDC_UNDERLYING;
+    reserves[3] = AaveV3HarmonyAssets.ONE_ETH_UNDERLYING;
+    reserves[4] = AaveV3HarmonyAssets.ONE_USDT_UNDERLYING;
 
     StableToken[] memory deployedImpl = new StableToken[](reserves.length);
 
-    StableDebtToken newStableDebtImpl = new StableDebtToken(IPool(address(AaveV3Fantom.POOL)));
+    StableDebtToken newStableDebtImpl = new StableDebtToken(IPool(address(AaveV3Harmony.POOL)));
 
     // initialize impl
     newStableDebtImpl.initialize(
-      IPool(address(AaveV3Fantom.POOL)),
+      IPool(address(AaveV3Harmony.POOL)),
       address(0),
       IAaveIncentivesController(address(0)),
       18,
@@ -38,10 +39,10 @@ contract BaseDeploy {
     );
 
     for (uint256 i = 0; i < reserves.length; i++) {
-      (, , , , , , , bool stableBorrowRateEnabled, , ) = AaveV3Fantom
+      (, , , , , , , bool stableBorrowRateEnabled, , ) = AaveV3Harmony
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveConfigurationData(reserves[i]);
-      (, address stableDebtTokenAddress, ) = AaveV3Fantom
+      (, address stableDebtTokenAddress, ) = AaveV3Harmony
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(reserves[i]);
 
@@ -65,7 +66,7 @@ contract BaseDeploy {
   }
 }
 
-contract DeploySTokensV3Ftm is BaseDeploy, Script {
+contract DeploySTokensV3Har is BaseDeploy, Script {
   function run() public {
     vm.startBroadcast();
 
@@ -75,11 +76,11 @@ contract DeploySTokensV3Ftm is BaseDeploy, Script {
   }
 }
 
-contract DeployPayloadV3Ftm is Script {
+contract DeployPayloadV3Har is Script {
   function run() public {
     vm.startBroadcast();
 
-    new V3FtmSTokenPayload();
+    new V3HarSTokenPayload();
 
     vm.stopBroadcast();
   }

@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 import 'forge-std/Test.sol';
-import {BaseDeploy, StableDebtToken, StableToken} from '../scripts/DeploySTokenV3Ftm.s.sol';
-import {AaveV3Fantom, AaveV3FantomAssets} from 'aave-address-book/AaveV3Fantom.sol';
+import {BaseDeploy, StableDebtToken, StableToken} from '../scripts/DeploySTokenV3Har.s.sol';
+import {AaveV3Harmony, AaveV3HarmonyAssets} from 'aave-address-book/AaveV3Harmony.sol';
 import {DataTypes} from 'aave-address-book/AaveV3.sol';
 import {IERC20} from 'solidity-utils/contracts/oz-common/interfaces/IERC20.sol';
 import {ConfiguratorInputTypes, IPoolConfigurator} from 'aave-address-book/AaveV3.sol';
@@ -14,11 +14,11 @@ interface IGetIncentivesController {
   function getIncentivesController() external returns (address);
 }
 
-contract V3FtmSTokenTest is BaseDeploy, Test {
+contract V3HarSTokenTest is BaseDeploy, Test {
   address constant USER_1 = address(1249182);
   address constant USER_3 = address(13057);
 
-  address COLLATERAL_TOKEN = AaveV3FantomAssets.ETH_UNDERLYING;
+  address COLLATERAL_TOKEN = AaveV3HarmonyAssets.ONE_WBTC_UNDERLYING;
 
   address GUARDIAN = 0x39CB97b105173b56b5a2b4b33AD25d6a50E6c949;
 
@@ -29,7 +29,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
 
     // unpause pool
     hoax(GUARDIAN);
-    AaveV3Fantom.POOL_CONFIGURATOR.setPoolPause(false);
+    AaveV3Harmony.POOL_CONFIGURATOR.setPoolPause(false);
   }
 
   function testRebalanceBeforePayload() public {
@@ -37,7 +37,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl != address(0)) {
-        (address aToken, , ) = AaveV3Fantom.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
+        (address aToken, , ) = AaveV3Harmony.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
           newTokenImpl[i].underlying
         );
 
@@ -52,15 +52,15 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
         deal(newTokenImpl[i].underlying, USER_3, totalLiquidity * 11);
 
         vm.startPrank(USER_3);
-        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Fantom.POOL), 0);
-        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Fantom.POOL), type(uint256).max);
-        AaveV3Fantom.POOL.deposit(newTokenImpl[i].underlying, totalLiquidity * 2, USER_3, 0);
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Harmony.POOL), 0);
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Harmony.POOL), type(uint256).max);
+        AaveV3Harmony.POOL.deposit(newTokenImpl[i].underlying, totalLiquidity * 2, USER_3, 0);
         vm.stopPrank();
 
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
         _withdrawToken(newTokenImpl[i].underlying, USER_3, aToken);
 
-        AaveV3Fantom.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
+        AaveV3Harmony.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
       }
     }
   }
@@ -72,7 +72,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
       if (newTokenImpl[i].newSTImpl != address(0)) {
         uint256 snapshot = vm.snapshot();
 
-        (address aToken, , ) = AaveV3Fantom.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
+        (address aToken, , ) = AaveV3Harmony.AAVE_PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
           newTokenImpl[i].underlying
         );
 
@@ -87,9 +87,9 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
         deal(newTokenImpl[i].underlying, USER_3, totalLiquidity * 11);
 
         vm.startPrank(USER_3);
-        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Fantom.POOL), 0);
-        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Fantom.POOL), type(uint256).max);
-        AaveV3Fantom.POOL.deposit(newTokenImpl[i].underlying, totalLiquidity * 2, USER_3, 0);
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Harmony.POOL), 0);
+        IERC20(newTokenImpl[i].underlying).approve(address(AaveV3Harmony.POOL), type(uint256).max);
+        AaveV3Harmony.POOL.deposit(newTokenImpl[i].underlying, totalLiquidity * 2, USER_3, 0);
         vm.stopPrank();
 
         _generateStableDebt(newTokenImpl[i].underlying, USER_1, aToken); // user 1 borrows stable
@@ -104,7 +104,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
         );
 
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
-        AaveV3Fantom.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
+        AaveV3Harmony.POOL.rebalanceStableBorrowRate(newTokenImpl[i].underlying, USER_1);
         vm.revertTo(snapshot);
       }
     }
@@ -117,7 +117,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
       if (newTokenImpl[i].newSTImpl != address(0)) {
         uint256 snapshot = vm.snapshot();
 
-        (address aToken, address stableDebtTokenAddress, ) = AaveV3Fantom
+        (address aToken, address stableDebtTokenAddress, ) = AaveV3Harmony
           .AAVE_PROTOCOL_DATA_PROVIDER
           .getReserveTokensAddresses(newTokenImpl[i].underlying);
 
@@ -145,7 +145,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
         // get available liquidity
         uint256 availableLiquidity = IERC20Detailed(newTokenImpl[i].underlying).balanceOf(aToken);
         vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
-        AaveV3Fantom.POOL.borrow(newTokenImpl[i].underlying, 5, 1, 0, USER_1);
+        AaveV3Harmony.POOL.borrow(newTokenImpl[i].underlying, 5, 1, 0, USER_1);
 
         vm.stopPrank();
         vm.revertTo(snapshot);
@@ -162,7 +162,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
       }
       uint256 snapshot = vm.snapshot();
 
-      (address aToken, address stableDebtTokenAddress, ) = AaveV3Fantom
+      (address aToken, address stableDebtTokenAddress, ) = AaveV3Harmony
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(newTokenImpl[i].underlying);
 
@@ -178,7 +178,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
       _supplyTokens(COLLATERAL_TOKEN, USER_1);
 
       hoax(USER_1);
-      AaveV3Fantom.POOL.borrow(newTokenImpl[i].underlying, 10, 2, 0, USER_1);
+      AaveV3Harmony.POOL.borrow(newTokenImpl[i].underlying, 10, 2, 0, USER_1);
 
       //      hoax(GUARDIAN);
       //      IExecutor(EXECUTOR).executeTransaction(payload, 0, 'execute()', bytes(''), true);
@@ -190,7 +190,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
 
       hoax(USER_1);
       vm.expectRevert(bytes('STABLE_BORROWING_DEPRECATED'));
-      AaveV3Fantom.POOL.swapBorrowRateMode(newTokenImpl[i].underlying, 2);
+      AaveV3Harmony.POOL.swapBorrowRateMode(newTokenImpl[i].underlying, 2);
       vm.revertTo(snapshot);
     }
   }
@@ -199,7 +199,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
     vm.startPrank(user);
 
     uint256 availableLiquidity = IERC20Detailed(underlying).balanceOf(aToken);
-    AaveV3Fantom.POOL.withdraw(underlying, availableLiquidity, user);
+    AaveV3Harmony.POOL.withdraw(underlying, availableLiquidity, user);
 
     vm.stopPrank();
   }
@@ -208,32 +208,32 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
     _dealUnderlying(user, underlying);
 
     vm.startPrank(user);
-    IERC20(underlying).approve(address(AaveV3Fantom.POOL), 0);
-    IERC20(underlying).approve(address(AaveV3Fantom.POOL), type(uint256).max);
-    AaveV3Fantom.POOL.deposit(underlying, IERC20Detailed(underlying).balanceOf(user), user, 0);
+    IERC20(underlying).approve(address(AaveV3Harmony.POOL), 0);
+    IERC20(underlying).approve(address(AaveV3Harmony.POOL), type(uint256).max);
+    AaveV3Harmony.POOL.deposit(underlying, IERC20Detailed(underlying).balanceOf(user), user, 0);
     vm.stopPrank();
   }
 
   function _enableBorrowingToken(address underlying) internal {
     hoax(GUARDIAN);
-    AaveV3Fantom.POOL_CONFIGURATOR.setReserveBorrowing(underlying, true);
+    AaveV3Harmony.POOL_CONFIGURATOR.setReserveBorrowing(underlying, true);
     hoax(GUARDIAN);
-    AaveV3Fantom.POOL_CONFIGURATOR.setReserveStableRateBorrowing(underlying, true);
+    AaveV3Harmony.POOL_CONFIGURATOR.setReserveStableRateBorrowing(underlying, true);
   }
 
   function _unfreezeTokens(address underlying) internal {
     vm.startPrank(GUARDIAN);
-    AaveV3Fantom.POOL_CONFIGURATOR.setReserveFreeze(underlying, false);
+    AaveV3Harmony.POOL_CONFIGURATOR.setReserveFreeze(underlying, false);
     vm.stopPrank();
   }
 
   function _dealUnderlying(address user, address underlying) internal {
     if (
-      underlying == AaveV3FantomAssets.USDC_UNDERLYING ||
-      underlying == AaveV3FantomAssets.fUSDT_UNDERLYING
+      underlying == AaveV3HarmonyAssets.ONE_USDC_UNDERLYING ||
+      underlying == AaveV3HarmonyAssets.ONE_USDT_UNDERLYING
     ) {
       deal(underlying, user, 1_000_000_000e6);
-    } else if (underlying == AaveV3FantomAssets.BTC_UNDERLYING) {
+    } else if (underlying == AaveV3HarmonyAssets.ONE_WBTC_UNDERLYING) {
       deal(underlying, user, 10_000_000_000e8);
     } else {
       deal(underlying, user, 10_000_000_000 ether);
@@ -245,9 +245,9 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
     vm.startPrank(debtor);
 
     deal(COLLATERAL_TOKEN, debtor, 100_000_000_000 ether);
-    IERC20(COLLATERAL_TOKEN).approve(address(AaveV3Fantom.POOL), 0);
-    IERC20(COLLATERAL_TOKEN).approve(address(AaveV3Fantom.POOL), type(uint256).max);
-    AaveV3Fantom.POOL.supply(
+    IERC20(COLLATERAL_TOKEN).approve(address(AaveV3Harmony.POOL), 0);
+    IERC20(COLLATERAL_TOKEN).approve(address(AaveV3Harmony.POOL), type(uint256).max);
+    AaveV3Harmony.POOL.supply(
       COLLATERAL_TOKEN,
       IERC20Detailed(COLLATERAL_TOKEN).balanceOf(debtor),
       debtor,
@@ -256,7 +256,7 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
 
     // get available liquidity
     uint256 availableLiquidity = IERC20Detailed(stableUnderlying).balanceOf(aToken);
-    AaveV3Fantom.POOL.borrow(stableUnderlying, availableLiquidity / 5, 1, 0, debtor);
+    AaveV3Harmony.POOL.borrow(stableUnderlying, availableLiquidity / 5, 1, 0, debtor);
 
     vm.stopPrank();
   }
@@ -268,26 +268,26 @@ contract V3FtmSTokenTest is BaseDeploy, Test {
   ) internal {
     ConfiguratorInputTypes.UpdateDebtTokenInput memory input = ConfiguratorInputTypes
       .UpdateDebtTokenInput({
-        asset: underlying,
-        incentivesController: IGetIncentivesController(currentStableProxy)
-          .getIncentivesController(),
-        name: IERC20Detailed(currentStableProxy).name(),
-        symbol: IERC20Detailed(currentStableProxy).symbol(),
-        implementation: newImpl,
-        params: bytes('')
-      });
+      asset: underlying,
+      incentivesController: IGetIncentivesController(currentStableProxy)
+    .getIncentivesController(),
+      name: IERC20Detailed(currentStableProxy).name(),
+      symbol: IERC20Detailed(currentStableProxy).symbol(),
+      implementation: newImpl,
+      params: bytes('')
+    });
 
     hoax(GUARDIAN); // executor lvl 1
-    AaveV3Fantom.POOL_CONFIGURATOR.updateStableDebtToken(input);
+    AaveV3Harmony.POOL_CONFIGURATOR.updateStableDebtToken(input);
   }
 
   function _removeSupplyCap(address underlying) internal {
     startHoax(GUARDIAN);
-    AaveV3Fantom.POOL_CONFIGURATOR.setSupplyCap(underlying, 0);
+    AaveV3Harmony.POOL_CONFIGURATOR.setSupplyCap(underlying, 0);
   }
 
   function _removeBorrowCap(address underlying) internal {
     startHoax(GUARDIAN);
-    AaveV3Fantom.POOL_CONFIGURATOR.setBorrowCap(underlying, 0);
+    AaveV3Harmony.POOL_CONFIGURATOR.setBorrowCap(underlying, 0);
   }
 }
