@@ -4,10 +4,10 @@ pragma experimental ABIEncoderV2;
 
 import 'forge-std/Script.sol';
 import {StableDebtToken} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol';
-import {AaveV2Ethereum} from 'aave-address-book/AaveV2Ethereum.sol';
+import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
 import {DataTypes} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/libraries/types/DataTypes.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import {V2EthSTokenPayload} from "../src/payloads/V2EthSTokenPayload.sol";
+import {V2EthSTokenPayload} from '../src/payloads/V2EthSTokenPayload.sol';
 
 struct StableToken {
   address underlying;
@@ -17,7 +17,10 @@ struct StableToken {
 
 contract BaseDeploy {
   function _deploy() internal returns (StableToken[] memory) {
-    address[] memory reserves = AaveV2Ethereum.POOL.getReservesList();
+    address[] memory reserves = new address[](3);
+    reserves[0] = AaveV2EthereumAssets.TUSD_S_TOKEN;
+    reserves[1] = AaveV2EthereumAssets.DAI_S_TOKEN;
+    reserves[2] = AaveV2EthereumAssets.UNI_S_TOKEN;
 
     StableToken[] memory deployedImpl = new StableToken[](reserves.length);
 
@@ -28,10 +31,6 @@ contract BaseDeploy {
       (, address stableDebtTokenAddress, ) = AaveV2Ethereum
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(reserves[i]);
-
-      if (!stableBorrowRateEnabled) {
-        continue;
-      }
 
       StableDebtToken newStableDebtImpl = new StableDebtToken(
         address(AaveV2Ethereum.POOL),
@@ -49,9 +48,9 @@ contract BaseDeploy {
       );
 
       deployedImpl[i] = StableToken({
-        underlying : reserves[i],
-        stableToken : stableDebtTokenAddress,
-        newSTImpl : address(newStableDebtImpl)
+        underlying: reserves[i],
+        stableToken: stableDebtTokenAddress,
+        newSTImpl: address(newStableDebtImpl)
       });
     }
     return deployedImpl;
