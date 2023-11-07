@@ -25,7 +25,7 @@ contract V3HarSTokenTest is BaseDeploy, Test {
   address payload = address(0); // TODO: add when deployed
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('fantom'), 70292166);
+    vm.createSelectFork(vm.rpcUrl('harmony'), 49389025);
 
     // unpause pool
     hoax(GUARDIAN);
