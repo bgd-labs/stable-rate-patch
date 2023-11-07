@@ -25,7 +25,7 @@ contract V3HarSTokenTest is BaseDeploy, Test {
   address payload = 0x96F68837877fd0414B55050c9e794AECdBcfCA59;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('harmony'), 49391567);
+    vm.createSelectFork(vm.rpcUrl('harmony'), 49391886);
 
     // unpause pool
     hoax(GUARDIAN);
@@ -143,6 +143,7 @@ contract V3HarSTokenTest is BaseDeploy, Test {
 
   function testSwapAfterPayload() public {
     StableToken[] memory newTokenImpl = _deploy();
+    console.log('-------------------------');
 
     for (uint256 i = 0; i < newTokenImpl.length; i++) {
       if (newTokenImpl[i].newSTImpl == address(0)) {

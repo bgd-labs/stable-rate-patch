@@ -46,10 +46,6 @@ contract BaseDeploy {
         .AAVE_PROTOCOL_DATA_PROVIDER
         .getReserveTokensAddresses(reserves[i]);
 
-      if (!stableBorrowRateEnabled) {
-        continue;
-      }
-
       console.log(
         IERC20Detailed(stableDebtTokenAddress).symbol(),
         reserves[i],
