@@ -101,30 +101,30 @@ contract InitSTokensV2Ethereum is Script {
 
     // KNC
     IDebtTokenBaseV2(0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3).initialize(
+      uint8(AaveV2EthereumAssets.KNC_DECIMALS), // 18
+      'Aave stable debt bearing KNC',
+      'stableDebtKNC'
+    );
+
+    // DAI
+    IDebtTokenBaseV2(0xb44Fe5fA7A8fcF508984bE58bA807A22343B4493).initialize(
       uint8(AaveV2EthereumAssets.DAI_DECIMALS), // 18
       'Aave stable debt bearing DAI',
       'stableDebtDAI'
     );
 
-    // DAI
-    IDebtTokenBaseV2(0xb44Fe5fA7A8fcF508984bE58bA807A22343B4493).initialize(
+    // UNI
+    IDebtTokenBaseV2(0x54f514CA167e1fc19231dA9a48bB7AA6ffe4F10d).initialize(
       uint8(AaveV2EthereumAssets.UNI_DECIMALS), // 18
       'Aave stable debt bearing UNI',
       'stableDebtUNI'
     );
 
-    // UNI
+    // TUSD
     IDebtTokenBaseV2(0x00C15a6aaF1e48763B53A9dc8D2077551BA45Fee).initialize(
       uint8(AaveV2EthereumAssets.TUSD_DECIMALS), // 18
       'Aave stable debt bearing TUSD',
       'stableDebtTUSD'
-    );
-
-    // TUSD
-    IDebtTokenBaseV2(0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3).initialize(
-      uint8(AaveV2EthereumAssets.KNC_DECIMALS), // 18
-      'Aave stable debt bearing KNC',
-      'stableDebtKNC'
     );
 
     vm.stopBroadcast();
@@ -135,14 +135,13 @@ contract InitSTokensV3Arbitrum is Script {
   function run() public {
     vm.startBroadcast();
 
-    // EURS
     IDebtTokenBaseV3(0xCB7113D3d572613BbFCeCf80d1341cFFE2A92C00).initialize(
       AaveV3Arbitrum.POOL,
-      AaveV3ArbitrumAssets.AAVE_UNDERLYING,
-      IAaveIncentivesController(AaveV3Arbitrum.DEFAULT_INCENTIVES_CONTROLLER),
-      uint8(AaveV3ArbitrumAssets.AAVE_DECIMALS), // 18
-      'Aave Arbitrum Stable Debt AAVE',
-      'stableDebtArbAAVE',
+      address(0),
+      IAaveIncentivesController(address(0)),
+      0,
+      'STABLE_DEBT_TOKEN_IMPL',
+      'STABLE_DEBT_TOKEN_IMPL',
       bytes('')
     );
 
@@ -154,14 +153,13 @@ contract InitSTokensV3Avalanche is Script {
   function run() public {
     vm.startBroadcast();
 
-    // EURS
     IDebtTokenBaseV3(0xccf12894957E637Bd69693B12F3ba12b539C2D11).initialize(
       AaveV3Avalanche.POOL,
-      AaveV3AvalancheAssets.AAVEe_UNDERLYING,
-      IAaveIncentivesController(AaveV3Avalanche.DEFAULT_INCENTIVES_CONTROLLER),
-      uint8(AaveV3AvalancheAssets.AAVEe_DECIMALS), // 18
-      'Aave Avalanche Stable Debt AAVE',
-      'stableDebtAvaAAVE',
+      address(0),
+      IAaveIncentivesController(address(0)),
+      0,
+      'STABLE_DEBT_TOKEN_IMPL',
+      'STABLE_DEBT_TOKEN_IMPL',
       bytes('')
     );
 
@@ -173,14 +171,13 @@ contract InitSTokensV3Optimism is Script {
   function run() public {
     vm.startBroadcast();
 
-    // EURS
     IDebtTokenBaseV3(0x69713dA5fDfacf77E80C31F9B928Ec0Fc3716384).initialize(
       AaveV3Optimism.POOL,
-      AaveV3OptimismAssets.AAVE_UNDERLYING,
-      IAaveIncentivesController(AaveV3Optimism.DEFAULT_INCENTIVES_CONTROLLER),
-      uint8(AaveV3OptimismAssets.AAVE_DECIMALS), // 18
-      'Aave Optimism Stable Debt AAVE',
-      'stableDebtOptAAVE',
+      address(0),
+      IAaveIncentivesController(address(0)),
+      0,
+      'STABLE_DEBT_TOKEN_IMPL',
+      'STABLE_DEBT_TOKEN_IMPL',
       bytes('')
     );
 
@@ -192,14 +189,13 @@ contract InitSTokensV3Polygon is Script {
   function run() public {
     vm.startBroadcast();
 
-    // EURS
     IDebtTokenBaseV3(0xF4294973B7E6F6C411dD8A388592E7c7D32F2486).initialize(
       AaveV3Polygon.POOL,
-      AaveV3PolygonAssets.AAVE_UNDERLYING,
-      IAaveIncentivesController(AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER),
-      uint8(AaveV3PolygonAssets.AAVE_DECIMALS), // 18
-      'Aave Polygon Stable Debt AAVE',
-      'stableDebtPolAAVE',
+      address(0),
+      IAaveIncentivesController(address(0)),
+      0,
+      'STABLE_DEBT_TOKEN_IMPL',
+      'STABLE_DEBT_TOKEN_IMPL',
       bytes('')
     );
 
