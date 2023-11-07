@@ -1,12 +1,13 @@
 ```diff
 diff --git a/etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol b/etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
-index 9ba6779..f3d8e40 100644
+index 1a96fa8..a9f418d 100644
 --- a/etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol
 +++ b/etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
-@@ -1671,11 +1671,148 @@ library PercentageMath {
+@@ -1609,7 +1609,132 @@ library PercentageMath {
  }
  
  interface IAaveIncentivesController {
+-  function handleAction(address user, uint256 userBalance, uint256 totalSupply) external;
 +  event RewardsAccrued(address indexed user, uint256 amount);
 +
 +  event RewardsClaimed(address indexed user, address indexed to, uint256 amount);
@@ -25,14 +26,7 @@ index 9ba6779..f3d8e40 100644
 +   * @param asset The address of the reference asset of the distribution
 +   * @return The asset index, the emission per second and the last updated timestamp
 +   **/
-+  function getAssetData(address asset)
-+    external
-+    view
-+    returns (
-+      uint256,
-+      uint256,
-+      uint256
-+    );
++  function getAssetData(address asset) external view returns (uint256, uint256, uint256);
 +
 +  /*
 +   * LEGACY **************************
@@ -40,14 +34,7 @@ index 9ba6779..f3d8e40 100644
 +   * @param asset The address of the reference asset of the distribution
 +   * @return The asset index, the emission per second and the last updated timestamp
 +   **/
-+  function assets(address asset)
-+    external
-+    view
-+    returns (
-+      uint128,
-+      uint128,
-+      uint256
-+    );
++  function assets(address asset) external view returns (uint128, uint128, uint256);
 +
 +  /**
 +   * @dev Whitelists an address to claim the rewards on behalf of another address
@@ -68,8 +55,10 @@ index 9ba6779..f3d8e40 100644
 +   * @param assets The assets to incentivize
 +   * @param emissionsPerSecond The emission for each asset
 +   */
-+  function configureAssets(address[] calldata assets, uint256[] calldata emissionsPerSecond)
-+    external;
++  function configureAssets(
++    address[] calldata assets,
++    uint256[] calldata emissionsPerSecond
++  ) external;
 +
 +  /**
 +   * @dev Called by the corresponding asset on any update that affects the rewards distribution
@@ -77,22 +66,17 @@ index 9ba6779..f3d8e40 100644
 +   * @param userBalance The balance of the user of the asset in the lending pool
 +   * @param totalSupply The total supply of the asset in the lending pool
 +   **/
-   function handleAction(
--    address user,
-+    address asset,
-     uint256 userBalance,
-     uint256 totalSupply
-   ) external;
++  function handleAction(address asset, uint256 userBalance, uint256 totalSupply) external;
 +
 +  /**
 +   * @dev Returns the total of rewards of an user, already accrued + not yet accrued
 +   * @param user The address of the user
 +   * @return The rewards
 +   **/
-+  function getRewardsBalance(address[] calldata assets, address user)
-+    external
-+    view
-+    returns (uint256);
++  function getRewardsBalance(
++    address[] calldata assets,
++    address user
++  ) external view returns (uint256);
 +
 +  /**
 +   * @dev Claims reward for an user, on all the assets of the lending pool, accumulating the pending rewards
