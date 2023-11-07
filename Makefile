@@ -98,6 +98,16 @@ diff-contracts :;
 	make git-diff before=etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol after=etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol out=v2PolAvaPoolConfigurator
 	make git-diff before=etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol after=etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol out=v2EthAvaPoolConfigurator
 
+	forge flatten src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol --output src/v2EthPoolConfigurator/flattened/PoolConfigurator.sol
+	forge flatten src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol --output src/v2PolPoolConfigurator/flattened/PoolConfigurator.sol
+	forge flatten src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol --output src/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
+	make git-diff before=etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol after=src/v2EthPoolConfigurator/flattened/PoolConfigurator.sol out=v2EthPoolConfigurator
+	make git-diff before=etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol after=src/v2PolPoolConfigurator/flattened/PoolConfigurator.sol out=v2PolPoolConfigurator
+	make git-diff before=etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol after=src/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol out=v2AvaPoolConfigurator
+	rm -rf src/v2EthPoolConfigurator/flattened/PoolConfigurator.sol
+	rm -rf src/v2PolPoolConfigurator/flattened/PoolConfigurator.sol
+	rm -rf src/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
+
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3ArbStableDebtToken out=v3PolArbStableDebtToken
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3OptStableDebtToken out=v3PolOptStableDebtToken
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3AvaStableDebtToken out=v3PolAvaStableDebtToken
@@ -184,11 +194,29 @@ storage-diff :;
 	# npm run clean-storage-report updated_v3AvaStableDebtToken_layout
 	# make git-diff before=reports/v3AvaStableDebtToken_layout.md after=reports/updated_v3AvaStableDebtToken_layout.md out=v3AvaStableDebtToken_layout_diff
 
-	forge inspect etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3FanStableDebtToken_layout.md
-	npm run clean-storage-report v3FanStableDebtToken_layout
-	forge inspect src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3FanHarStableDebtToken_layout.md
-	npm run clean-storage-report updated_v3FanHarStableDebtToken_layout
-	make git-diff before=reports/v3FanStableDebtToken_layout.md after=reports/updated_v3FanHarStableDebtToken_layout.md out=v3FanHarStableDebtToken_layout_diff
+	# forge inspect etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3FanStableDebtToken_layout.md
+	# npm run clean-storage-report v3FanStableDebtToken_layout
+	# forge inspect src/v3FanHarStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/updated_v3FanHarStableDebtToken_layout.md
+	# npm run clean-storage-report updated_v3FanHarStableDebtToken_layout
+	# make git-diff before=reports/v3FanStableDebtToken_layout.md after=reports/updated_v3FanHarStableDebtToken_layout.md out=v3FanHarStableDebtToken_layout_diff
+
+	forge inspect etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2EthPoolConfigurator_layout.md
+	npm run clean-storage-report v2EthPoolConfigurator_layout
+	forge inspect src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2EthPoolConfigurator_layout.md
+	npm run clean-storage-report updated_v2EthPoolConfigurator_layout
+	make git-diff before=reports/v2EthPoolConfigurator_layout.md after=reports/updated_v2EthPoolConfigurator_layout.md out=v2EthPoolConfigurator_layout_diff
+
+	forge inspect etherscan/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2PolPoolConfigurator_layout.md
+	npm run clean-storage-report v2PolPoolConfigurator_layout
+	forge inspect src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2PolPoolConfigurator_layout.md
+	npm run clean-storage-report updated_v2PolPoolConfigurator_layout
+	make git-diff before=reports/v2PolPoolConfigurator_layout.md after=reports/updated_v2PolPoolConfigurator_layout.md out=v2PolPoolConfigurator_layout_diff
+
+	forge inspect etherscan/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2AvaPoolConfigurator_layout.md
+	npm run clean-storage-report v2AvaPoolConfigurator_layout
+	forge inspect src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2AvaPoolConfigurator_layout.md
+	npm run clean-storage-report updated_v2AvaPoolConfigurator_layout
+	make git-diff before=reports/v2AvaPoolConfigurator_layout.md after=reports/updated_v2AvaPoolConfigurator_layout.md out=v2AvaPoolConfigurator_layout_diff
 
 # common
 common-flags := --legacy --ledger --mnemonic-indexes $(MNEMONIC_INDEX) --sender $(LEDGER_SENDER) --verify -vvv --broadcast --slow
