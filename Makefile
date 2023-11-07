@@ -199,3 +199,9 @@ deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV
 deploy-v2-arbitrum :; forge script scripts/deploy_scripts.s.sol:DeployArb --fork-url arbitrum $(common-flags)
 deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-url polygon $(common-flags)
 deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork-url optimism $(common-flags)
+
+init-v2-mainnet :; forge script scripts/InitSTokens.s.sol:InitSTokensV2Ethereum --rpc-url mainnet $(common-flags)
+init-v3-arbitrum :; forge script scripts/InitSTokens.s.sol:InitSTokensV3Arbitrum --rpc-url arbitrum $(common-flags)
+init-v3-avalanche :; forge script scripts/InitSTokens.s.sol:InitSTokensV3Avalanche --rpc-url avalanche $(common-flags)
+init-v3-optimism :; forge script scripts/InitSTokens.s.sol:InitSTokensV3Optimism --rpc-url optimism $(common-flags)
+init-v3-polygon :; forge script scripts/InitSTokens.s.sol:InitSTokensV3Polygon --rpc-url polygon $(common-flags)
