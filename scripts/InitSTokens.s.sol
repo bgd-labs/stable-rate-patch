@@ -27,8 +27,8 @@ contract InitSTokensV2Ethereum is V2EthSTokenPayload, Script {
       IERC20Detailed tokenToUpdate = IERC20Detailed(tokensToUpdate[i].underlyingAsset);
       IDebtTokenBaseV2(tokensToUpdate[i].newSTokenImpl).initialize(
         tokenToUpdate.decimals(),
-        tokenToUpdate.name(),
-        tokenToUpdate.symbol()
+        string(abi.encodePacked('Aave stable debt bearing ', tokenToUpdate.symbol())),
+        string(abi.encodePacked('stableDebt', tokenToUpdate.symbol()))
       );
     }
     vm.stopBroadcast();
