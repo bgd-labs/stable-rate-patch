@@ -13,17 +13,17 @@ contract V3AvaxSTokenPayload is V3TokenPayload {
     tokensToUpdate[0] = TokenToUpdate({
       underlyingAsset: AaveV3AvalancheAssets.DAIe_UNDERLYING,
       stableTokenProxy: AaveV3AvalancheAssets.DAIe_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xccf12894957E637Bd69693B12F3ba12b539C2D11
     });
     tokensToUpdate[1] = TokenToUpdate({
       underlyingAsset: AaveV3AvalancheAssets.USDC_UNDERLYING,
       stableTokenProxy: AaveV3AvalancheAssets.USDC_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xccf12894957E637Bd69693B12F3ba12b539C2D11
     });
     tokensToUpdate[2] = TokenToUpdate({
       underlyingAsset: AaveV3AvalancheAssets.USDt_UNDERLYING,
       stableTokenProxy: AaveV3AvalancheAssets.USDt_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill with deployed address
+      newSTokenImpl: 0xccf12894957E637Bd69693B12F3ba12b539C2D11
     });
 
     return tokensToUpdate;
