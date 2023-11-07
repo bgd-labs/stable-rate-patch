@@ -101,6 +101,27 @@ contract InitSTokensV2Ethereum is Script {
 
     // KNC
     IDebtTokenBaseV2(0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3).initialize(
+      uint8(AaveV2EthereumAssets.DAI_DECIMALS), // 18
+      'Aave stable debt bearing DAI',
+      'stableDebtDAI'
+    );
+
+    // DAI
+    IDebtTokenBaseV2(0xb44Fe5fA7A8fcF508984bE58bA807A22343B4493).initialize(
+      uint8(AaveV2EthereumAssets.UNI_DECIMALS), // 18
+      'Aave stable debt bearing UNI',
+      'stableDebtUNI'
+    );
+
+    // UNI
+    IDebtTokenBaseV2(0x00C15a6aaF1e48763B53A9dc8D2077551BA45Fee).initialize(
+      uint8(AaveV2EthereumAssets.TUSD_DECIMALS), // 18
+      'Aave stable debt bearing TUSD',
+      'stableDebtTUSD'
+    );
+
+    // TUSD
+    IDebtTokenBaseV2(0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3).initialize(
       uint8(AaveV2EthereumAssets.KNC_DECIMALS), // 18
       'Aave stable debt bearing KNC',
       'stableDebtKNC'
