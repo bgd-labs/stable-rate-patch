@@ -13,27 +13,27 @@ contract V3HarSTokenPayload is V3TokenPayload {
     tokensToUpdate[0] = TokenToUpdate({
       underlyingAsset: AaveV3HarmonyAssets.ONE_DAI_UNDERLYING,
       stableTokenProxy: AaveV3HarmonyAssets.ONE_DAI_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill when deployed
+      newSTokenImpl: 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10
     });
     tokensToUpdate[1] = TokenToUpdate({
       underlyingAsset: AaveV3HarmonyAssets.LINK_UNDERLYING,
       stableTokenProxy: AaveV3HarmonyAssets.LINK_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill when deployed
+      newSTokenImpl: 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10
     });
     tokensToUpdate[2] = TokenToUpdate({
       underlyingAsset: AaveV3HarmonyAssets.ONE_USDC_UNDERLYING,
       stableTokenProxy: AaveV3HarmonyAssets.ONE_USDC_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill when deployed
+      newSTokenImpl: 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10
     });
     tokensToUpdate[3] = TokenToUpdate({
       underlyingAsset: AaveV3HarmonyAssets.ONE_ETH_UNDERLYING,
       stableTokenProxy: AaveV3HarmonyAssets.ONE_ETH_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill when deployed
+      newSTokenImpl: 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10
     });
     tokensToUpdate[4] = TokenToUpdate({
       underlyingAsset: AaveV3HarmonyAssets.ONE_USDT_UNDERLYING,
       stableTokenProxy: AaveV3HarmonyAssets.ONE_USDT_S_TOKEN,
-      newSTokenImpl: address(0) // TODO: fill when deployed
+      newSTokenImpl: 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10
     });
 
     return tokensToUpdate;
