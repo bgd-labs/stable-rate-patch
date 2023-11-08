@@ -221,7 +221,6 @@ storage-diff :;
 # common
 common-flags := --legacy --ledger --mnemonic-indexes $(MNEMONIC_INDEX) --sender $(LEDGER_SENDER) --verify -vvv --broadcast --slow
 
-
 deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV2Ethereum --fork-url mainnet $(common-flags)
 #deploy-owner-polygon :; forge script scripts/OwnershipUpdate.s.sol:Polygon --fork-url polygon $(common-flags)
 #deploy-owner-avalanche :; forge script scripts/OwnershipUpdate.s.sol:Avalanche --fork-url avalanche $(common-flags)
@@ -236,3 +235,7 @@ deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV
 deploy-v2-arbitrum :; forge script scripts/deploy_scripts.s.sol:DeployArb --fork-url arbitrum $(common-flags)
 deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-url polygon $(common-flags)
 deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork-url optimism $(common-flags)
+
+deploy-configurator-mainnet :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployMainnet --rpc-url mainnet $(common-flags)
+deploy-configurator-polygon :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployPolygon --rpc-url polygon $(common-flags)
+deploy-configurator-avalanche :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployAvalanche --rpc-url avalanche $(common-flags)
