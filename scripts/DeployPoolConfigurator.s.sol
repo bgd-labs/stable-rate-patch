@@ -15,76 +15,91 @@ import {LendingPoolConfigurator as AvaPoolConfigurator, ILendingPoolAddressesPro
 import {V2EthConfiguratorUpdatePayload} from 'src/payloads/V2EthConfiguratorUpdatePayload.sol';
 import {V2L2ConfiguratorUpdatePayload} from 'src/payloads/V2L2ConfiguratorUpdatePayload.sol';
 
-contract DeployMainnet is Script {
-  EthPoolConfigurator public poolConfigurator;
-  EthAmmPoolConfigurator public ammPoolConfigurator;
-  V2EthConfiguratorUpdatePayload public payload;
-
-  function run() external {
-    vm.startBroadcast();
-    poolConfigurator = new EthPoolConfigurator();
+library DeployConfiguratorEthLib {
+  function deploy() internal returns (address) {
+    EthPoolConfigurator poolConfigurator = new EthPoolConfigurator();
     poolConfigurator.initialize(
       IEthLendingPoolAddressesProvider(address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER))
     );
 
-    ammPoolConfigurator = new EthAmmPoolConfigurator();
+    EthAmmPoolConfigurator ammPoolConfigurator = new EthAmmPoolConfigurator();
     ammPoolConfigurator.initialize(
       IEthAmmLendingPoolAddressesProvider(address(AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER))
     );
 
-    payload = new V2EthConfiguratorUpdatePayload(
+    V2EthConfiguratorUpdatePayload payload = new V2EthConfiguratorUpdatePayload(
       address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER),
       address(poolConfigurator),
       address(AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER),
       address(ammPoolConfigurator)
     );
-    vm.stopBroadcast();
 
     console.log('Mainnet Pool Configurator Impl address', address(poolConfigurator));
+    console.log('Mainnet AMM Pool Configurator Impl address', address(ammPoolConfigurator));
     console.log('Mainnet Payload address', address(payload));
+
+    return address(payload);
   }
 }
 
-contract DeployPolygon is Script {
-  PolPoolConfigurator public poolConfigurator;
-  V2L2ConfiguratorUpdatePayload public payload;
-
-  function run() external {
-    vm.startBroadcast();
-    poolConfigurator = new PolPoolConfigurator();
+library DeployConfiguratorPolLib {
+  function deploy() internal returns (address) {
+    PolPoolConfigurator poolConfigurator = new PolPoolConfigurator();
     poolConfigurator.initialize(
       IPolLendingPoolAddressesProvider(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER))
     );
 
-    payload = new V2L2ConfiguratorUpdatePayload(
+    V2L2ConfiguratorUpdatePayload payload = new V2L2ConfiguratorUpdatePayload(
       address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER),
       address(poolConfigurator)
     );
-    vm.stopBroadcast();
 
     console.log('Polygon Pool Configurator Impl address', address(poolConfigurator));
     console.log('Polygon Payload address', address(payload));
+
+    return address(payload);
   }
 }
 
-contract DeployAvalanche is Script {
-  AvaPoolConfigurator public poolConfigurator;
-  V2L2ConfiguratorUpdatePayload public payload;
-
-  function run() external {
-    vm.startBroadcast();
-    poolConfigurator = new AvaPoolConfigurator();
+library DeployConfiguratorAvaLib {
+  function deploy() internal returns (address) {
+    AvaPoolConfigurator poolConfigurator = new AvaPoolConfigurator();
     poolConfigurator.initialize(
       IAvaLendingPoolAddressesProvider(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER))
     );
 
-    payload = new V2L2ConfiguratorUpdatePayload(
+    V2L2ConfiguratorUpdatePayload payload = new V2L2ConfiguratorUpdatePayload(
       address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER),
       address(poolConfigurator)
     );
-    vm.stopBroadcast();
 
     console.log('Avalanche Pool Configurator Impl address', address(poolConfigurator));
     console.log('Avalanche Payload address', address(payload));
+
+    return address(payload);
+  }
+}
+
+contract DeployMainnet is Script {
+  function run() external {
+    vm.startBroadcast();
+    DeployConfiguratorEthLib.deploy();
+    vm.stopBroadcast();
+  }
+}
+
+contract DeployPolygon is Script {
+  function run() external {
+    vm.startBroadcast();
+    DeployConfiguratorPolLib.deploy();
+    vm.stopBroadcast();
+  }
+}
+
+contract DeployAvalanche is Script {
+  function run() external {
+    vm.startBroadcast();
+    DeployConfiguratorAvaLib.deploy();
+    vm.stopBroadcast();
   }
 }

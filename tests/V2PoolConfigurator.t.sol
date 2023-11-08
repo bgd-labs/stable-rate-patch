@@ -3,7 +3,7 @@ pragma solidity >=0.6.0;
 pragma experimental ABIEncoderV2;
 
 import {V2PoolConfiguratorTestBase} from './V2PoolConfiguratorTestBase.t.sol';
-import {DeployMainnet, DeployPolygon, DeployAvalanche} from 'scripts/DeployPoolConfigurator.s.sol';
+import {DeployConfiguratorEthLib, DeployConfiguratorPolLib, DeployConfiguratorAvaLib} from 'scripts/DeployPoolConfigurator.s.sol';
 import {V2EthConfiguratorUpdatePayload} from 'src/payloads/V2EthConfiguratorUpdatePayload.sol';
 import {V2L2ConfiguratorUpdatePayload} from 'src/payloads/V2L2ConfiguratorUpdatePayload.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
@@ -13,8 +13,6 @@ import {AaveV2Polygon, AaveV2PolygonAssets} from 'aave-address-book/AaveV2Polygo
 import {IExecutor} from './utils/IExecutor.sol';
 
 contract V2EthPoolConfiguratorTest is V2PoolConfiguratorTestBase {
-  V2EthConfiguratorUpdatePayload public payload;
-
   constructor() V2PoolConfiguratorTestBase(
     0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5, // PAYLOADS_CONTROLLER
     0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A, // EXECUTOR_LVL_1
@@ -30,18 +28,13 @@ contract V2EthPoolConfiguratorTest is V2PoolConfiguratorTestBase {
   }
 
   function _deployAndExecutePayload() internal {
-    DeployMainnet script = new DeployMainnet();
-    script.run();
-
-    payload = script.payload();
+    address payload = DeployConfiguratorEthLib.deploy();
     hoax(PAYLOADS_CONTROLLER);
     IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }
 }
 
 contract V2AmmEthPoolConfiguratorTest is V2PoolConfiguratorTestBase {
-  V2EthConfiguratorUpdatePayload public payload;
-
   constructor() V2PoolConfiguratorTestBase(
     0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5, // PAYLOADS_CONTROLLER
     0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A, // EXECUTOR_LVL_1
@@ -57,18 +50,13 @@ contract V2AmmEthPoolConfiguratorTest is V2PoolConfiguratorTestBase {
   }
 
   function _deployAndExecutePayload() internal {
-    DeployMainnet script = new DeployMainnet();
-    script.run();
-
-    payload = script.payload();
+    address payload = DeployConfiguratorEthLib.deploy();
     hoax(PAYLOADS_CONTROLLER);
     IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }
 }
 
 contract V2PolPoolConfiguratorTest is V2PoolConfiguratorTestBase {
-  V2L2ConfiguratorUpdatePayload public payload;
-
   constructor() V2PoolConfiguratorTestBase(
     0x401B5D0294E23637c18fcc38b1Bca814CDa2637C, // PAYLOADS_CONTROLLER
     0xDf7d0e6454DB638881302729F5ba99936EaAB233, // EXECUTOR_LVL_1
@@ -84,18 +72,13 @@ contract V2PolPoolConfiguratorTest is V2PoolConfiguratorTestBase {
   }
 
   function _deployAndExecutePayload() internal {
-    DeployPolygon script = new DeployPolygon();
-    script.run();
-
-    payload = script.payload();
+    address payload = DeployConfiguratorPolLib.deploy();
     hoax(PAYLOADS_CONTROLLER);
     IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }
 }
 
 contract V2AvaPoolConfiguratorTest is V2PoolConfiguratorTestBase {
-  V2L2ConfiguratorUpdatePayload public payload;
-
   constructor() V2PoolConfiguratorTestBase(
     0x1140CB7CAfAcC745771C2Ea31e7B5C653c5d0B80, // PAYLOADS_CONTROLLER
     0x3C06dce358add17aAf230f2234bCCC4afd50d090, // EXECUTOR_LVL_1
@@ -111,10 +94,7 @@ contract V2AvaPoolConfiguratorTest is V2PoolConfiguratorTestBase {
   }
 
   function _deployAndExecutePayload() internal {
-    DeployAvalanche script = new DeployAvalanche();
-    script.run();
-
-    payload = script.payload();
+    address payload = DeployConfiguratorAvaLib.deploy();
     hoax(PAYLOADS_CONTROLLER);
     IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }
