@@ -1,8 +1,8 @@
 ```diff
-diff --git a/etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol b/etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol
+diff --git a/etherscan/flattened/v2EthPoolConfigurator/PoolConfigurator.sol b/etherscan/flattened/v2PolPoolConfigurator/PoolConfigurator.sol
 index 13bfc8d..9ba6779 100644
---- a/etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol
-+++ b/etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol
+--- a/etherscan/flattened/v2EthPoolConfigurator/PoolConfigurator.sol
++++ b/etherscan/flattened/v2PolPoolConfigurator/PoolConfigurator.sol
 @@ -212,14 +212,14 @@ abstract contract VersionedInitializable {
    }
  

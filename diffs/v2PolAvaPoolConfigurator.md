@@ -1,8 +1,8 @@
 ```diff
-diff --git a/etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol b/etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
+diff --git a/etherscan/flattened/v2PolPoolConfigurator/PoolConfigurator.sol b/etherscan/flattened/v2AvaPoolConfigurator/PoolConfigurator.sol
 index 9ba6779..f3d8e40 100644
---- a/etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol
-+++ b/etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
+--- a/etherscan/flattened/v2PolPoolConfigurator/PoolConfigurator.sol
++++ b/etherscan/flattened/v2AvaPoolConfigurator/PoolConfigurator.sol
 @@ -1671,11 +1671,148 @@ library PercentageMath {
  }
  

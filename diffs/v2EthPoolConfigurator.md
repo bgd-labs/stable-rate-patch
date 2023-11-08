@@ -1,6 +1,6 @@
 ```diff
 diff --git a/etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol b/src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
-index bb3fb77..191d525 100644
+index bb3fb77..1b850b2 100644
 --- a/etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
 +++ b/src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
 @@ -179,7 +179,15 @@ contract LendingPoolConfigurator is VersionedInitializable {
@@ -11,7 +11,7 @@ index bb3fb77..191d525 100644
 +  modifier onlyPoolOrEmergencyAdmin() {
 +    require(
 +      addressesProvider.getPoolAdmin() == msg.sender || addressesProvider.getEmergencyAdmin() == msg.sender,
-+      Errors.CALLER_NOT_POOL_OR_EMERGENCY_ADMIN
++      Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN
 +    );
 +    _;
 +  }
@@ -39,14 +39,14 @@ index bb3fb77..191d525 100644
  
      currentConfig.setFrozen(false);
 diff --git a/etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol b/src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol
-index 8756d79..0d9d2b5 100644
+index 8756d79..3665576 100644
 --- a/etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol
 +++ b/src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol
 @@ -103,6 +103,7 @@ library Errors {
    string public constant LP_NOT_CONTRACT = '78';
    string public constant SDT_STABLE_DEBT_OVERFLOW = '79';
    string public constant SDT_BURN_EXCEEDS_BALANCE = '80';
-+  string public constant CALLER_NOT_POOL_OR_EMERGENCY_ADMIN = '81'; // 'The caller must be the emergency or pool admin'
++  string public constant LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN = '83'; // 'The caller must be the emergency or pool admin'
  
    enum CollateralManagerErrors {
      NO_ERROR,
