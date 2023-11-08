@@ -26,7 +26,7 @@ contract V2AmmEthPoolConfiguratorTest is Test {
   function test_reverts_freezeReserve(address caller) public {
     vm.assume(caller != EMERGENCY_ADMIN && caller != POOL_ADMIN);
 
-    vm.expectRevert(bytes(Errors.CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
+    vm.expectRevert(bytes(Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
     AaveV2EthereumAMM.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
@@ -35,7 +35,7 @@ contract V2AmmEthPoolConfiguratorTest is Test {
   function test_reverts_unfreezeReserve(address caller) public {
     vm.assume(caller != EMERGENCY_ADMIN && caller != POOL_ADMIN);
 
-    vm.expectRevert(bytes(Errors.CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
+    vm.expectRevert(bytes(Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
     AaveV2EthereumAMM.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();

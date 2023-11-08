@@ -182,7 +182,7 @@ contract LendingPoolConfigurator is VersionedInitializable {
   modifier onlyPoolOrEmergencyAdmin() {
     require(
       addressesProvider.getPoolAdmin() == msg.sender || addressesProvider.getEmergencyAdmin() == msg.sender,
-      Errors.CALLER_NOT_POOL_OR_EMERGENCY_ADMIN
+      Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN
     );
     _;
   }
