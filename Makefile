@@ -8,6 +8,7 @@ update:; forge update
 # Build & test
 build  :; forge build --sizes
 test   :; forge test -vvv
+test-contract :; forge test --match-contract ${filter} -vvv
 
 # Utilities
 download :; cast etherscan-source --chain ${chain} -d src/etherscan/${chain}_${address} ${address}
@@ -17,6 +18,7 @@ get-proxy-impl :;
 
 git-diff :;
 	@mkdir -p diffs
+	@npx prettier ${before} ${after} --write
 	@printf '%s\n%s\n%s\n' "\`\`\`diff" "$$(git diff --no-index --diff-algorithm=patience --ignore-space-at-eol ${before} ${after})" "\`\`\`" > diffs/${out}.md
 
 download-all-etherscan :;
@@ -222,15 +224,12 @@ storage-diff :;
 common-flags := --legacy --ledger --mnemonic-indexes $(MNEMONIC_INDEX) --sender $(LEDGER_SENDER) --verify -vvv --broadcast --slow
 
 deploy-v2-mainnet :; forge script scripts/DeploySTokenV2Eth.s.sol:DeploySTokensV2Ethereum --fork-url mainnet $(common-flags)
-#deploy-owner-polygon :; forge script scripts/OwnershipUpdate.s.sol:Polygon --fork-url polygon $(common-flags)
-#deploy-owner-avalanche :; forge script scripts/OwnershipUpdate.s.sol:Avalanche --fork-url avalanche $(common-flags)
-#deploy-owner-arbitrum :; forge script scripts/OwnershipUpdate.s.sol:Arbitrum --fork-url arbitrum $(common-flags)
-#deploy-owner-optimism :; forge script scripts/OwnershipUpdate.s.sol:Optimism --fork-url optimism $(common-flags)
-#deploy-owner-base :; forge script scripts/OwnershipUpdate.s.sol:Base --fork-url base $(common-flags)
-#deploy-owner-metis :; forge script scripts/OwnershipUpdate.s.sol:Metis --fork-url metis $(common-flags)
-#deploy-owner-gnosis :; forge script scripts/OwnershipUpdate.s.sol:Gnosis --fork-url gnosis $(common-flags)
+deploy-v3-fantom :; forge script scripts/DeploySTokenV3Ftm.s.sol:DeploySTokensV3Ftm --fork-url fantom $(common-flags)
+deploy-v3-harmony :; forge script scripts/DeploySTokenV3Har.s.sol:DeploySTokensV3Har --fork-url harmony $(common-flags)
 
 
+deploy-v3-fantom-payload :; forge script scripts/DeploySTokenV3Ftm.s.sol:DeployPayloadV3Ftm --fork-url fantom $(common-flags)
+deploy-v3-harmony-payload :; forge script scripts/DeploySTokenV3Har.s.sol:DeployPayloadV3Har --fork-url harmony $(common-flags)
 
 deploy-v2-arbitrum :; forge script scripts/deploy_scripts.s.sol:DeployArb --fork-url arbitrum $(common-flags)
 deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-url polygon $(common-flags)
@@ -239,3 +238,6 @@ deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork
 deploy-configurator-mainnet :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployMainnet --rpc-url mainnet $(common-flags)
 deploy-configurator-polygon :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployPolygon --rpc-url polygon $(common-flags)
 deploy-configurator-avalanche :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployAvalanche --rpc-url avalanche $(common-flags)
+
+deploy-sentinel-pol :; forge script scripts/DeployLiquidationSentinel.s.sol:DeployLiquidationSentinelPol --fork-url polygon $(common-flags)
+deploy-sentinel-ava :; forge script scripts/DeployLiquidationSentinel.s.sol:DeployLiquidationSentinelAva --fork-url avalanche $(common-flags)

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: agpl-3.0
 pragma solidity 0.6.12;
+import {ILiquidationsGraceSentinel} from '../../../../ILiquidationsGraceSentinel.sol';
 
 /**
  * @title ILendingPoolCollateralManager
@@ -57,4 +58,10 @@ interface ILendingPoolCollateralManager {
     uint256 debtToCover,
     bool receiveAToken
   ) external returns (uint256, string memory);
+
+  /**
+  * @dev Function to get an address LiquidationsGraceSentinel
+   * @return ILiquidationsGraceSentinel
+  **/
+  function LIQUIDATIONS_GRACE_SENTINEL() external view returns(ILiquidationsGraceSentinel);
 }
