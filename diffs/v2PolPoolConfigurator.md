@@ -25,7 +25,7 @@ index af4db24..7b321d0 100644
  /**
   * @title DefaultReserveInterestRateStrategy contract
 diff --git a/etherscan/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol b/src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
-index 49451d9..1c2a0f6 100644
+index 49451d9..336bce4 100644
 --- a/etherscan/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
 +++ b/src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
 @@ -46,7 +46,15 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
@@ -45,15 +45,7 @@ index 49451d9..1c2a0f6 100644
  
    function getRevision() internal pure override returns (uint256) {
      return CONFIGURATOR_REVISION;
-@@ -179,7 +187,6 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
-     ILendingPool cachedPool = pool;
- 
-     DataTypes.ReserveData memory reserveData = cachedPool.getReserveData(input.asset);
--     
-     (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
- 
-     bytes memory encodedCall = abi.encodeWithSelector(
-@@ -391,7 +398,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
+@@ -391,7 +399,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
     *  but allows repayments, liquidations, rate rebalances and withdrawals
     * @param asset The address of the underlying asset of the reserve
     **/
@@ -62,7 +54,7 @@ index 49451d9..1c2a0f6 100644
      DataTypes.ReserveConfigurationMap memory currentConfig = pool.getConfiguration(asset);
  
      currentConfig.setFrozen(true);
-@@ -405,7 +412,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
+@@ -405,7 +413,7 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
     * @dev Unfreezes a reserve
     * @param asset The address of the underlying asset of the reserve
     **/
