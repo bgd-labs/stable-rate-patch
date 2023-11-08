@@ -3,25 +3,24 @@ pragma solidity >=0.6.0;
 pragma experimental ABIEncoderV2;
 
 import 'forge-std/Test.sol';
+import {DeployAvalanche} from 'scripts/DeployPoolConfigurator.s.sol';
+import {V2PoolConfiguratorUpdatePayload} from 'src/payloads/V2PoolConfiguratorUpdatePayload.sol';
 import {AaveV2Avalanche, AaveV2AvalancheAssets} from 'aave-address-book/AaveV2Avalanche.sol';
 import {LendingPoolConfigurator} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 import {Errors} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol';
+import {IExecutor} from './utils/IExecutor.sol';
 
 contract V2AvaPoolConfiguratorTest is Test {
-  LendingPoolConfigurator public poolConfigurator;
-  address constant GOV_V3_AVA_EXECUTOR_LVL_1 = 0x3C06dce358add17aAf230f2234bCCC4afd50d090;
+  V2PoolConfiguratorUpdatePayload public payload;
+
+  address constant PAYLOADS_CONTROLLER = 0x1140CB7CAfAcC745771C2Ea31e7B5C653c5d0B80;
+  address constant EXECUTOR_LVL_1 = 0x3C06dce358add17aAf230f2234bCCC4afd50d090;
   address constant EMERGENCY_ADMIN = 0xa35b76E4935449E33C56aB24b23fcd3246f13470;
-  address constant POOL_ADMIN = GOV_V3_AVA_EXECUTOR_LVL_1;
+  address constant POOL_ADMIN = EXECUTOR_LVL_1;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('avalanche'), 37450260);
-    poolConfigurator = new LendingPoolConfigurator();
-
-    vm.startPrank(GOV_V3_AVA_EXECUTOR_LVL_1);
-    AaveV2Avalanche.POOL_ADDRESSES_PROVIDER.setLendingPoolConfiguratorImpl(
-      address(poolConfigurator)
-    );
-    vm.stopPrank();
+    _deployAndExecutePayload();
   }
 
   function test_reverts_freezeReserve(address caller) public {
@@ -84,5 +83,14 @@ contract V2AvaPoolConfiguratorTest is Test {
       .AAVE_PROTOCOL_DATA_PROVIDER
       .getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     assertEq(isFrozen, false);
+  }
+
+  function _deployAndExecutePayload() internal {
+    DeployAvalanche script = new DeployAvalanche();
+    script.run();
+
+    payload = script.payload();
+    hoax(PAYLOADS_CONTROLLER);
+    IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }
 }

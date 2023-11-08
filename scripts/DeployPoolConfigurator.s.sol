@@ -10,8 +10,11 @@ import {LendingPoolConfigurator as EthPoolConfigurator, ILendingPoolAddressesPro
 import {LendingPoolConfigurator as PolPoolConfigurator, ILendingPoolAddressesProvider as IPolLendingPoolAddressesProvider} from 'src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 import {LendingPoolConfigurator as AvaPoolConfigurator, ILendingPoolAddressesProvider as IAvaLendingPoolAddressesProvider} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 
+import {V2PoolConfiguratorUpdatePayload} from 'src/payloads/V2PoolConfiguratorUpdatePayload.sol';
+
 contract DeployMainnet is Script {
   EthPoolConfigurator public poolConfigurator;
+  V2PoolConfiguratorUpdatePayload public payload;
 
   function run() external {
     vm.startBroadcast();
@@ -19,14 +22,21 @@ contract DeployMainnet is Script {
     poolConfigurator.initialize(
       IEthLendingPoolAddressesProvider(address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER))
     );
+
+    payload = new V2PoolConfiguratorUpdatePayload(
+      address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER),
+      address(poolConfigurator)
+    );
     vm.stopBroadcast();
 
     console.log('Mainnet Pool Configurator Impl address', address(poolConfigurator));
+    console.log('Mainnet Payload address', address(payload));
   }
 }
 
 contract DeployPolygon is Script {
   PolPoolConfigurator public poolConfigurator;
+  V2PoolConfiguratorUpdatePayload public payload;
 
   function run() external {
     vm.startBroadcast();
@@ -34,14 +44,21 @@ contract DeployPolygon is Script {
     poolConfigurator.initialize(
       IPolLendingPoolAddressesProvider(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER))
     );
+
+    payload = new V2PoolConfiguratorUpdatePayload(
+      address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER),
+      address(poolConfigurator)
+    );
     vm.stopBroadcast();
 
     console.log('Polygon Pool Configurator Impl address', address(poolConfigurator));
+    console.log('Polygon Payload address', address(payload));
   }
 }
 
 contract DeployAvalanche is Script {
   AvaPoolConfigurator public poolConfigurator;
+  V2PoolConfiguratorUpdatePayload public payload;
 
   function run() external {
     vm.startBroadcast();
@@ -49,8 +66,14 @@ contract DeployAvalanche is Script {
     poolConfigurator.initialize(
       IAvaLendingPoolAddressesProvider(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER))
     );
+
+    payload = new V2PoolConfiguratorUpdatePayload(
+      address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER),
+      address(poolConfigurator)
+    );
     vm.stopBroadcast();
 
     console.log('Avalanche Pool Configurator Impl address', address(poolConfigurator));
+    console.log('Avalanche Payload address', address(payload));
   }
 }
