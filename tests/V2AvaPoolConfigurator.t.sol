@@ -4,14 +4,14 @@ pragma experimental ABIEncoderV2;
 
 import 'forge-std/Test.sol';
 import {DeployAvalanche} from 'scripts/DeployPoolConfigurator.s.sol';
-import {V2PoolConfiguratorUpdatePayload} from 'src/payloads/V2PoolConfiguratorUpdatePayload.sol';
+import {V2L2ConfiguratorUpdatePayload} from 'src/payloads/V2L2ConfiguratorUpdatePayload.sol';
 import {AaveV2Avalanche, AaveV2AvalancheAssets} from 'aave-address-book/AaveV2Avalanche.sol';
 import {LendingPoolConfigurator} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 import {Errors} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol';
 import {IExecutor} from './utils/IExecutor.sol';
 
 contract V2AvaPoolConfiguratorTest is Test {
-  V2PoolConfiguratorUpdatePayload public payload;
+  V2L2ConfiguratorUpdatePayload public payload;
 
   address constant PAYLOADS_CONTROLLER = 0x1140CB7CAfAcC745771C2Ea31e7B5C653c5d0B80;
   address constant EXECUTOR_LVL_1 = 0x3C06dce358add17aAf230f2234bCCC4afd50d090;

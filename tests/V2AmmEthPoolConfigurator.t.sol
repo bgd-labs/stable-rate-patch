@@ -5,17 +5,17 @@ pragma experimental ABIEncoderV2;
 import 'forge-std/Test.sol';
 import {DeployMainnet} from 'scripts/DeployPoolConfigurator.s.sol';
 import {V2EthConfiguratorUpdatePayload} from 'src/payloads/V2EthConfiguratorUpdatePayload.sol';
-import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
-import {LendingPoolConfigurator} from 'src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
+import {AaveV2EthereumAMM, AaveV2EthereumAMMAssets, IAaveProtocolDataProvider} from 'aave-address-book/AaveV2EthereumAMM.sol';
 import {Errors} from 'src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol';
 import {IExecutor} from './utils/IExecutor.sol';
 
-contract V2EthPoolConfiguratorTest is Test {
+contract V2AmmEthPoolConfiguratorTest is Test {
   V2EthConfiguratorUpdatePayload public payload;
 
+  address constant AAVE_PROTOCOL_DATA_PROVIDER = 0xc443AD9DDE3cecfB9dfC5736578f447aFE3590ba;
   address constant PAYLOADS_CONTROLLER = 0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5;
   address constant EXECUTOR_LVL_1 = 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A;
-  address constant EMERGENCY_ADMIN = 0xCA76Ebd8617a03126B6FB84F9b1c1A0fB71C2633;
+  address constant EMERGENCY_ADMIN = 0xB9062896ec3A615a4e4444DF183F0531a77218AE;
   address constant POOL_ADMIN = EXECUTOR_LVL_1;
 
   function setUp() public {
@@ -28,7 +28,7 @@ contract V2EthPoolConfiguratorTest is Test {
 
     vm.expectRevert(bytes(Errors.CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
-    AaveV2Ethereum.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
+    AaveV2EthereumAMM.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
   }
 
@@ -37,51 +37,47 @@ contract V2EthPoolConfiguratorTest is Test {
 
     vm.expectRevert(bytes(Errors.CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
-    AaveV2Ethereum.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
+    AaveV2EthereumAMM.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
   }
 
   function test_freezeReserve_emergencyAdmin() public {
     vm.startPrank(EMERGENCY_ADMIN);
-    AaveV2Ethereum.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
+    AaveV2EthereumAMM.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
-      .AAVE_PROTOCOL_DATA_PROVIDER
-      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(AAVE_PROTOCOL_DATA_PROVIDER)
+      .getReserveConfigurationData(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
   function test_freezeReserve_poolAdmin() public {
     vm.startPrank(POOL_ADMIN);
-    AaveV2Ethereum.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
+    AaveV2EthereumAMM.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
-      .AAVE_PROTOCOL_DATA_PROVIDER
-      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(AAVE_PROTOCOL_DATA_PROVIDER)
+      .getReserveConfigurationData(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
   function test_unfreezeReserve_emergencyAdmin() public {
     vm.startPrank(EMERGENCY_ADMIN);
-    AaveV2Ethereum.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
+    AaveV2EthereumAMM.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
-      .AAVE_PROTOCOL_DATA_PROVIDER
-      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(AAVE_PROTOCOL_DATA_PROVIDER)
+      .getReserveConfigurationData(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     assertEq(isFrozen, false);
   }
 
   function test_unfreezeReserve_poolAdmin() public {
     vm.startPrank(POOL_ADMIN);
-    AaveV2Ethereum.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
+    AaveV2EthereumAMM.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
-      .AAVE_PROTOCOL_DATA_PROVIDER
-      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(AAVE_PROTOCOL_DATA_PROVIDER)
+      .getReserveConfigurationData(AaveV2EthereumAMMAssets.USDC_UNDERLYING);
     assertEq(isFrozen, false);
   }
 

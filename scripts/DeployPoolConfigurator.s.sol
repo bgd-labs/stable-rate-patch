@@ -4,17 +4,21 @@ pragma solidity >=0.6.0;
 import {Script} from 'forge-std/Script.sol';
 import {console} from 'forge-std/console.sol';
 import {AaveV2Ethereum} from 'aave-address-book/AaveV2Ethereum.sol';
+import {AaveV2EthereumAMM} from 'aave-address-book/AaveV2EthereumAMM.sol';
 import {AaveV2Polygon} from 'aave-address-book/AaveV2Polygon.sol';
 import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {LendingPoolConfigurator as EthPoolConfigurator, ILendingPoolAddressesProvider as IEthLendingPoolAddressesProvider} from 'src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
+import {LendingPoolConfigurator as EthAmmPoolConfigurator, ILendingPoolAddressesProvider as IEthAmmLendingPoolAddressesProvider} from 'src/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 import {LendingPoolConfigurator as PolPoolConfigurator, ILendingPoolAddressesProvider as IPolLendingPoolAddressesProvider} from 'src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 import {LendingPoolConfigurator as AvaPoolConfigurator, ILendingPoolAddressesProvider as IAvaLendingPoolAddressesProvider} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 
-import {V2PoolConfiguratorUpdatePayload} from 'src/payloads/V2PoolConfiguratorUpdatePayload.sol';
+import {V2EthConfiguratorUpdatePayload} from 'src/payloads/V2EthConfiguratorUpdatePayload.sol';
+import {V2L2ConfiguratorUpdatePayload} from 'src/payloads/V2L2ConfiguratorUpdatePayload.sol';
 
 contract DeployMainnet is Script {
   EthPoolConfigurator public poolConfigurator;
-  V2PoolConfiguratorUpdatePayload public payload;
+  EthAmmPoolConfigurator public ammPoolConfigurator;
+  V2EthConfiguratorUpdatePayload public payload;
 
   function run() external {
     vm.startBroadcast();
@@ -23,9 +27,16 @@ contract DeployMainnet is Script {
       IEthLendingPoolAddressesProvider(address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER))
     );
 
-    payload = new V2PoolConfiguratorUpdatePayload(
+    ammPoolConfigurator = new EthAmmPoolConfigurator();
+    ammPoolConfigurator.initialize(
+      IEthAmmLendingPoolAddressesProvider(address(AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER))
+    );
+
+    payload = new V2EthConfiguratorUpdatePayload(
       address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER),
-      address(poolConfigurator)
+      address(poolConfigurator),
+      address(AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER),
+      address(ammPoolConfigurator)
     );
     vm.stopBroadcast();
 
@@ -36,7 +47,7 @@ contract DeployMainnet is Script {
 
 contract DeployPolygon is Script {
   PolPoolConfigurator public poolConfigurator;
-  V2PoolConfiguratorUpdatePayload public payload;
+  V2L2ConfiguratorUpdatePayload public payload;
 
   function run() external {
     vm.startBroadcast();
@@ -45,7 +56,7 @@ contract DeployPolygon is Script {
       IPolLendingPoolAddressesProvider(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER))
     );
 
-    payload = new V2PoolConfiguratorUpdatePayload(
+    payload = new V2L2ConfiguratorUpdatePayload(
       address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER),
       address(poolConfigurator)
     );
@@ -58,7 +69,7 @@ contract DeployPolygon is Script {
 
 contract DeployAvalanche is Script {
   AvaPoolConfigurator public poolConfigurator;
-  V2PoolConfiguratorUpdatePayload public payload;
+  V2L2ConfiguratorUpdatePayload public payload;
 
   function run() external {
     vm.startBroadcast();
@@ -67,7 +78,7 @@ contract DeployAvalanche is Script {
       IAvaLendingPoolAddressesProvider(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER))
     );
 
-    payload = new V2PoolConfiguratorUpdatePayload(
+    payload = new V2L2ConfiguratorUpdatePayload(
       address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER),
       address(poolConfigurator)
     );

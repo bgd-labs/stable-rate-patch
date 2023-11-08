@@ -3,7 +3,7 @@ pragma solidity >=0.6.12;
 
 import {ILendingPoolAddressesProvider} from 'aave-address-book/AaveV2.sol';
 
-contract V2PoolConfiguratorUpdatePayload {
+contract V2L2ConfiguratorUpdatePayload {
   address public immutable NEW_POOL_CONFIGURATOR_IMPL;
   address public immutable POOL_ADDRESSES_PROVIDER;
 
