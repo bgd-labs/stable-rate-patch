@@ -49,6 +49,9 @@ download-all-etherscan :;
 	cast etherscan-source --chain 43114 -d etherscan/v2AvaPoolConfigurator 0xc7938af7ec68c3d5ac3a396e28661b3e366b8fcf
 	forge flatten etherscan/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol --output etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
 
+	cast etherscan-source --chain 1 -d etherscan/v2AmmEthPoolConfigurator 0x5a8adc696009a2e0d142c46fdddd8c44be1604b4
+	forge flatten etherscan/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol --output etherscan/v2AmmEthPoolConfigurator/flattened/PoolConfigurator.sol
+
 download-deployed-contracts :;
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2UsdtStableDebtToken 0xC61262D6ad449AC09B4087f46391Dd9A26b5888B
 	cast etherscan-source --chain 1 -d etherscan/deployed/v2WbtcStableDebtToken 0x4f279f2046870F77cd9Ce63497f8A2D8689ef804
@@ -99,6 +102,7 @@ diff-contracts :;
 	make git-diff before=etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol after=etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol out=v2EthPolPoolConfigurator
 	make git-diff before=etherscan/v2PolPoolConfigurator/flattened/PoolConfigurator.sol after=etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol out=v2PolAvaPoolConfigurator
 	make git-diff before=etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol after=etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol out=v2EthAvaPoolConfigurator
+	make git-diff before=etherscan/v2AmmEthPoolConfigurator/flattened/PoolConfigurator.sol after=etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol out=v2EthAmmEthPoolConfigurator
 
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3ArbStableDebtToken out=v3PolArbStableDebtToken
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3OptStableDebtToken out=v3PolOptStableDebtToken
