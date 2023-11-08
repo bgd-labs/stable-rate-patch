@@ -1,6 +1,6 @@
 ```diff
 diff --git a/etherscan/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol b/src/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
-index 49451d9..336bce4 100644
+index 49451d9..a131612 100644
 --- a/etherscan/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
 +++ b/src/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol
 @@ -46,7 +46,15 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
