@@ -3,6 +3,7 @@
 ## Summary
 
 Repository containing different developments concerning the Aave incident described [HERE](https://governance.aave.com/t/aave-v2-v3-security-incident-04-11-2023/15335/26).
+
 - Stable Debt Token upgraded implementations, stopping minting.
 - Liquidations Grace Sentinel.
 
@@ -15,14 +16,12 @@ The main objective of this mechanism, is to allow a gracefully unpause of an Aav
 
 Same as with the pause mechanism (as they are complementary), the usage of the liquidation grace sentinel will be allowed only for the current `emergencyAdmin`` of the Aave v2 pool: the Aave Guardian.
 
-
 ### Technical details
 
 - In order to activate a grace period, the `setGracePeriods()` on `LiquidationsGraceSentinel` should be called with the assets affected, and timestamps in the future until which the grace period will be triggered.
-This should be done before the unpause.
+  This should be done before the unpause.
 - The Liquidations Grace Sentinel requires an upgrade on the `LendingPoolCollateralManager` of Aave v2, introducing the condition to validate grace periods.
 - The `LiquidationsGraceSentinel` for Aave v2 Ethereum can be found on [https://etherscan.io/address/0x929b090FD0E12Aa5F6863f71037f8B23Cd1DE633](https://etherscan.io/address/0x929b090FD0E12Aa5F6863f71037f8B23Cd1DE633).
-
 
 ## Diffs
 
@@ -52,18 +51,18 @@ The diffs among different aave v2 pool configurators can be found here: [v2EthPo
 
 You can find the diffs between the new deployed contracts of aave v2 stable debt impl tokens and the previous deployed contract:
 
-| Token | PrevStableDebtImpl | NewStableDebtImpl | Diff |
-| --- | --- | --- | --- |
-| USDT | 0x9d4578c813d69745092a4f951753ed2b28056279 | 0xC61262D6ad449AC09B4087f46391Dd9A26b5888B | [HERE](diffs/deployed/v2UsdtStableDebtToken.md) |
-| WBTC | 0x6ac108c4c3fe7f4d367513f599da1b9df7c43433 | 0x4f279f2046870F77cd9Ce63497f8A2D8689ef804 | [HERE](diffs/deployed/v2WbtcStableDebtToken.md) |
-| WETH | 0xa558ea1a875f8b576f0728d32c39f62158e49b92 | 0xEd14b4E51B04d4d0211474a721F77C0817166c2f | [HERE](diffs/deployed/v2WethStableDebtToken.md) |
-| ZRX | 0x42a87bf47b5efd11fa9ddd5321bf9aa502233b74 | 0xffaCA447191d8196C8Cf96E5912b732063DE4307 | [HERE](diffs/deployed/v2ZrxStableDebtToken.md) |
-| BAT | 0x917fd53da13edcce5c155a7dbc73e1e4dccd4267 | 0x49B6645a9aa05f1Be24893136100467276399470 | [HERE](diffs/deployed/v2BatStableDebtToken.md) |
-| ENJ | 0x8286288f3c454b51dfc70bd0d6918220428b0741 | 0x0fB427f800C5E39E7d8029e19F515300d4bb22C2 | [HERE](diffs/deployed/v2EnjStableDebtToken.md) |
-| KNC | 0xf818b175353f023e3ec1a098d040778b835897c7 | 0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3 | [HERE](diffs/deployed/v2KncStableDebtToken.md) |
-| LINK | 0xadc313f17a3e2180f609a45d7b381a45e2e88a9f | 0x1B80694AF3D4e617c747423f992F532B8baE098b | [HERE](diffs/deployed/v2LinkStableDebtToken.md) |
-| MANA | 0x441c5cd55e9e3267d02f7b1b4d245aa1c61891c3 | 0xe0bf71fF662e8bbeb911ACEa765f4b8be052F59b | [HERE](diffs/deployed/v2ManaStableDebtToken.md) |
-| MKR | 0x20f9027c5092739c58250cf456642e8e3d4dbed5 | 0xC4CFCE0b16199818Ad942a87902C9172ba005022 | [HERE](diffs/deployed/v2MkrStableDebtToken.md) |
-| REN | 0x7b3e7aea49a5f5d2514b9317d4cf58f828ac28c2 | 0x6F4B277366e10F68003A0a65Ef8f118f3D60B67E | [HERE](diffs/deployed/v2RenStableDebtToken.md) |
-| USDC | 0x3b2a77058a1eb4403a90b94585fab16bc512e703 | 0x8DFF7Fda82976452b6FB957F549944e7af7A3e6F | [HERE](diffs/deployed/v2UsdcStableDebtToken.md) |
-| LUSD | 0x595c33538215dc4b092f35afc85d904631263f4f | 0x1363602E58e25929A15bE194a3D505Fd6F8BE751 | [HERE](diffs/deployed/v2LusdStableDebtToken.md) |
+| Token | PrevStableDebtImpl                         | NewStableDebtImpl                          | Diff                                            |
+| ----- | ------------------------------------------ | ------------------------------------------ | ----------------------------------------------- |
+| USDT  | 0x9d4578c813d69745092a4f951753ed2b28056279 | 0xC61262D6ad449AC09B4087f46391Dd9A26b5888B | [HERE](diffs/deployed/v2UsdtStableDebtToken.md) |
+| WBTC  | 0x6ac108c4c3fe7f4d367513f599da1b9df7c43433 | 0x4f279f2046870F77cd9Ce63497f8A2D8689ef804 | [HERE](diffs/deployed/v2WbtcStableDebtToken.md) |
+| WETH  | 0xa558ea1a875f8b576f0728d32c39f62158e49b92 | 0xEd14b4E51B04d4d0211474a721F77C0817166c2f | [HERE](diffs/deployed/v2WethStableDebtToken.md) |
+| ZRX   | 0x42a87bf47b5efd11fa9ddd5321bf9aa502233b74 | 0xffaCA447191d8196C8Cf96E5912b732063DE4307 | [HERE](diffs/deployed/v2ZrxStableDebtToken.md)  |
+| BAT   | 0x917fd53da13edcce5c155a7dbc73e1e4dccd4267 | 0x49B6645a9aa05f1Be24893136100467276399470 | [HERE](diffs/deployed/v2BatStableDebtToken.md)  |
+| ENJ   | 0x8286288f3c454b51dfc70bd0d6918220428b0741 | 0x0fB427f800C5E39E7d8029e19F515300d4bb22C2 | [HERE](diffs/deployed/v2EnjStableDebtToken.md)  |
+| KNC   | 0xf818b175353f023e3ec1a098d040778b835897c7 | 0x22a8FD718924ab2f9dd4D0326DD8ab99Ef21D0b3 | [HERE](diffs/deployed/v2KncStableDebtToken.md)  |
+| LINK  | 0xadc313f17a3e2180f609a45d7b381a45e2e88a9f | 0x1B80694AF3D4e617c747423f992F532B8baE098b | [HERE](diffs/deployed/v2LinkStableDebtToken.md) |
+| MANA  | 0x441c5cd55e9e3267d02f7b1b4d245aa1c61891c3 | 0xe0bf71fF662e8bbeb911ACEa765f4b8be052F59b | [HERE](diffs/deployed/v2ManaStableDebtToken.md) |
+| MKR   | 0x20f9027c5092739c58250cf456642e8e3d4dbed5 | 0xC4CFCE0b16199818Ad942a87902C9172ba005022 | [HERE](diffs/deployed/v2MkrStableDebtToken.md)  |
+| REN   | 0x7b3e7aea49a5f5d2514b9317d4cf58f828ac28c2 | 0x6F4B277366e10F68003A0a65Ef8f118f3D60B67E | [HERE](diffs/deployed/v2RenStableDebtToken.md)  |
+| USDC  | 0x3b2a77058a1eb4403a90b94585fab16bc512e703 | 0x8DFF7Fda82976452b6FB957F549944e7af7A3e6F | [HERE](diffs/deployed/v2UsdcStableDebtToken.md) |
+| LUSD  | 0x595c33538215dc4b092f35afc85d904631263f4f | 0x1363602E58e25929A15bE194a3D505Fd6F8BE751 | [HERE](diffs/deployed/v2LusdStableDebtToken.md) |

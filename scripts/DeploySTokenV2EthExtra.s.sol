@@ -7,7 +7,7 @@ import {StableDebtToken} from '../src/v2EthStableDebtToken/StableDebtToken/contr
 import {AaveV2Ethereum} from 'aave-address-book/AaveV2Ethereum.sol';
 import {DataTypes} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/protocol/libraries/types/DataTypes.sol';
 import {IERC20Detailed} from '../src/v2EthStableDebtToken/StableDebtToken/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol';
-import {V2EthSTokenPayloadExtra} from "../src/payloads/V2EthSTokenPayloadExtra.sol";
+import {V2EthSTokenPayloadExtra} from '../src/payloads/V2EthSTokenPayloadExtra.sol';
 
 struct StableToken {
   address underlying;
@@ -48,9 +48,9 @@ contract BaseDeploy {
       );
 
       deployedImpl[i] = StableToken({
-        underlying : reserves[i],
-        stableToken : stableDebtTokenAddress,
-        newSTImpl : address(newStableDebtImpl)
+        underlying: reserves[i],
+        stableToken: stableDebtTokenAddress,
+        newSTImpl: address(newStableDebtImpl)
       });
     }
     return deployedImpl;

@@ -3,3 +3,6 @@ lib
 cache
 node_modules
 src/V*
+etherscan/
+diffs/
+reports/
