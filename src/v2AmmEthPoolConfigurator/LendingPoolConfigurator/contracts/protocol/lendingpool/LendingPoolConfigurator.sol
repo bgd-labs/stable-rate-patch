@@ -187,9 +187,9 @@ contract LendingPoolConfigurator is VersionedInitializable, ILendingPoolConfigur
     ILendingPool cachedPool = pool;
 
     DataTypes.ReserveData memory reserveData = cachedPool.getReserveData(input.asset);
-    
+       
     (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
-    
+
     bytes memory encodedCall = abi.encodeWithSelector(
         IInitializableDebtToken.initialize.selector,
         cachedPool,
