@@ -13,6 +13,8 @@ contract V2L2ConfiguratorUpdatePayload {
   }
 
   function execute() public {
-    ILendingPoolAddressesProvider(POOL_ADDRESSES_PROVIDER).setLendingPoolConfiguratorImpl(NEW_POOL_CONFIGURATOR_IMPL);
+    ILendingPoolAddressesProvider(POOL_ADDRESSES_PROVIDER).setLendingPoolConfiguratorImpl(
+      NEW_POOL_CONFIGURATOR_IMPL
+    );
   }
 }

@@ -7,7 +7,6 @@ import {Errors} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contract
 import {ILendingPoolConfigurator, IAaveProtocolDataProvider} from 'aave-address-book/AaveV2.sol';
 
 abstract contract V2PoolConfiguratorTestBase is Test {
-
   address immutable PAYLOADS_CONTROLLER;
   address immutable EXECUTOR_LVL_1;
   address immutable EMERGENCY_ADMIN;

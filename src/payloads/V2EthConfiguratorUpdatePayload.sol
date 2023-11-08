@@ -15,8 +15,7 @@ contract V2EthConfiguratorUpdatePayload {
     address v2PoolConfiguratorImpl,
     address v2AmmPoolAddressesProvider,
     address v2AmmPoolConfiguratorImpl
-  )
-   public {
+  ) public {
     V2_POOL_ADDRESSES_PROVIDER = v2PoolAddressesProvider;
     NEW_V2_POOL_CONFIGURATOR_IMPL = v2PoolConfiguratorImpl;
 
@@ -25,7 +24,11 @@ contract V2EthConfiguratorUpdatePayload {
   }
 
   function execute() public {
-    ILendingPoolAddressesProvider(V2_POOL_ADDRESSES_PROVIDER).setLendingPoolConfiguratorImpl(NEW_V2_POOL_CONFIGURATOR_IMPL);
-    ILendingPoolAddressesProvider(V2_AMM_POOL_ADDRESSES_PROVIDER).setLendingPoolConfiguratorImpl(NEW_V2_AMM_POOL_CONFIGURATOR_IMPL);
+    ILendingPoolAddressesProvider(V2_POOL_ADDRESSES_PROVIDER).setLendingPoolConfiguratorImpl(
+      NEW_V2_POOL_CONFIGURATOR_IMPL
+    );
+    ILendingPoolAddressesProvider(V2_AMM_POOL_ADDRESSES_PROVIDER).setLendingPoolConfiguratorImpl(
+      NEW_V2_AMM_POOL_CONFIGURATOR_IMPL
+    );
   }
 }
