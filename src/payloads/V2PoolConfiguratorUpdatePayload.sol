@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: agpl-3.0
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.6.12;
 
 import {ILendingPoolAddressesProvider} from 'aave-address-book/AaveV2.sol';

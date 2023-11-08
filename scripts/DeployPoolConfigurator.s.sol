@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: agpl-3.0
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0;
 
 import {Script} from 'forge-std/Script.sol';
