@@ -7,7 +7,7 @@ import {
   AaveV3Optimism,
   AaveV3Arbitrum,
   AaveV3Fantom,
-  AaveV3Harmony
+  AaveV3Harmony,
 } from '@bgd-labs/aave-address-book';
 dotenv.config();
 
@@ -94,7 +94,6 @@ async function getV3StableDebtImpl() {
     const addr = getImpl('arbitrum', v3ArbStableTokens[i]);
     console.log('impl: ', addr, ' proxy:', v3ArbStableTokens[i]);
   }
-
 }
 
 async function main() {

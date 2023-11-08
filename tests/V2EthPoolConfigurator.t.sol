@@ -18,7 +18,9 @@ contract V2EthPoolConfiguratorTest is Test {
     poolConfigurator = new LendingPoolConfigurator();
 
     vm.startPrank(GOV_V3_ETH_EXECUTOR_LVL_1);
-    AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolConfiguratorImpl(address(poolConfigurator));
+    AaveV2Ethereum.POOL_ADDRESSES_PROVIDER.setLendingPoolConfiguratorImpl(
+      address(poolConfigurator)
+    );
     vm.stopPrank();
   }
 
@@ -45,7 +47,9 @@ contract V2EthPoolConfiguratorTest is Test {
     AaveV2Ethereum.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
@@ -54,7 +58,9 @@ contract V2EthPoolConfiguratorTest is Test {
     AaveV2Ethereum.POOL_CONFIGURATOR.freezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
@@ -63,7 +69,9 @@ contract V2EthPoolConfiguratorTest is Test {
     AaveV2Ethereum.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
     assertEq(isFrozen, false);
   }
 
@@ -72,8 +80,9 @@ contract V2EthPoolConfiguratorTest is Test {
     AaveV2Ethereum.POOL_CONFIGURATOR.unfreezeReserve(AaveV2EthereumAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Ethereum
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2EthereumAssets.USDC_UNDERLYING);
     assertEq(isFrozen, false);
   }
-
 }

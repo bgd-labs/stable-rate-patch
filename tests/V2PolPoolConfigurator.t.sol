@@ -45,7 +45,9 @@ contract V2PolPoolConfiguratorTest is Test {
     AaveV2Polygon.POOL_CONFIGURATOR.freezeReserve(AaveV2PolygonAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Polygon.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Polygon
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
@@ -54,7 +56,9 @@ contract V2PolPoolConfiguratorTest is Test {
     AaveV2Polygon.POOL_CONFIGURATOR.freezeReserve(AaveV2PolygonAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Polygon.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Polygon
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
@@ -63,7 +67,9 @@ contract V2PolPoolConfiguratorTest is Test {
     AaveV2Polygon.POOL_CONFIGURATOR.unfreezeReserve(AaveV2PolygonAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Polygon.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Polygon
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
     assertEq(isFrozen, false);
   }
 
@@ -72,8 +78,9 @@ contract V2PolPoolConfiguratorTest is Test {
     AaveV2Polygon.POOL_CONFIGURATOR.unfreezeReserve(AaveV2PolygonAssets.USDC_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Polygon.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Polygon
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2PolygonAssets.USDC_UNDERLYING);
     assertEq(isFrozen, false);
   }
-
 }

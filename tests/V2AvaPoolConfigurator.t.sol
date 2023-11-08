@@ -18,7 +18,9 @@ contract V2AvaPoolConfiguratorTest is Test {
     poolConfigurator = new LendingPoolConfigurator();
 
     vm.startPrank(GOV_V3_AVA_EXECUTOR_LVL_1);
-    AaveV2Avalanche.POOL_ADDRESSES_PROVIDER.setLendingPoolConfiguratorImpl(address(poolConfigurator));
+    AaveV2Avalanche.POOL_ADDRESSES_PROVIDER.setLendingPoolConfiguratorImpl(
+      address(poolConfigurator)
+    );
     vm.stopPrank();
   }
 
@@ -45,7 +47,9 @@ contract V2AvaPoolConfiguratorTest is Test {
     AaveV2Avalanche.POOL_CONFIGURATOR.freezeReserve(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Avalanche
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
@@ -54,7 +58,9 @@ contract V2AvaPoolConfiguratorTest is Test {
     AaveV2Avalanche.POOL_CONFIGURATOR.freezeReserve(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Avalanche
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     assertEq(isFrozen, true);
   }
 
@@ -63,7 +69,9 @@ contract V2AvaPoolConfiguratorTest is Test {
     AaveV2Avalanche.POOL_CONFIGURATOR.unfreezeReserve(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Avalanche
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     assertEq(isFrozen, false);
   }
 
@@ -72,8 +80,9 @@ contract V2AvaPoolConfiguratorTest is Test {
     AaveV2Avalanche.POOL_CONFIGURATOR.unfreezeReserve(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     vm.stopPrank();
 
-    (,,,,,,,,, bool isFrozen) = AaveV2Avalanche.AAVE_PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
+    (, , , , , , , , , bool isFrozen) = AaveV2Avalanche
+      .AAVE_PROTOCOL_DATA_PROVIDER
+      .getReserveConfigurationData(AaveV2AvalancheAssets.USDCe_UNDERLYING);
     assertEq(isFrozen, false);
   }
-
 }
