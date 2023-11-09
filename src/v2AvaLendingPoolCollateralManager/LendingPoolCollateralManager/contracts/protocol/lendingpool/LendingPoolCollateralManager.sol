@@ -7,7 +7,7 @@ import {IAToken} from '../../interfaces/IAToken.sol';
 import {IStableDebtToken} from '../../interfaces/IStableDebtToken.sol';
 import {IVariableDebtToken} from '../../interfaces/IVariableDebtToken.sol';
 import {IPriceOracleGetter} from '../../interfaces/IPriceOracleGetter.sol';
-import {ILendingPoolCollateralManager} from '../../interfaces/ILendingPoolCollateralManager.sol';
+import {ILendingPoolCollateralManager, ILiquidationsGraceSentinel} from '../../interfaces/ILendingPoolCollateralManager.sol';
 import {VersionedInitializable} from '../libraries/aave-upgradeability/VersionedInitializable.sol';
 import {GenericLogic} from '../libraries/logic/GenericLogic.sol';
 import {Helpers} from '../libraries/helpers/Helpers.sol';
@@ -37,6 +37,7 @@ contract LendingPoolCollateralManager is
   using PercentageMath for uint256;
 
   uint256 internal constant LIQUIDATION_CLOSE_FACTOR_PERCENT = 5000;
+  ILiquidationsGraceSentinel public immutable override LIQUIDATIONS_GRACE_SENTINEL;
 
   struct LiquidationCallLocalVars {
     uint256 userCollateralBalance;
@@ -56,6 +57,10 @@ contract LendingPoolCollateralManager is
     DataTypes.InterestRateMode borrowRateMode;
     uint256 errorCode;
     string errorMsg;
+  }
+
+  constructor(address liquidationsGraceRegistry) public {
+    LIQUIDATIONS_GRACE_SENTINEL = ILiquidationsGraceSentinel(liquidationsGraceRegistry);
   }
 
   /**
@@ -90,6 +95,16 @@ contract LendingPoolCollateralManager is
     DataTypes.UserConfigurationMap storage userConfig = _usersConfig[user];
 
     LiquidationCallLocalVars memory vars;
+
+    if (
+      address(LIQUIDATIONS_GRACE_SENTINEL) != address(0) &&
+      (
+        LIQUIDATIONS_GRACE_SENTINEL.gracePeriodUntil(collateralAsset) >= uint40(block.timestamp) ||
+        LIQUIDATIONS_GRACE_SENTINEL.gracePeriodUntil(debtAsset) >= uint40(block.timestamp)
+      )
+    ) {
+      return (uint256(Errors.CollateralManagerErrors.ON_GRACE_PERIOD), Errors.LPCM_ON_GRACE_PERIOD);
+    }
 
     (, , , , vars.healthFactor) = GenericLogic.calculateUserAccountData(
       user,
