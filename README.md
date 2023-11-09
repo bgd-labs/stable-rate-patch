@@ -33,7 +33,7 @@ Various diffs have also been created among all the different aave v2 stable debt
 
 The diffs among different aave v3 stable debt tokens have also been added over here: [v3PolArbStableDebtToken](diffs/v3PolArbStableDebtToken.md), [v3PolAvaStableDebtToken](diffs/v3PolAvaStableDebtToken.md), [v3PolOptStableDebtToken](diffs/v3PolOptStableDebtToken.md). We can conclude that there is no diffs between different v3 stable debt tokens across networks.
 
-The diffs among different aave v2 pool configurators can be found here: [v2EthPolPoolConfigurator](diffs/v2EthPolPoolConfigurator.md), [v2PolAvaPoolConfigurator](diffs/v2PolAvaPoolConfigurator.md), [v2EthAvaPoolConfigurator](diffs/v2EthAvaPoolConfigurator.md)
+The diffs among different aave v2 pool configurators can be found here: [v2EthPolPoolConfigurator](diffs/v2EthPolPoolConfigurator.md), [v2PolAvaPoolConfigurator](diffs/v2PolAvaPoolConfigurator.md), [v2EthAvaPoolConfigurator](diffs/v2EthAvaPoolConfigurator.md), [v2EthAmmEthPoolConfigurator](diffs/v2EthAmmEthPoolConfigurator.md), [v2EthAmmPolPoolConfigurator](diffs/v2EthAmmPolPoolConfigurator.md), [v2EthAmmAvaPoolConfigurator](diffs/v2EthAmmAvaPoolConfigurator.md)
 
 ### Scripts for diffs:
 

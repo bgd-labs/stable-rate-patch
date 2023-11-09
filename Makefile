@@ -113,6 +113,8 @@ diff-contracts :;
 	make git-diff before=etherscan/flattened/v2PolPoolConfigurator after=etherscan/flattened/v2AvaPoolConfigurator out=v2PolAvaPoolConfigurator
 	make git-diff before=etherscan/flattened/v2EthPoolConfigurator after=etherscan/flattened/v2AvaPoolConfigurator out=v2EthAvaPoolConfigurator
 	make git-diff before=etherscan/flattened/v2AmmEthPoolConfigurator after=etherscan/flattened/v2EthPoolConfigurator out=v2EthAmmEthPoolConfigurator
+	make git-diff before=etherscan/flattened/v2AmmEthPoolConfigurator after=etherscan/flattened/v2PolPoolConfigurator out=v2EthAmmPolPoolConfigurator
+	make git-diff before=etherscan/flattened/v2AmmEthPoolConfigurator after=etherscan/flattened/v2AvaPoolConfigurator out=v2EthAmmAvaPoolConfigurator
 
 	make git-diff before=etherscan/v2EthPoolConfigurator after=src/v2EthPoolConfigurator out=v2EthPoolConfigurator
 	make git-diff before=etherscan/v2PolPoolConfigurator after=src/v2PolPoolConfigurator out=v2PolPoolConfigurator
@@ -218,18 +220,6 @@ storage-diff :;
 	forge inspect src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2EthPoolConfigurator_layout.md
 	npm run clean-storage-report updated_v2EthPoolConfigurator_layout
 	make git-diff before=reports/v2EthPoolConfigurator_layout.md after=reports/updated_v2EthPoolConfigurator_layout.md out=v2EthPoolConfigurator_layout_diff
-
-	forge inspect etherscan/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2PolPoolConfigurator_layout.md
-	npm run clean-storage-report v2PolPoolConfigurator_layout
-	forge inspect src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2PolPoolConfigurator_layout.md
-	npm run clean-storage-report updated_v2PolPoolConfigurator_layout
-	make git-diff before=reports/v2PolPoolConfigurator_layout.md after=reports/updated_v2PolPoolConfigurator_layout.md out=v2PolPoolConfigurator_layout_diff
-
-	forge inspect etherscan/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2AvaPoolConfigurator_layout.md
-	npm run clean-storage-report v2AvaPoolConfigurator_layout
-	forge inspect src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2AvaPoolConfigurator_layout.md
-	npm run clean-storage-report updated_v2AvaPoolConfigurator_layout
-	make git-diff before=reports/v2AvaPoolConfigurator_layout.md after=reports/updated_v2AvaPoolConfigurator_layout.md out=v2AvaPoolConfigurator_layout_diff
 
 	forge inspect etherscan/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2AmmEthPoolConfigurator_layout.md
 	npm run clean-storage-report v2AmmEthPoolConfigurator_layout
