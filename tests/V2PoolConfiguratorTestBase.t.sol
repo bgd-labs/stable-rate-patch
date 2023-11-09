@@ -3,7 +3,7 @@ pragma solidity >=0.6.0;
 pragma experimental ABIEncoderV2;
 
 import 'forge-std/Test.sol';
-import {Errors} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol';
+import {Errors} from 'src/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/libraries/helpers/Errors.sol';
 import {ILendingPoolConfigurator, IAaveProtocolDataProvider} from 'aave-address-book/AaveV2.sol';
 
 abstract contract V2PoolConfiguratorTestBase is Test {

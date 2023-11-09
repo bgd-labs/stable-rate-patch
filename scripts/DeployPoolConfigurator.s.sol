@@ -9,8 +9,6 @@ import {AaveV2Polygon} from 'aave-address-book/AaveV2Polygon.sol';
 import {AaveV2Avalanche} from 'aave-address-book/AaveV2Avalanche.sol';
 import {LendingPoolConfigurator as EthPoolConfigurator, ILendingPoolAddressesProvider as IEthLendingPoolAddressesProvider} from 'src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 import {LendingPoolConfigurator as EthAmmPoolConfigurator, ILendingPoolAddressesProvider as IEthAmmLendingPoolAddressesProvider} from 'src/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
-import {LendingPoolConfigurator as PolPoolConfigurator, ILendingPoolAddressesProvider as IPolLendingPoolAddressesProvider} from 'src/v2PolPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
-import {LendingPoolConfigurator as AvaPoolConfigurator, ILendingPoolAddressesProvider as IAvaLendingPoolAddressesProvider} from 'src/v2AvaPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol';
 
 import {V2EthConfiguratorUpdatePayload} from 'src/payloads/V2EthConfiguratorUpdatePayload.sol';
 import {V2L2ConfiguratorUpdatePayload} from 'src/payloads/V2L2ConfiguratorUpdatePayload.sol';
@@ -44,9 +42,10 @@ library DeployConfiguratorEthLib {
 
 library DeployConfiguratorPolLib {
   function deploy() internal returns (address) {
-    PolPoolConfigurator poolConfigurator = new PolPoolConfigurator();
+    // As the Pool Configurators are same for Eth Amm and v2 Polygon we use the same code for them
+    EthAmmPoolConfigurator poolConfigurator = new EthAmmPoolConfigurator();
     poolConfigurator.initialize(
-      IPolLendingPoolAddressesProvider(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER))
+      IEthAmmLendingPoolAddressesProvider(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER))
     );
 
     V2L2ConfiguratorUpdatePayload payload = new V2L2ConfiguratorUpdatePayload(
@@ -63,9 +62,10 @@ library DeployConfiguratorPolLib {
 
 library DeployConfiguratorAvaLib {
   function deploy() internal returns (address) {
-    AvaPoolConfigurator poolConfigurator = new AvaPoolConfigurator();
+    // As the Pool Configurators are same for Eth Amm and v2 Avalanche we use the same code for them
+    EthAmmPoolConfigurator poolConfigurator = new EthAmmPoolConfigurator();
     poolConfigurator.initialize(
-      IAvaLendingPoolAddressesProvider(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER))
+      IEthAmmLendingPoolAddressesProvider(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER))
     );
 
     V2L2ConfiguratorUpdatePayload payload = new V2L2ConfiguratorUpdatePayload(
