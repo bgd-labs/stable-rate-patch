@@ -71,6 +71,11 @@ download-deployed-contracts :;
 	cast etherscan-source --chain 42161 -d etherscan/deployed/v3ArbStableDebtToken 0xCB7113D3d572613BbFCeCf80d1341cFFE2A92C00
 	cast etherscan-source --chain 43114 -d etherscan/deployed/v3AvaStableDebtToken 0xccf12894957E637Bd69693B12F3ba12b539C2D11
 	cast etherscan-source --chain 10 -d etherscan/deployed/v3OptStableDebtToken 0x69713dA5fDfacf77E80C31F9B928Ec0Fc3716384
+	cast etherscan-source --chain 250 -d etherscan/deployed/v3FanStableDebtToken 0xa88c6D90eAe942291325f9ae3c66f3563B93FE10
+
+	cast etherscan-source --chain 1 -d etherscan/deployed/v2EthLendingPoolCollateralManager 0x368e6441bB27159c6e8e6d3bbd9147BEcBA915E3
+	cast etherscan-source --chain 137 -d etherscan/deployed/v2PolLendingPoolCollateralManager 0xAdDb96Fb6A795faf042DD25BD4710267C41D1F74
+	cast etherscan-source --chain 43114 -d etherscan/deployed/v2AvaLendingPoolCollateralManager 0x69a45013f047a65422defdd0c43f09530d7025c0
 
 diff-deployed-contracts :;
 	make git-diff before=etherscan/v2EthStableDebtAllTokens/0x9d4578c813d69745092a4f951753ed2b28056279 after=etherscan/deployed/v2UsdtStableDebtToken out=deployed/v2UsdtStableDebtToken
@@ -91,6 +96,11 @@ diff-deployed-contracts :;
 	make git-diff before=etherscan/v3ArbStableDebtToken after=etherscan/deployed/v3ArbStableDebtToken out=deployed/v3ArbStableDebtToken
 	make git-diff before=etherscan/v3AvaStableDebtToken after=etherscan/deployed/v3AvaStableDebtToken out=deployed/v3AvaStableDebtToken
 	make git-diff before=etherscan/v3OptStableDebtToken after=etherscan/deployed/v3OptStableDebtToken out=deployed/v3OptStableDebtToken
+	make git-diff before=etherscan/v3FanStableDebtToken after=etherscan/deployed/v3FanStableDebtToken out=deployed/v3FanStableDebtToken
+
+	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=etherscan/deployed/v2EthLendingPoolCollateralManager out=deployed/v2EthLendingPoolCollateralManager
+	make git-diff before=etherscan/v2PolLendingPoolCollateralManager after=etherscan/deployed/v2PolLendingPoolCollateralManager out=deployed/v2PolLendingPoolCollateralManager
+	make git-diff before=etherscan/v2AvaLendingPoolCollateralManager after=etherscan/deployed/v2AvaLendingPoolCollateralManager out=deployed/v2AvaLendingPoolCollateralManager
 
 diff-contracts :;
 	make git-diff before=etherscan/v2EthLendingPoolCollateralManager after=src/v2EthLendingPoolCollateralManager out=v2EthLendingPoolCollateralManager
