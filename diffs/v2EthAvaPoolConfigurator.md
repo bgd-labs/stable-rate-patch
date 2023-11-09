@@ -1,9 +1,145 @@
 ```diff
-diff --git a/etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol b/etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
-index 43097d4..a9f418d 100644
---- a/etherscan/v2EthPoolConfigurator/flattened/PoolConfigurator.sol
-+++ b/etherscan/v2AvaPoolConfigurator/flattened/PoolConfigurator.sol
-@@ -1476,18 +1476,6 @@ interface ILendingPool {
+diff --git a/etherscan/flattened/v2EthPoolConfigurator/PoolConfigurator.sol b/etherscan/flattened/v2AvaPoolConfigurator/PoolConfigurator.sol
+index 13bfc8d..f3d8e40 100644
+--- a/etherscan/flattened/v2EthPoolConfigurator/PoolConfigurator.sol
++++ b/etherscan/flattened/v2AvaPoolConfigurator/PoolConfigurator.sol
+@@ -212,14 +212,14 @@ abstract contract VersionedInitializable {
+   }
+ 
+   /**
+-  * @dev returns the revision number of the contract
+-  * Needs to be defined in the inherited class as a constant.
+-  **/ 
++   * @dev returns the revision number of the contract
++   * Needs to be defined in the inherited class as a constant.
++   **/
+   function getRevision() internal pure virtual returns (uint256);
+ 
+   /**
+-  * @dev Returns true if and only if the function is running in the constructor
+-  **/ 
++   * @dev Returns true if and only if the function is running in the constructor
++   **/
+   function isConstructor() private view returns (bool) {
+     // extcodesize checks the size of the code stored in an address, and
+     // address returns the current address. Since the code is still not
+@@ -257,7 +257,7 @@ abstract contract Proxy {
+   /**
+    * @return The Address of the implementation.
+    */
+-  function _implementation() internal virtual view returns (address);
++  function _implementation() internal view virtual returns (address);
+ 
+   /**
+    * @dev Delegates execution to an implementation contract.
+@@ -385,13 +385,14 @@ contract BaseUpgradeabilityProxy is Proxy {
+    * This is the keccak-256 hash of "eip1967.proxy.implementation" subtracted by 1, and is
+    * validated in the constructor.
+    */
+-  bytes32 internal constant IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
++  bytes32 internal constant IMPLEMENTATION_SLOT =
++    0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
+ 
+   /**
+    * @dev Returns the current implementation.
+    * @return impl Address of the current implementation
+    */
+-  function _implementation() internal override view returns (address impl) {
++  function _implementation() internal view override returns (address impl) {
+     bytes32 slot = IMPLEMENTATION_SLOT;
+     //solium-disable-next-line
+     assembly {
+@@ -796,7 +797,10 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @param bonus The new liquidation bonus
+    **/
+-  function setLiquidationBonus(DataTypes.ReserveConfigurationMap memory self, uint256 bonus) internal pure {
++  function setLiquidationBonus(DataTypes.ReserveConfigurationMap memory self, uint256 bonus)
++    internal
++    pure
++  {
+     require(bonus <= MAX_VALID_LIQUIDATION_BONUS, Errors.RC_INVALID_LIQ_BONUS);
+ 
+     self.data =
+@@ -822,7 +826,10 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @param decimals The decimals
+    **/
+-  function setDecimals(DataTypes.ReserveConfigurationMap memory self, uint256 decimals) internal pure {
++  function setDecimals(DataTypes.ReserveConfigurationMap memory self, uint256 decimals)
++    internal
++    pure
++  {
+     require(decimals <= MAX_VALID_DECIMALS, Errors.RC_INVALID_DECIMALS);
+ 
+     self.data = (self.data & DECIMALS_MASK) | (decimals << RESERVE_DECIMALS_START_BIT_POSITION);
+@@ -833,7 +840,11 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @return The decimals of the asset
+    **/
+-  function getDecimals(DataTypes.ReserveConfigurationMap storage self) internal view returns (uint256) {
++  function getDecimals(DataTypes.ReserveConfigurationMap storage self)
++    internal
++    view
++    returns (uint256)
++  {
+     return (self.data & ~DECIMALS_MASK) >> RESERVE_DECIMALS_START_BIT_POSITION;
+   }
+ 
+@@ -882,7 +893,10 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @param enabled True if the borrowing needs to be enabled, false otherwise
+    **/
+-  function setBorrowingEnabled(DataTypes.ReserveConfigurationMap memory self, bool enabled) internal pure {
++  function setBorrowingEnabled(DataTypes.ReserveConfigurationMap memory self, bool enabled)
++    internal
++    pure
++  {
+     self.data =
+       (self.data & BORROWING_MASK) |
+       (uint256(enabled ? 1 : 0) << BORROWING_ENABLED_START_BIT_POSITION);
+@@ -893,7 +907,11 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @return The borrowing state
+    **/
+-  function getBorrowingEnabled(DataTypes.ReserveConfigurationMap storage self) internal view returns (bool) {
++  function getBorrowingEnabled(DataTypes.ReserveConfigurationMap storage self)
++    internal
++    view
++    returns (bool)
++  {
+     return (self.data & ~BORROWING_MASK) != 0;
+   }
+ 
+@@ -902,10 +920,10 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @param enabled True if the stable rate borrowing needs to be enabled, false otherwise
+    **/
+-  function setStableRateBorrowingEnabled(DataTypes.ReserveConfigurationMap memory self, bool enabled)
+-    internal
+-    pure
+-  {
++  function setStableRateBorrowingEnabled(
++    DataTypes.ReserveConfigurationMap memory self,
++    bool enabled
++  ) internal pure {
+     self.data =
+       (self.data & STABLE_BORROWING_MASK) |
+       (uint256(enabled ? 1 : 0) << STABLE_BORROWING_ENABLED_START_BIT_POSITION);
+@@ -945,7 +963,11 @@ library ReserveConfiguration {
+    * @param self The reserve configuration
+    * @return The reserve factor
+    **/
+-  function getReserveFactor(DataTypes.ReserveConfigurationMap storage self) internal view returns (uint256) {
++  function getReserveFactor(DataTypes.ReserveConfigurationMap storage self)
++    internal
++    view
++    returns (uint256)
++  {
+     return (self.data & ~RESERVE_FACTOR_MASK) >> RESERVE_FACTOR_START_BIT_POSITION;
+   }
+ 
+@@ -1512,18 +1534,6 @@ interface ILendingPool {
    function paused() external view returns (bool);
  }
  
@@ -22,7 +158,7 @@ index 43097d4..a9f418d 100644
  /**
   * @dev Interface of the ERC20 standard as defined in the EIP.
   */
-@@ -1620,16 +1608,269 @@ library PercentageMath {
+@@ -1660,16 +1670,285 @@ library PercentageMath {
    }
  }
  
@@ -45,7 +181,14 @@ index 43097d4..a9f418d 100644
 +   * @param asset The address of the reference asset of the distribution
 +   * @return The asset index, the emission per second and the last updated timestamp
 +   **/
-+  function getAssetData(address asset) external view returns (uint256, uint256, uint256);
++  function getAssetData(address asset)
++    external
++    view
++    returns (
++      uint256,
++      uint256,
++      uint256
++    );
 +
 +  /*
 +   * LEGACY **************************
@@ -53,7 +196,14 @@ index 43097d4..a9f418d 100644
 +   * @param asset The address of the reference asset of the distribution
 +   * @return The asset index, the emission per second and the last updated timestamp
 +   **/
-+  function assets(address asset) external view returns (uint128, uint128, uint256);
++  function assets(address asset)
++    external
++    view
++    returns (
++      uint128,
++      uint128,
++      uint256
++    );
 +
 +  /**
 +   * @dev Whitelists an address to claim the rewards on behalf of another address
@@ -74,10 +224,8 @@ index 43097d4..a9f418d 100644
 +   * @param assets The assets to incentivize
 +   * @param emissionsPerSecond The emission for each asset
 +   */
-+  function configureAssets(
-+    address[] calldata assets,
-+    uint256[] calldata emissionsPerSecond
-+  ) external;
++  function configureAssets(address[] calldata assets, uint256[] calldata emissionsPerSecond)
++    external;
 +
 +  /**
 +   * @dev Called by the corresponding asset on any update that affects the rewards distribution
@@ -85,17 +233,21 @@ index 43097d4..a9f418d 100644
 +   * @param userBalance The balance of the user of the asset in the lending pool
 +   * @param totalSupply The total supply of the asset in the lending pool
 +   **/
-+  function handleAction(address asset, uint256 userBalance, uint256 totalSupply) external;
++  function handleAction(
++    address asset,
++    uint256 userBalance,
++    uint256 totalSupply
++  ) external;
 +
 +  /**
 +   * @dev Returns the total of rewards of an user, already accrued + not yet accrued
 +   * @param user The address of the user
 +   * @return The rewards
 +   **/
-+  function getRewardsBalance(
-+    address[] calldata assets,
-+    address user
-+  ) external view returns (uint256);
++  function getRewardsBalance(address[] calldata assets, address user)
++    external
++    view
++    returns (uint256);
 +
 +  /**
 +   * @dev Claims reward for an user, on all the assets of the lending pool, accumulating the pending rewards
@@ -298,7 +450,7 @@ index 43097d4..a9f418d 100644
  
    /**
     * @dev Emitted when a reserve is initialized.
-@@ -1766,6 +2007,18 @@ contract LendingPoolConfigurator is VersionedInitializable {
+@@ -1806,6 +2085,18 @@ contract LendingPoolConfigurator is VersionedInitializable {
      address indexed proxy,
      address indexed implementation
    );
@@ -317,7 +469,7 @@ index 43097d4..a9f418d 100644
  
    ILendingPoolAddressesProvider internal addressesProvider;
    ILendingPool internal pool;
-@@ -1795,118 +2048,180 @@ contract LendingPoolConfigurator is VersionedInitializable {
+@@ -1835,114 +2126,189 @@ contract LendingPoolConfigurator is VersionedInitializable {
    }
  
    /**
@@ -347,21 +499,7 @@ index 43097d4..a9f418d 100644
 -    require(
 -      address(pool) == ITokenConfiguration(aTokenImpl).POOL(),
 -      Errors.LPC_INVALID_ATOKEN_POOL_ADDRESS
-+  function _initReserve(ILendingPool pool, InitReserveInput calldata input) internal {
-+    address aTokenProxyAddress = _initTokenWithProxy(
-+      input.aTokenImpl,
-+      abi.encodeWithSelector(
-+        IInitializableAToken.initialize.selector,
-+        pool,
-+        input.treasury,
-+        input.underlyingAsset,
-+        IAaveIncentivesController(input.incentivesController),
-+        input.underlyingAssetDecimals,
-+        input.aTokenName,
-+        input.aTokenSymbol,
-+        input.params
-+      )
-     );
+-    );
 -    require(
 -      address(pool) == ITokenConfiguration(stableDebtTokenImpl).POOL(),
 -      Errors.LPC_INVALID_STABLE_DEBT_TOKEN_POOL_ADDRESS
@@ -380,38 +518,54 @@ index 43097d4..a9f418d 100644
 -    );
 -
 -    address aTokenProxyAddress = _initTokenWithProxy(aTokenImpl, underlyingAssetDecimals);
++  function _initReserve(ILendingPool pool, InitReserveInput calldata input) internal {
++    address aTokenProxyAddress =
++      _initTokenWithProxy(
++        input.aTokenImpl,
++        abi.encodeWithSelector(
++          IInitializableAToken.initialize.selector,
++          pool,
++          input.treasury,
++          input.underlyingAsset,
++          IAaveIncentivesController(input.incentivesController),
++          input.underlyingAssetDecimals,
++          input.aTokenName,
++          input.aTokenSymbol,
++          input.params
++        )
++      );
  
-     address stableDebtTokenProxyAddress = _initTokenWithProxy(
--      stableDebtTokenImpl,
--      underlyingAssetDecimals
-+      input.stableDebtTokenImpl,
-+      abi.encodeWithSelector(
-+        IInitializableDebtToken.initialize.selector,
-+        pool,
-+        input.underlyingAsset,
-+        IAaveIncentivesController(input.incentivesController),
-+        input.underlyingAssetDecimals,
-+        input.stableDebtTokenName,
-+        input.stableDebtTokenSymbol,
-+        input.params
-+      )
-     );
+     address stableDebtTokenProxyAddress =
+-      _initTokenWithProxy(stableDebtTokenImpl, underlyingAssetDecimals);
++      _initTokenWithProxy(
++        input.stableDebtTokenImpl,
++        abi.encodeWithSelector(
++          IInitializableDebtToken.initialize.selector,
++          pool,
++          input.underlyingAsset,
++          IAaveIncentivesController(input.incentivesController),
++          input.underlyingAssetDecimals,
++          input.stableDebtTokenName,
++          input.stableDebtTokenSymbol,
++          input.params
++        )
++      );
  
-     address variableDebtTokenProxyAddress = _initTokenWithProxy(
--      variableDebtTokenImpl,
--      underlyingAssetDecimals
-+      input.variableDebtTokenImpl,
-+      abi.encodeWithSelector(
-+        IInitializableDebtToken.initialize.selector,
-+        pool,
-+        input.underlyingAsset,
-+        IAaveIncentivesController(input.incentivesController),
-+        input.underlyingAssetDecimals,
-+        input.variableDebtTokenName,
-+        input.variableDebtTokenSymbol,
-+        input.params
-+      )
-     );
+     address variableDebtTokenProxyAddress =
+-      _initTokenWithProxy(variableDebtTokenImpl, underlyingAssetDecimals);
++      _initTokenWithProxy(
++        input.variableDebtTokenImpl,
++        abi.encodeWithSelector(
++          IInitializableDebtToken.initialize.selector,
++          pool,
++          input.underlyingAsset,
++          IAaveIncentivesController(input.incentivesController),
++          input.underlyingAssetDecimals,
++          input.variableDebtTokenName,
++          input.variableDebtTokenSymbol,
++          input.params
++        )
++      );
  
      pool.initReserve(
 -      asset,
@@ -424,9 +578,8 @@ index 43097d4..a9f418d 100644
      );
  
 -    DataTypes.ReserveConfigurationMap memory currentConfig = pool.getConfiguration(asset);
-+    DataTypes.ReserveConfigurationMap memory currentConfig = pool.getConfiguration(
-+      input.underlyingAsset
-+    );
++    DataTypes.ReserveConfigurationMap memory currentConfig =
++      pool.getConfiguration(input.underlyingAsset);
  
 -    currentConfig.setDecimals(underlyingAssetDecimals);
 +    currentConfig.setDecimals(input.underlyingAssetDecimals);
@@ -465,18 +618,22 @@ index 43097d4..a9f418d 100644
 +    (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
 +
 +    bytes memory encodedCall = abi.encodeWithSelector(
-+      IInitializableAToken.initialize.selector,
-+      cachedPool,
-+      input.treasury,
-+      input.asset,
-+      input.incentivesController,
-+      decimals,
-+      input.name,
-+      input.symbol,
-+      input.params
-+    );
++        IInitializableAToken.initialize.selector,
++        cachedPool,
++        input.treasury,
++        input.asset,
++        input.incentivesController,
++        decimals,
++        input.name,
++        input.symbol,
++        input.params
++      );
 +
-+    _upgradeTokenImplementation(reserveData.aTokenAddress, input.implementation, encodedCall);
++    _upgradeTokenImplementation(
++      reserveData.aTokenAddress,
++      input.implementation,
++      encodedCall
++    );
 +
 +    emit ATokenUpgraded(input.asset, reserveData.aTokenAddress, input.implementation);
    }
@@ -493,20 +650,20 @@ index 43097d4..a9f418d 100644
  
 -    _upgradeTokenImplementation(asset, reserveData.stableDebtTokenAddress, implementation);
 +    DataTypes.ReserveData memory reserveData = cachedPool.getReserveData(input.asset);
- 
+      
 -    emit StableDebtTokenUpgraded(asset, reserveData.stableDebtTokenAddress, implementation);
 +    (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
 +
 +    bytes memory encodedCall = abi.encodeWithSelector(
-+      IInitializableDebtToken.initialize.selector,
-+      cachedPool,
-+      input.asset,
-+      input.incentivesController,
-+      decimals,
-+      input.name,
-+      input.symbol,
-+      input.params
-+    );
++        IInitializableDebtToken.initialize.selector,
++        cachedPool,
++        input.asset,
++        input.incentivesController,
++        decimals,
++        input.name,
++        input.symbol,
++        input.params
++      );
 +
 +    _upgradeTokenImplementation(
 +      reserveData.stableDebtTokenAddress,
@@ -528,7 +685,10 @@ index 43097d4..a9f418d 100644
     **/
 -  function updateVariableDebtToken(address asset, address implementation) external onlyPoolAdmin {
 -    DataTypes.ReserveData memory reserveData = pool.getReserveData(asset);
-+  function updateVariableDebtToken(UpdateDebtTokenInput calldata input) external onlyPoolAdmin {
++  function updateVariableDebtToken(UpdateDebtTokenInput calldata input)
++    external
++    onlyPoolAdmin
++  {
 +    ILendingPool cachedPool = pool;
  
 -    _upgradeTokenImplementation(asset, reserveData.variableDebtTokenAddress, implementation);
@@ -538,15 +698,15 @@ index 43097d4..a9f418d 100644
 +    (, , , uint256 decimals, ) = cachedPool.getConfiguration(input.asset).getParamsMemory();
 +
 +    bytes memory encodedCall = abi.encodeWithSelector(
-+      IInitializableDebtToken.initialize.selector,
-+      cachedPool,
-+      input.asset,
-+      input.incentivesController,
-+      decimals,
-+      input.name,
-+      input.symbol,
-+      input.params
-+    );
++        IInitializableDebtToken.initialize.selector,
++        cachedPool,
++        input.asset,
++        input.incentivesController,
++        decimals,
++        input.name,
++        input.symbol,
++        input.params
++      );
 +
 +    _upgradeTokenImplementation(
 +      reserveData.variableDebtTokenAddress,
@@ -562,25 +722,25 @@ index 43097d4..a9f418d 100644
    }
  
    /**
-@@ -2117,44 +2432,29 @@ contract LendingPoolConfigurator is VersionedInitializable {
+@@ -2153,44 +2519,27 @@ contract LendingPoolConfigurator is VersionedInitializable {
      pool.setPause(val);
    }
  
 -  function _initTokenWithProxy(address implementation, uint8 decimals) internal returns (address) {
-+  function _initTokenWithProxy(
-+    address implementation,
-+    bytes memory initParams
-+  ) internal returns (address) {
-     InitializableImmutableAdminUpgradeabilityProxy proxy = new InitializableImmutableAdminUpgradeabilityProxy(
-         address(this)
-       );
++  function _initTokenWithProxy(address implementation, bytes memory initParams)
++    internal
++    returns (address)
++  {
+     InitializableImmutableAdminUpgradeabilityProxy proxy =
+       new InitializableImmutableAdminUpgradeabilityProxy(address(this));
  
--    bytes memory params = abi.encodeWithSignature(
--      'initialize(uint8,string,string)',
--      decimals,
--      IERC20Detailed(implementation).name(),
--      IERC20Detailed(implementation).symbol()
--    );
+-    bytes memory params =
+-      abi.encodeWithSignature(
+-        'initialize(uint8,string,string)',
+-        decimals,
+-        IERC20Detailed(implementation).name(),
+-        IERC20Detailed(implementation).symbol()
+-      );
 -
 -    proxy.initialize(implementation, params);
 +    proxy.initialize(implementation, initParams);
@@ -595,20 +755,20 @@ index 43097d4..a9f418d 100644
 +    address implementation,
 +    bytes memory initParams
    ) internal {
-     InitializableImmutableAdminUpgradeabilityProxy proxy = InitializableImmutableAdminUpgradeabilityProxy(
-         payable(proxyAddress)
-       );
+     InitializableImmutableAdminUpgradeabilityProxy proxy =
+       InitializableImmutableAdminUpgradeabilityProxy(payable(proxyAddress));
  
 -    DataTypes.ReserveConfigurationMap memory configuration = pool.getConfiguration(asset);
 -
 -    (, , , uint256 decimals, ) = configuration.getParamsMemory();
 -
--    bytes memory params = abi.encodeWithSignature(
--      'initialize(uint8,string,string)',
--      uint8(decimals),
--      IERC20Detailed(implementation).name(),
--      IERC20Detailed(implementation).symbol()
--    );
+-    bytes memory params =
+-      abi.encodeWithSignature(
+-        'initialize(uint8,string,string)',
+-        uint8(decimals),
+-        IERC20Detailed(implementation).name(),
+-        IERC20Detailed(implementation).symbol()
+-      );
 -
 -    proxy.upgradeToAndCall(implementation, params);
 +    proxy.upgradeToAndCall(implementation, initParams);

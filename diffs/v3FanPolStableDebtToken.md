@@ -1,10 +1,10 @@
 ```diff
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IAaveIncentivesController.sol b/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IAaveIncentivesController.sol
 deleted file mode 100644
-index 2cdbf40..0000000
+index d0663cd..0000000
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IAaveIncentivesController.sol
 +++ /dev/null
-@@ -1,160 +0,0 @@
+@@ -1,176 +0,0 @@
 -// SPDX-License-Identifier: AGPL-3.0
 -pragma solidity 0.8.10;
 -
@@ -51,7 +51,14 @@ index 2cdbf40..0000000
 -   * @return The emission per second
 -   * @return The last updated timestamp
 -   **/
--  function getAssetData(address asset) external view returns (uint256, uint256, uint256);
+-  function getAssetData(address asset)
+-    external
+-    view
+-    returns (
+-      uint256,
+-      uint256,
+-      uint256
+-    );
 -
 -  /**
 -   * LEGACY **************************
@@ -59,7 +66,14 @@ index 2cdbf40..0000000
 -   * @param asset The address of the reference asset of the distribution
 -   * @return The asset index, the emission per second and the last updated timestamp
 -   **/
--  function assets(address asset) external view returns (uint128, uint128, uint256);
+-  function assets(address asset)
+-    external
+-    view
+-    returns (
+-      uint128,
+-      uint128,
+-      uint256
+-    );
 -
 -  /**
 -   * @notice Whitelists an address to claim the rewards on behalf of another address
@@ -80,10 +94,8 @@ index 2cdbf40..0000000
 -   * @param assets The assets to incentivize
 -   * @param emissionsPerSecond The emission for each asset
 -   */
--  function configureAssets(
--    address[] calldata assets,
--    uint256[] calldata emissionsPerSecond
--  ) external;
+-  function configureAssets(address[] calldata assets, uint256[] calldata emissionsPerSecond)
+-    external;
 -
 -  /**
 -   * @notice Called by the corresponding asset on any update that affects the rewards distribution
@@ -91,7 +103,11 @@ index 2cdbf40..0000000
 -   * @param userBalance The balance of the user of the asset in the pool
 -   * @param totalSupply The total supply of the asset in the pool
 -   **/
--  function handleAction(address asset, uint256 userBalance, uint256 totalSupply) external;
+-  function handleAction(
+-    address asset,
+-    uint256 userBalance,
+-    uint256 totalSupply
+-  ) external;
 -
 -  /**
 -   * @notice Returns the total of rewards of a user, already accrued + not yet accrued
@@ -99,10 +115,10 @@ index 2cdbf40..0000000
 -   * @param user The address of the user
 -   * @return The rewards
 -   **/
--  function getRewardsBalance(
--    address[] calldata assets,
--    address user
--  ) external view returns (uint256);
+-  function getRewardsBalance(address[] calldata assets, address user)
+-    external
+-    view
+-    returns (uint256);
 -
 -  /**
 -   * @notice Claims reward for a user, on the assets of the pool, accumulating the pending rewards
@@ -170,10 +186,10 @@ similarity index 100%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/Context.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/Context.sol
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20.sol
-similarity index 97%
+similarity index 93%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20.sol
-index 19bc5a4..1d470e0 100644
+index 7dc5593..1d470e0 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20.sol
 @@ -1,5 +1,5 @@
@@ -184,6 +200,19 @@ index 19bc5a4..1d470e0 100644
  
  /**
   * @dev Interface of the ERC20 standard as defined in the EIP.
+@@ -58,11 +58,7 @@ interface IERC20 {
+    *
+    * Emits a {Transfer} event.
+    */
+-  function transferFrom(
+-    address sender,
+-    address recipient,
+-    uint256 amount
+-  ) external returns (bool);
++  function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+ 
+   /**
+    * @dev Emitted when `value` tokens are moved from one account (`from`) to
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol
 similarity index 88%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20Detailed.sol
@@ -330,10 +359,10 @@ index 740cb8c..ad8cd7c 100644
      address indexed underlyingAsset,
      address indexed pool,
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IPool.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol
-similarity index 96%
+similarity index 93%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IPool.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol
-index a537004..ef306e7 100644
+index 7f64b4a..ef306e7 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IPool.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPool.sol
 @@ -1,5 +1,5 @@
@@ -496,7 +525,7 @@ index a537004..ef306e7 100644
    function mintUnbacked(
      address asset,
      uint256 amount,
-@@ -226,12 +226,13 @@ interface IPool {
+@@ -226,16 +226,13 @@ interface IPool {
    ) external;
  
    /**
@@ -506,23 +535,34 @@ index a537004..ef306e7 100644
     * @param amount The amount to back
     * @param fee The amount paid in fees
 -   **/
--  function backUnbacked(address asset, uint256 amount, uint256 fee) external;
+-  function backUnbacked(
+-    address asset,
+-    uint256 amount,
+-    uint256 fee
+-  ) external;
 +   * @return The backed amount
 +   */
 +  function backUnbacked(address asset, uint256 amount, uint256 fee) external returns (uint256);
  
    /**
     * @notice Supplies an `amount` of underlying asset into the reserve, receiving in return overlying aTokens.
-@@ -243,7 +244,7 @@ interface IPool {
+@@ -247,13 +244,8 @@ interface IPool {
     *   is a different wallet
     * @param referralCode Code used to register the integrator originating the operation, for potential rewards.
     *   0 if the action is executed directly by the user, without any middle-man
 -   **/
+-  function supply(
+-    address asset,
+-    uint256 amount,
+-    address onBehalfOf,
+-    uint16 referralCode
+-  ) external;
 +   */
-   function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
++  function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
  
    /**
-@@ -260,7 +261,7 @@ interface IPool {
+    * @notice Supply with transfer approval of asset to be supplied done via permit function
+@@ -269,7 +261,7 @@ interface IPool {
     * @param permitV The V parameter of ERC712 permit sig
     * @param permitR The R parameter of ERC712 permit sig
     * @param permitS The S parameter of ERC712 permit sig
@@ -531,16 +571,22 @@ index a537004..ef306e7 100644
    function supplyWithPermit(
      address asset,
      uint256 amount,
-@@ -282,7 +283,7 @@ interface IPool {
+@@ -291,12 +283,8 @@ interface IPool {
     *   wants to receive it on his own wallet, or a different address if the beneficiary is a
     *   different wallet
     * @return The final amount withdrawn
 -   **/
+-  function withdraw(
+-    address asset,
+-    uint256 amount,
+-    address to
+-  ) external returns (uint256);
 +   */
-   function withdraw(address asset, uint256 amount, address to) external returns (uint256);
++  function withdraw(address asset, uint256 amount, address to) external returns (uint256);
  
    /**
-@@ -299,7 +300,7 @@ interface IPool {
+    * @notice Allows users to borrow a specific `amount` of the reserve underlying asset, provided that the borrower
+@@ -312,7 +300,7 @@ interface IPool {
     * @param onBehalfOf The address of the user who will receive the debt. Should be the address of the borrower itself
     * calling the function if he wants to borrow against his own collateral, or the address of the credit delegator
     * if he has been given credit delegation allowance
@@ -549,7 +595,7 @@ index a537004..ef306e7 100644
    function borrow(
      address asset,
      uint256 amount,
-@@ -319,7 +320,7 @@ interface IPool {
+@@ -332,7 +320,7 @@ interface IPool {
     * user calling the function if he wants to reduce/remove his own debt, or the address of any other
     * other borrower whose debt should be removed
     * @return The final amount repaid
@@ -558,7 +604,7 @@ index a537004..ef306e7 100644
    function repay(
      address asset,
      uint256 amount,
-@@ -342,7 +343,7 @@ interface IPool {
+@@ -355,7 +343,7 @@ interface IPool {
     * @param permitR The R parameter of ERC712 permit sig
     * @param permitS The S parameter of ERC712 permit sig
     * @return The final amount repaid
@@ -567,7 +613,7 @@ index a537004..ef306e7 100644
    function repayWithPermit(
      address asset,
      uint256 amount,
-@@ -365,7 +366,7 @@ interface IPool {
+@@ -378,7 +366,7 @@ interface IPool {
     * - Send the value type(uint256).max in order to repay the whole debt for `asset` on the specific `debtMode`
     * @param interestRateMode The interest rate mode at of the debt the user wants to repay: 1 for Stable, 2 for Variable
     * @return The final amount repaid
@@ -576,7 +622,7 @@ index a537004..ef306e7 100644
    function repayWithATokens(
      address asset,
      uint256 amount,
-@@ -376,7 +377,7 @@ interface IPool {
+@@ -389,7 +377,7 @@ interface IPool {
     * @notice Allows a borrower to swap his debt between stable and variable mode, or vice versa
     * @param asset The address of the underlying asset borrowed
     * @param interestRateMode The current interest rate mode of the position being swapped: 1 for Stable, 2 for Variable
@@ -585,7 +631,7 @@ index a537004..ef306e7 100644
    function swapBorrowRateMode(address asset, uint256 interestRateMode) external;
  
    /**
-@@ -387,14 +388,14 @@ interface IPool {
+@@ -400,14 +388,14 @@ interface IPool {
     *        much has been borrowed at a stable rate and suppliers are not earning enough
     * @param asset The address of the underlying asset borrowed
     * @param user The address of the user to be rebalanced
@@ -602,7 +648,7 @@ index a537004..ef306e7 100644
    function setUserUseReserveAsCollateral(address asset, bool useAsCollateral) external;
  
    /**
-@@ -407,7 +408,7 @@ interface IPool {
+@@ -420,7 +408,7 @@ interface IPool {
     * @param debtToCover The debt amount of borrowed `asset` the liquidator wants to cover
     * @param receiveAToken True if the liquidators wants to receive the collateral aTokens, `false` if he wants
     * to receive the underlying collateral asset directly
@@ -611,7 +657,7 @@ index a537004..ef306e7 100644
    function liquidationCall(
      address collateralAsset,
      address debtAsset,
-@@ -420,7 +421,7 @@ interface IPool {
+@@ -433,7 +421,7 @@ interface IPool {
     * @notice Allows smartcontracts to access the liquidity of the pool within one transaction,
     * as long as the amount taken plus a fee is returned.
     * @dev IMPORTANT There are security concerns for developers of flashloan receiver contracts that must be kept
@@ -620,7 +666,7 @@ index a537004..ef306e7 100644
     * @param receiverAddress The address of the contract receiving the funds, implementing IFlashLoanReceiver interface
     * @param assets The addresses of the assets being flash-borrowed
     * @param amounts The amounts of the assets being flash-borrowed
-@@ -432,7 +433,7 @@ interface IPool {
+@@ -445,7 +433,7 @@ interface IPool {
     * @param params Variadic packed params to pass to the receiver as extra information
     * @param referralCode The code used to register the integrator originating the operation, for potential rewards.
     *   0 if the action is executed directly by the user, without any middle-man
@@ -629,7 +675,7 @@ index a537004..ef306e7 100644
    function flashLoan(
      address receiverAddress,
      address[] calldata assets,
-@@ -447,14 +448,14 @@ interface IPool {
+@@ -460,14 +448,14 @@ interface IPool {
     * @notice Allows smartcontracts to access the liquidity of the pool within one transaction,
     * as long as the amount taken plus a fee is returned.
     * @dev IMPORTANT There are security concerns for developers of flashloan receiver contracts that must be kept
@@ -646,16 +692,20 @@ index a537004..ef306e7 100644
    function flashLoanSimple(
      address receiverAddress,
      address asset,
-@@ -472,7 +473,7 @@ interface IPool {
+@@ -485,8 +473,10 @@ interface IPool {
     * @return currentLiquidationThreshold The liquidation threshold of the user
     * @return ltv The loan to value of The user
     * @return healthFactor The current health factor of the user
 -   **/
+-  function getUserAccountData(address user)
 +   */
-   function getUserAccountData(
-     address user
-   )
-@@ -496,7 +497,7 @@ interface IPool {
++  function getUserAccountData(
++    address user
++  )
+     external
+     view
+     returns (
+@@ -507,7 +497,7 @@ interface IPool {
     * @param stableDebtAddress The address of the StableDebtToken that will be assigned to the reserve
     * @param variableDebtAddress The address of the VariableDebtToken that will be assigned to the reserve
     * @param interestRateStrategyAddress The address of the interest rate strategy contract
@@ -664,7 +714,7 @@ index a537004..ef306e7 100644
    function initReserve(
      address asset,
      address aTokenAddress,
-@@ -509,7 +510,7 @@ interface IPool {
+@@ -520,7 +510,7 @@ interface IPool {
     * @notice Drop a reserve
     * @dev Only callable by the PoolConfigurator contract
     * @param asset The address of the underlying asset of the reserve
@@ -673,42 +723,60 @@ index a537004..ef306e7 100644
    function dropReserve(address asset) external;
  
    /**
-@@ -517,7 +518,7 @@ interface IPool {
+@@ -528,41 +518,43 @@ interface IPool {
     * @dev Only callable by the PoolConfigurator contract
     * @param asset The address of the underlying asset of the reserve
     * @param rateStrategyAddress The address of the interest rate strategy contract
 -   **/
+-  function setReserveInterestRateStrategyAddress(address asset, address rateStrategyAddress)
+-    external;
 +   */
-   function setReserveInterestRateStrategyAddress(
-     address asset,
-     address rateStrategyAddress
-@@ -528,7 +529,7 @@ interface IPool {
++  function setReserveInterestRateStrategyAddress(
++    address asset,
++    address rateStrategyAddress
++  ) external;
+ 
+   /**
+    * @notice Sets the configuration bitmap of the reserve as a whole
     * @dev Only callable by the PoolConfigurator contract
     * @param asset The address of the underlying asset of the reserve
     * @param configuration The new configuration bitmap
 -   **/
+-  function setConfiguration(address asset, DataTypes.ReserveConfigurationMap calldata configuration)
+-    external;
 +   */
-   function setConfiguration(
-     address asset,
-     DataTypes.ReserveConfigurationMap calldata configuration
-@@ -538,7 +539,7 @@ interface IPool {
++  function setConfiguration(
++    address asset,
++    DataTypes.ReserveConfigurationMap calldata configuration
++  ) external;
+ 
+   /**
     * @notice Returns the configuration of the reserve
     * @param asset The address of the underlying asset of the reserve
     * @return The configuration of the reserve
 -   **/
+-  function getConfiguration(address asset)
+-    external
+-    view
+-    returns (DataTypes.ReserveConfigurationMap memory);
 +   */
-   function getConfiguration(
-     address asset
-   ) external view returns (DataTypes.ReserveConfigurationMap memory);
-@@ -547,13 +548,13 @@ interface IPool {
++  function getConfiguration(
++    address asset
++  ) external view returns (DataTypes.ReserveConfigurationMap memory);
+ 
+   /**
     * @notice Returns the configuration of the user across all the reserves
     * @param user The user address
     * @return The configuration of the user
 -   **/
+-  function getUserConfiguration(address user)
+-    external
+-    view
+-    returns (DataTypes.UserConfigurationMap memory);
 +   */
-   function getUserConfiguration(
-     address user
-   ) external view returns (DataTypes.UserConfigurationMap memory);
++  function getUserConfiguration(
++    address user
++  ) external view returns (DataTypes.UserConfigurationMap memory);
  
    /**
 -   * @notice Returns the normalized income normalized income of the reserve
@@ -716,7 +784,7 @@ index a537004..ef306e7 100644
     * @param asset The address of the underlying asset of the reserve
     * @return The reserve's normalized income
     */
-@@ -561,6 +562,13 @@ interface IPool {
+@@ -570,6 +562,13 @@ interface IPool {
  
    /**
     * @notice Returns the normalized variable debt per unit of asset
@@ -730,7 +798,7 @@ index a537004..ef306e7 100644
     * @param asset The address of the underlying asset of the reserve
     * @return The reserve normalized variable debt
     */
-@@ -570,7 +578,7 @@ interface IPool {
+@@ -579,7 +578,7 @@ interface IPool {
     * @notice Returns the state and configuration of the reserve
     * @param asset The address of the underlying asset of the reserve
     * @return The state and configuration data of the reserve
@@ -739,7 +807,7 @@ index a537004..ef306e7 100644
    function getReserveData(address asset) external view returns (DataTypes.ReserveData memory);
  
    /**
-@@ -596,20 +604,20 @@ interface IPool {
+@@ -605,20 +604,20 @@ interface IPool {
     * @notice Returns the list of the underlying assets of all the initialized reserves
     * @dev It does not include dropped reserves
     * @return The addresses of the underlying assets of the initialized reserves
@@ -763,7 +831,7 @@ index a537004..ef306e7 100644
    function ADDRESSES_PROVIDER() external view returns (IPoolAddressesProvider);
  
    /**
-@@ -702,7 +710,7 @@ interface IPool {
+@@ -711,7 +710,7 @@ interface IPool {
    /**
     * @notice Mints the assets accrued through the reserve factor to the treasury in the form of aTokens
     * @param assets The list of reserves for which the minting needs to be executed
@@ -772,13 +840,32 @@ index a537004..ef306e7 100644
    function mintToTreasury(address[] calldata assets) external;
  
    /**
-@@ -724,6 +732,6 @@ interface IPool {
+@@ -720,11 +719,7 @@ interface IPool {
+    * @param to The address of the recipient
+    * @param amount The amount of token to transfer
+    */
+-  function rescueTokens(
+-    address token,
+-    address to,
+-    uint256 amount
+-  ) external;
++  function rescueTokens(address token, address to, uint256 amount) external;
+ 
+   /**
+    * @notice Supplies an `amount` of underlying asset into the reserve, receiving in return overlying aTokens.
+@@ -737,11 +732,6 @@ interface IPool {
     *   is a different wallet
     * @param referralCode Code used to register the integrator originating the operation, for potential rewards.
     *   0 if the action is executed directly by the user, without any middle-man
 -   **/
+-  function deposit(
+-    address asset,
+-    uint256 amount,
+-    address onBehalfOf,
+-    uint16 referralCode
+-  ) external;
 +   */
-   function deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
++  function deposit(address asset, uint256 amount, address onBehalfOf, uint16 referralCode) external;
  }
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IPoolAddressesProvider.sol
 similarity index 98%
@@ -869,10 +956,10 @@ index 01a126b..587a0d0 100644
    function setPoolDataProvider(address newDataProvider) external;
  }
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IStableDebtToken.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IStableDebtToken.sol
-similarity index 91%
+similarity index 89%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IStableDebtToken.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IStableDebtToken.sol
-index b230652..87ca180 100644
+index ad5cdb4..87ca180 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/interfaces/IStableDebtToken.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/interfaces/IStableDebtToken.sol
 @@ -1,5 +1,5 @@
@@ -921,7 +1008,7 @@ index b230652..87ca180 100644
    event Burn(
      address indexed from,
      uint256 amount,
-@@ -62,7 +62,7 @@ interface IStableDebtToken is IInitializableDebtToken {
+@@ -62,19 +62,13 @@ interface IStableDebtToken is IInitializableDebtToken {
     * @return True if it is the first borrow, false otherwise
     * @return The total stable debt
     * @return The average stable borrow rate
@@ -930,7 +1017,20 @@ index b230652..87ca180 100644
    function mint(
      address user,
      address onBehalfOf,
-@@ -80,27 +80,27 @@ interface IStableDebtToken is IInitializableDebtToken {
+     uint256 amount,
+     uint256 rate
+-  )
+-    external
+-    returns (
+-      bool,
+-      uint256,
+-      uint256
+-    );
++  ) external returns (bool, uint256, uint256);
+ 
+   /**
+    * @notice Burns debt of `user`
+@@ -86,27 +80,27 @@ interface IStableDebtToken is IInitializableDebtToken {
     * @param amount The amount of debt tokens getting burned
     * @return The total stable debt
     * @return The average stable borrow rate
@@ -962,13 +1062,22 @@ index b230652..87ca180 100644
    function getUserLastUpdated(address user) external view returns (uint40);
  
    /**
-@@ -109,31 +109,31 @@ interface IStableDebtToken is IInitializableDebtToken {
+@@ -115,39 +109,31 @@ interface IStableDebtToken is IInitializableDebtToken {
     * @return The total supply
     * @return The average stable rate
     * @return The timestamp of the last update
 -   **/
+-  function getSupplyData()
+-    external
+-    view
+-    returns (
+-      uint256,
+-      uint256,
+-      uint256,
+-      uint40
+-    );
 +   */
-   function getSupplyData() external view returns (uint256, uint256, uint256, uint40);
++  function getSupplyData() external view returns (uint256, uint256, uint256, uint40);
  
    /**
     * @notice Returns the timestamp of the last update of the total supply
@@ -1067,10 +1176,10 @@ index 640e463..990069e 100644
 +  string public constant FLASHLOAN_DISABLED = '91'; // FlashLoaning for this asset is disabled
  }
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/libraries/math/MathUtils.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/libraries/math/MathUtils.sol
-similarity index 98%
+similarity index 91%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/libraries/math/MathUtils.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/libraries/math/MathUtils.sol
-index e4f710c..9adca93 100644
+index bd6e083..9adca93 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/libraries/math/MathUtils.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/libraries/math/MathUtils.sol
 @@ -1,5 +1,5 @@
@@ -1080,16 +1189,25 @@ index e4f710c..9adca93 100644
  
  import {WadRayMath} from './WadRayMath.sol';
  
-@@ -19,7 +19,7 @@ library MathUtils {
+@@ -19,12 +19,11 @@ library MathUtils {
     * @param rate The interest rate, in ray
     * @param lastUpdateTimestamp The timestamp of the last update of the interest
     * @return The interest rate linearly accumulated during the timeDelta, in ray
 -   **/
+-  function calculateLinearInterest(uint256 rate, uint40 lastUpdateTimestamp)
+-    internal
+-    view
+-    returns (uint256)
+-  {
 +   */
-   function calculateLinearInterest(
-     uint256 rate,
-     uint40 lastUpdateTimestamp
-@@ -46,7 +46,7 @@ library MathUtils {
++  function calculateLinearInterest(
++    uint256 rate,
++    uint40 lastUpdateTimestamp
++  ) internal view returns (uint256) {
+     //solium-disable-next-line
+     uint256 result = rate * (block.timestamp - uint256(lastUpdateTimestamp));
+     unchecked {
+@@ -47,7 +46,7 @@ library MathUtils {
     * @param rate The interest rate, in ray
     * @param lastUpdateTimestamp The timestamp of the last update of the interest
     * @return The interest rate compounded during the timeDelta, in ray
@@ -1098,15 +1216,24 @@ index e4f710c..9adca93 100644
    function calculateCompoundedInterest(
      uint256 rate,
      uint40 lastUpdateTimestamp,
-@@ -89,7 +89,7 @@ library MathUtils {
+@@ -90,12 +89,11 @@ library MathUtils {
     * @param rate The interest rate (in ray)
     * @param lastUpdateTimestamp The timestamp from which the interest accumulation needs to be calculated
     * @return The interest rate compounded between lastUpdateTimestamp and current block timestamp, in ray
 -   **/
+-  function calculateCompoundedInterest(uint256 rate, uint40 lastUpdateTimestamp)
+-    internal
+-    view
+-    returns (uint256)
+-  {
 +   */
-   function calculateCompoundedInterest(
-     uint256 rate,
-     uint40 lastUpdateTimestamp
++  function calculateCompoundedInterest(
++    uint256 rate,
++    uint40 lastUpdateTimestamp
++  ) internal view returns (uint256) {
+     return calculateCompoundedInterest(rate, lastUpdateTimestamp, block.timestamp);
+   }
+ }
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/libraries/math/WadRayMath.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/libraries/math/WadRayMath.sol
 similarity index 98%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/libraries/math/WadRayMath.sol
@@ -1212,10 +1339,10 @@ index 7113a0a..8589dc0 100644
    struct ReserveCache {
      uint256 currScaledVariableDebt;
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol
-similarity index 99%
+similarity index 91%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol
-index 125595b..eac46ce 100644
+index c37358b..eac46ce 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/StableDebtToken.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol
 @@ -21,12 +21,12 @@ import {SafeCast} from '../../dependencies/openzeppelin/contracts/SafeCast.sol';
@@ -1233,16 +1360,98 @@ index 125595b..eac46ce 100644
  
    // Map of users address and the timestamp of their last update (userAddress => lastUpdateTimestamp)
    mapping(address => uint40) internal _timestamps;
-@@ -250,7 +250,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+@@ -40,10 +40,9 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+    * @dev Constructor.
+    * @param pool The address of the Pool contract
+    */
+-  constructor(IPool pool)
+-    DebtTokenBase()
+-    IncentivizedERC20(pool, 'STABLE_DEBT_TOKEN_IMPL', 'STABLE_DEBT_TOKEN_IMPL', 0)
+-  {
++  constructor(
++    IPool pool
++  ) DebtTokenBase() IncentivizedERC20(pool, 'STABLE_DEBT_TOKEN_IMPL', 'STABLE_DEBT_TOKEN_IMPL', 0) {
+     // Intentionally left blank
+   }
+ 
+@@ -127,17 +126,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+     address onBehalfOf,
+     uint256 amount,
+     uint256 rate
+-  )
+-    external
+-    virtual
+-    override
+-    onlyPool
+-    returns (
+-      bool,
+-      uint256,
+-      uint256
+-    )
+-  {
++  ) external virtual override onlyPool returns (bool, uint256, uint256) {
+     MintLocalVars memory vars;
+ 
+     if (user != onBehalfOf) {
+@@ -186,13 +175,10 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+   }
+ 
+   /// @inheritdoc IStableDebtToken
+-  function burn(address from, uint256 amount)
+-    external
+-    virtual
+-    override
+-    onlyPool
+-    returns (uint256, uint256)
+-  {
++  function burn(
++    address from,
++    uint256 amount
++  ) external virtual override onlyPool returns (uint256, uint256) {
+     (, uint256 currentBalance, uint256 balanceIncrease) = _calculateBalanceIncrease(from);
+ 
+     uint256 previousSupply = totalSupply();
+@@ -264,16 +250,10 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
     * @return The previous principal balance
     * @return The new principal balance
     * @return The balance increase
 -   **/
+-  function _calculateBalanceIncrease(address user)
+-    internal
+-    view
+-    returns (
+-      uint256,
+-      uint256,
+-      uint256
+-    )
+-  {
 +   */
-   function _calculateBalanceIncrease(
-     address user
-   ) internal view returns (uint256, uint256, uint256) {
-@@ -305,7 +305,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
++  function _calculateBalanceIncrease(
++    address user
++  ) internal view returns (uint256, uint256, uint256) {
+     uint256 previousPrincipalBalance = super.balanceOf(user);
+ 
+     if (previousPrincipalBalance == 0) {
+@@ -290,17 +270,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+   }
+ 
+   /// @inheritdoc IStableDebtToken
+-  function getSupplyData()
+-    external
+-    view
+-    override
+-    returns (
+-      uint256,
+-      uint256,
+-      uint256,
+-      uint40
+-    )
+-  {
++  function getSupplyData() external view override returns (uint256, uint256, uint256, uint40) {
+     uint256 avgRate = _avgStableRate;
+     return (super.totalSupply(), _calcTotalSupply(avgRate), avgRate, _totalSupplyTimestamp);
+   }
+@@ -335,7 +305,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
     * @notice Calculates the total supply
     * @param avgRate The average rate at which the total supply increases
     * @return The debt balance of the user since the last burn/mint action
@@ -1251,25 +1460,37 @@ index 125595b..eac46ce 100644
    function _calcTotalSupply(uint256 avgRate) internal view returns (uint256) {
      uint256 principalSupply = super.totalSupply();
  
-@@ -326,7 +326,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+@@ -356,12 +326,8 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
     * @param account The account receiving the debt tokens
     * @param amount The amount being minted
     * @param oldTotalSupply The total supply before the minting event
 -   **/
+-  function _mint(
+-    address account,
+-    uint256 amount,
+-    uint256 oldTotalSupply
+-  ) internal {
 +   */
-   function _mint(address account, uint256 amount, uint256 oldTotalSupply) internal {
++  function _mint(address account, uint256 amount, uint256 oldTotalSupply) internal {
      uint128 castAmount = amount.toUint128();
      uint128 oldAccountBalance = _userState[account].balance;
-@@ -342,7 +342,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+     _userState[account].balance = oldAccountBalance + castAmount;
+@@ -376,12 +342,8 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
     * @param account The user getting his debt burned
     * @param amount The amount being burned
     * @param oldTotalSupply The total supply before the burning event
 -   **/
+-  function _burn(
+-    address account,
+-    uint256 amount,
+-    uint256 oldTotalSupply
+-  ) internal {
 +   */
-   function _burn(address account, uint256 amount, uint256 oldTotalSupply) internal {
++  function _burn(address account, uint256 amount, uint256 oldTotalSupply) internal {
      uint128 castAmount = amount.toUint128();
      uint128 oldAccountBalance = _userState[account].balance;
-@@ -361,7 +361,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+     _userState[account].balance = oldAccountBalance - castAmount;
+@@ -399,7 +361,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
    /**
     * @dev Being non transferrable, the debt token does not implement any of the
     * standard ERC20 functions for transfer and allowance.
@@ -1278,31 +1499,73 @@ index 125595b..eac46ce 100644
    function transfer(address, uint256) external virtual override returns (bool) {
      revert(Errors.OPERATION_NOT_SUPPORTED);
    }
+@@ -412,11 +374,7 @@ contract StableDebtToken is DebtTokenBase, IncentivizedERC20, IStableDebtToken {
+     revert(Errors.OPERATION_NOT_SUPPORTED);
+   }
+ 
+-  function transferFrom(
+-    address,
+-    address,
+-    uint256
+-  ) external virtual override returns (bool) {
++  function transferFrom(address, address, uint256) external virtual override returns (bool) {
+     revert(Errors.OPERATION_NOT_SUPPORTED);
+   }
+ 
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/DebtTokenBase.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/DebtTokenBase.sol
-similarity index 99%
+similarity index 90%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/DebtTokenBase.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/DebtTokenBase.sol
-index 2557e1c..4ba95f2 100644
+index 3e5ac90..4ba95f2 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/DebtTokenBase.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/DebtTokenBase.sol
-@@ -80,7 +80,7 @@ abstract contract DebtTokenBase is
+@@ -68,12 +68,10 @@ abstract contract DebtTokenBase is
+   }
+ 
+   /// @inheritdoc ICreditDelegationToken
+-  function borrowAllowance(address fromUser, address toUser)
+-    external
+-    view
+-    override
+-    returns (uint256)
+-  {
++  function borrowAllowance(
++    address fromUser,
++    address toUser
++  ) external view override returns (uint256) {
+     return _borrowAllowances[fromUser][toUser];
+   }
+ 
+@@ -82,12 +80,8 @@ abstract contract DebtTokenBase is
     * @param delegator The address delegating the borrowing power
     * @param delegatee The address receiving the delegated borrowing power
     * @param amount The allowance amount being delegated.
 -   **/
+-  function _approveDelegation(
+-    address delegator,
+-    address delegatee,
+-    uint256 amount
+-  ) internal {
 +   */
-   function _approveDelegation(address delegator, address delegatee, uint256 amount) internal {
++  function _approveDelegation(address delegator, address delegatee, uint256 amount) internal {
      _borrowAllowances[delegator][delegatee] = amount;
      emit BorrowAllowanceDelegated(delegator, delegatee, _underlyingAsset, amount);
-@@ -91,7 +91,7 @@ abstract contract DebtTokenBase is
+   }
+@@ -97,12 +91,8 @@ abstract contract DebtTokenBase is
     * @param delegator The address delegating the borrowing power
     * @param delegatee The address receiving the delegated borrowing power
     * @param amount The amount to subtract from the current allowance
 -   **/
+-  function _decreaseBorrowAllowance(
+-    address delegator,
+-    address delegatee,
+-    uint256 amount
+-  ) internal {
 +   */
-   function _decreaseBorrowAllowance(address delegator, address delegatee, uint256 amount) internal {
++  function _decreaseBorrowAllowance(address delegator, address delegatee, uint256 amount) internal {
      uint256 newAllowance = _borrowAllowances[delegator][delegatee] - amount;
  
+     _borrowAllowances[delegator][delegatee] = newAllowance;
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/EIP712Base.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/EIP712Base.sol
 similarity index 98%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/EIP712Base.sol
@@ -1317,10 +1580,10 @@ index bb16119..afe9dd8 100644
  
  /**
 diff --git a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/IncentivizedERC20.sol b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/IncentivizedERC20.sol
-similarity index 98%
+similarity index 92%
 rename from etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/IncentivizedERC20.sol
 rename to etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/IncentivizedERC20.sol
-index 8fbe462..08a219e 100644
+index 4c0d83c..08a219e 100644
 --- a/etherscan/v3FanStableDebtToken/StableDebtToken/@aave/core-v3/contracts/protocol/tokenization/base/IncentivizedERC20.sol
 +++ b/etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/base/IncentivizedERC20.sol
 @@ -16,14 +16,14 @@ import {IACLManager} from '../../../interfaces/IACLManager.sol';
@@ -1349,7 +1612,21 @@ index 8fbe462..08a219e 100644
    modifier onlyPool() {
      require(_msgSender() == address(POOL), Errors.CALLER_MUST_BE_POOL);
      _;
-@@ -105,7 +105,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+@@ -69,12 +69,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+    * @param symbol The symbol of the token
+    * @param decimals The number of decimals of the token
+    */
+-  constructor(
+-    IPool pool,
+-    string memory name,
+-    string memory symbol,
+-    uint8 decimals
+-  ) {
++  constructor(IPool pool, string memory name, string memory symbol, uint8 decimals) {
+     _addressesProvider = pool.ADDRESSES_PROVIDER();
+     _name = name;
+     _symbol = symbol;
+@@ -110,7 +105,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
    /**
     * @notice Returns the address of the Incentives Controller contract
     * @return The address of the Incentives Controller
@@ -1358,7 +1635,7 @@ index 8fbe462..08a219e 100644
    function getIncentivesController() external view virtual returns (IAaveIncentivesController) {
      return _incentivesController;
    }
-@@ -113,7 +113,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+@@ -118,7 +113,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
    /**
     * @notice Sets a new Incentives Controller
     * @param controller the new Incentives controller
@@ -1367,7 +1644,25 @@ index 8fbe462..08a219e 100644
    function setIncentivesController(IAaveIncentivesController controller) external onlyPoolAdmin {
      _incentivesController = controller;
    }
-@@ -156,7 +156,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+@@ -131,13 +126,10 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+   }
+ 
+   /// @inheritdoc IERC20
+-  function allowance(address owner, address spender)
+-    external
+-    view
+-    virtual
+-    override
+-    returns (uint256)
+-  {
++  function allowance(
++    address owner,
++    address spender
++  ) external view virtual override returns (uint256) {
+     return _allowances[owner][spender];
+   }
+ 
+@@ -164,7 +156,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
     * @param spender The user allowed to spend on behalf of _msgSender()
     * @param addedValue The amount being added to the allowance
     * @return `true`
@@ -1376,16 +1671,38 @@ index 8fbe462..08a219e 100644
    function increaseAllowance(address spender, uint256 addedValue) external virtual returns (bool) {
      _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
      return true;
-@@ -167,7 +167,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+@@ -175,12 +167,11 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
     * @param spender The user allowed to spend on behalf of _msgSender()
     * @param subtractedValue The amount being subtracted to the allowance
     * @return `true`
 -   **/
+-  function decreaseAllowance(address spender, uint256 subtractedValue)
+-    external
+-    virtual
+-    returns (bool)
+-  {
 +   */
-   function decreaseAllowance(
-     address spender,
-     uint256 subtractedValue
-@@ -196,7 +196,6 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
++  function decreaseAllowance(
++    address spender,
++    uint256 subtractedValue
++  ) external virtual returns (bool) {
+     _approve(_msgSender(), spender, _allowances[_msgSender()][spender] - subtractedValue);
+     return true;
+   }
+@@ -191,11 +182,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+    * @param recipient The destination address
+    * @param amount The amount getting transferred
+    */
+-  function _transfer(
+-    address sender,
+-    address recipient,
+-    uint128 amount
+-  ) internal virtual {
++  function _transfer(address sender, address recipient, uint128 amount) internal virtual {
+     uint128 oldSenderBalance = _userState[sender].balance;
+     _userState[sender].balance = oldSenderBalance - amount;
+     uint128 oldRecipientBalance = _userState[recipient].balance;
+@@ -209,7 +196,6 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
          incentivesControllerLocal.handleAction(recipient, currentTotalSupply, oldRecipientBalance);
        }
      }
@@ -1393,4 +1710,17 @@ index 8fbe462..08a219e 100644
    }
  
    /**
+@@ -218,11 +204,7 @@ abstract contract IncentivizedERC20 is Context, IERC20Detailed {
+    * @param spender The address approved for spending
+    * @param amount The amount of tokens to approve spending of
+    */
+-  function _approve(
+-    address owner,
+-    address spender,
+-    uint256 amount
+-  ) internal virtual {
++  function _approve(address owner, address spender, uint256 amount) internal virtual {
+     _allowances[owner][spender] = amount;
+     emit Approval(owner, spender, amount);
+   }
 ```
