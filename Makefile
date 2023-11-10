@@ -127,8 +127,6 @@ diff-contracts :;
 	make git-diff before=etherscan/flattened/v2AmmEthPoolConfigurator after=etherscan/flattened/v2AvaPoolConfigurator out=v2EthAmmAvaPoolConfigurator
 
 	make git-diff before=etherscan/v2EthPoolConfigurator after=src/v2EthPoolConfigurator out=v2EthPoolConfigurator
-	make git-diff before=etherscan/v2PolPoolConfigurator after=src/v2PolPoolConfigurator out=v2PolPoolConfigurator
-	make git-diff before=etherscan/v2AvaPoolConfigurator after=src/v2AvaPoolConfigurator out=v2AvaPoolConfigurator
 	make git-diff before=etherscan/v2AmmEthPoolConfigurator after=src/v2AmmEthPoolConfigurator out=v2AmmEthPoolConfigurator
 
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3ArbStableDebtToken out=v3PolArbStableDebtToken
