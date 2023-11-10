@@ -279,6 +279,7 @@ deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-
 deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork-url optimism $(common-flags)
 
 deploy-configurator-mainnet :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployMainnet --rpc-url mainnet $(common-flags)
+deploy-configurator-mainnet-amm :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployMainnetAMM --rpc-url mainnet $(common-flags)
 deploy-configurator-polygon :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployPolygon --rpc-url polygon $(common-flags)
 deploy-configurator-avalanche :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployAvalanche --rpc-url avalanche $(common-flags)
 
