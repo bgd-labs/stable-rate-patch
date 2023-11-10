@@ -3,7 +3,7 @@ pragma solidity >=0.6.0;
 pragma experimental ABIEncoderV2;
 
 import {V2PoolConfiguratorTestBase} from './V2PoolConfiguratorTestBase.t.sol';
-import {DeployConfiguratorEthLib, DeployConfiguratorPolLib, DeployConfiguratorAvaLib} from 'scripts/DeployPoolConfigurator.s.sol';
+import {DeployConfiguratorEthLib, DeployConfiguratorL2Lib} from 'scripts/DeployPoolConfigurator.s.sol';
 import {V2EthConfiguratorUpdatePayload} from 'src/payloads/V2EthConfiguratorUpdatePayload.sol';
 import {V2L2ConfiguratorUpdatePayload} from 'src/payloads/V2L2ConfiguratorUpdatePayload.sol';
 import {AaveV2Ethereum, AaveV2EthereumAssets} from 'aave-address-book/AaveV2Ethereum.sol';
@@ -81,7 +81,7 @@ contract V2PolPoolConfiguratorTest is V2PoolConfiguratorTestBase {
   }
 
   function _deployAndExecutePayload() internal {
-    address payload = DeployConfiguratorPolLib.deploy();
+    address payload = DeployConfiguratorL2Lib.deploy(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER));
     hoax(PAYLOADS_CONTROLLER);
     IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }
@@ -106,7 +106,7 @@ contract V2AvaPoolConfiguratorTest is V2PoolConfiguratorTestBase {
   }
 
   function _deployAndExecutePayload() internal {
-    address payload = DeployConfiguratorAvaLib.deploy();
+    address payload = DeployConfiguratorL2Lib.deploy(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER));
     hoax(PAYLOADS_CONTROLLER);
     IExecutor(EXECUTOR_LVL_1).executeTransaction(address(payload), 0, 'execute()', bytes(''), true);
   }

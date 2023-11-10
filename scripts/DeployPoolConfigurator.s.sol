@@ -40,41 +40,21 @@ library DeployConfiguratorEthLib {
   }
 }
 
-library DeployConfiguratorPolLib {
-  function deploy() internal returns (address) {
-    // As the Pool Configurators are same for Eth Amm and v2 Polygon we use the same code for them
+library DeployConfiguratorL2Lib {
+  function deploy(address addressesProvider) internal returns (address) {
+    // As the Pool Configurators are same for Eth Amm and v2 Avalanche and v2 Polygon we use the same code for them
     EthAmmPoolConfigurator poolConfigurator = new EthAmmPoolConfigurator();
     poolConfigurator.initialize(
-      IEthAmmLendingPoolAddressesProvider(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER))
+      IEthAmmLendingPoolAddressesProvider(addressesProvider)
     );
 
     V2L2ConfiguratorUpdatePayload payload = new V2L2ConfiguratorUpdatePayload(
-      address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER),
+      addressesProvider,
       address(poolConfigurator)
     );
 
-    console.log('Polygon Pool Configurator Impl address', address(poolConfigurator));
-    console.log('Polygon Payload address', address(payload));
-
-    return address(payload);
-  }
-}
-
-library DeployConfiguratorAvaLib {
-  function deploy() internal returns (address) {
-    // As the Pool Configurators are same for Eth Amm and v2 Avalanche we use the same code for them
-    EthAmmPoolConfigurator poolConfigurator = new EthAmmPoolConfigurator();
-    poolConfigurator.initialize(
-      IEthAmmLendingPoolAddressesProvider(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER))
-    );
-
-    V2L2ConfiguratorUpdatePayload payload = new V2L2ConfiguratorUpdatePayload(
-      address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER),
-      address(poolConfigurator)
-    );
-
-    console.log('Avalanche Pool Configurator Impl address', address(poolConfigurator));
-    console.log('Avalanche Payload address', address(payload));
+    console.log('L2 Pool Configurator Impl address', address(poolConfigurator));
+    console.log('L2 Payload address', address(payload));
 
     return address(payload);
   }
@@ -91,7 +71,7 @@ contract DeployMainnet is Script {
 contract DeployPolygon is Script {
   function run() external {
     vm.startBroadcast();
-    DeployConfiguratorPolLib.deploy();
+    DeployConfiguratorL2Lib.deploy(address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER));
     vm.stopBroadcast();
   }
 }
@@ -99,7 +79,7 @@ contract DeployPolygon is Script {
 contract DeployAvalanche is Script {
   function run() external {
     vm.startBroadcast();
-    DeployConfiguratorAvaLib.deploy();
+    DeployConfiguratorL2Lib.deploy(address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER));
     vm.stopBroadcast();
   }
 }
