@@ -137,7 +137,7 @@ diff-contracts :;
 	make git-diff before=etherscan/v3FanStableDebtToken after=etherscan/v3PolStableDebtToken out=v3FanPolStableDebtToken
 
 storage-diff :;
-	# LendingPoolCollateralManager
+  # LendingPoolCollateralManager
 
 	forge inspect etherscan/v2EthLendingPoolCollateralManager/LendingPoolCollateralManager/contracts/protocol/lendingpool/LendingPoolCollateralManager.sol:LendingPoolCollateralManager storage-layout --pretty > reports/v2EthLendingPoolCollateralManager_layout.md
 	npm run clean-storage-report v2EthLendingPoolCollateralManager_layout
@@ -157,7 +157,7 @@ storage-diff :;
 	npm run clean-storage-report updated_v2AvaLendingPoolCollateralManager_layout
 	make git-diff before=reports/v2AvaLendingPoolCollateralManager_layout.md after=reports/updated_v2AvaLendingPoolCollateralManager_layout.md out=v2AvaLendingPoolCollateralManager_layout_diff
 
-	# v2 stable debt token
+  # v2 stable debt token
 
 	forge inspect etherscan/v2EthStableDebtToken/StableDebtToken/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v2EthStableDebtToken_layout.md
 	npm run clean-storage-report v2EthStableDebtToken_layout
@@ -165,7 +165,7 @@ storage-diff :;
 	npm run clean-storage-report updated_v2EthStableDebtToken_layout
 	make git-diff before=reports/v2EthStableDebtToken_layout.md after=reports/updated_v2EthStableDebtToken_layout.md out=v2EthStableDebtToken_layout_diff
 
-	# v3 pools
+  # v3 pools
 
 	forge inspect etherscan/v3PolPool/Pool/lib/aave-v3-core/contracts/protocol/pool/Pool.sol:Pool storage-layout --pretty > reports/v3PolPool_layout.md
 	npm run clean-storage-report v3PolPool_layout
@@ -191,7 +191,7 @@ storage-diff :;
 	npm run clean-storage-report updated_v3AvaPool_layout
 	make git-diff before=reports/v3AvaPool_layout.md after=reports/updated_v3AvaPool_layout.md out=v3AvaPool_layout_diff
 
-	# v3 stable debt token
+  # v3 stable debt token
 
 	forge inspect etherscan/v3PolStableDebtToken/StableDebtToken/lib/aave-v3-core/contracts/protocol/tokenization/StableDebtToken.sol:StableDebtToken storage-layout --pretty > reports/v3PolStableDebtToken_layout.md
 	npm run clean-storage-report v3PolStableDebtToken_layout
@@ -224,20 +224,6 @@ storage-diff :;
 	make git-diff before=reports/v3FanStableDebtToken_layout.md after=reports/updated_v3FanHarStableDebtToken_layout.md out=v3FanHarStableDebtToken_layout_diff
 
   # Lending Pool Configurator
-
-	forge inspect etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2EthPoolConfigurator_layout.md
-	npm run clean-storage-report v2EthPoolConfigurator_layout
-	forge inspect src/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2EthPoolConfigurator_layout.md
-	npm run clean-storage-report updated_v2EthPoolConfigurator_layout
-	make git-diff before=reports/v2EthPoolConfigurator_layout.md after=reports/updated_v2EthPoolConfigurator_layout.md out=v2EthPoolConfigurator_layout_diff
-
-	forge inspect etherscan/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2AmmEthPoolConfigurator_layout.md
-	npm run clean-storage-report v2AmmEthPoolConfigurator_layout
-	forge inspect src/v2AmmEthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/updated_v2AmmEthPoolConfigurator_layout.md
-	npm run clean-storage-report updated_v2AmmEthPoolConfigurator_layout
-	make git-diff before=reports/v2AmmEthPoolConfigurator_layout.md after=reports/updated_v2AmmEthPoolConfigurator_layout.md out=v2AmmEthPoolConfigurator_layout_diff
-
-	# Lending Pool Configurator
 
 	forge inspect etherscan/v2EthPoolConfigurator/LendingPoolConfigurator/contracts/protocol/lendingpool/LendingPoolConfigurator.sol:LendingPoolConfigurator storage-layout --pretty > reports/v2EthPoolConfigurator_layout.md
 	npm run clean-storage-report v2EthPoolConfigurator_layout
