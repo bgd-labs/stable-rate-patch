@@ -94,7 +94,7 @@ contract LiquidationsGraceSentinelTest is Test {
     IExecutor(EXECUTOR_LVL_1).executeTransaction(payloadToExecute, 0, 'execute()', bytes(''), true);
     return sentinel;
   }
-
+  
   function _testGracePeriod(uint24 gracePeriod, address[] memory assetsInGrace) internal {
     ILiquidationsGraceSentinel sentinel = _executePayload();
 
