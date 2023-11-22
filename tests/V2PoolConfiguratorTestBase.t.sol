@@ -12,7 +12,8 @@ abstract contract V2PoolConfiguratorTestBase is Test {
   address immutable EMERGENCY_ADMIN;
   address immutable POOL_ADMIN;
   address immutable POOL_CONFIGURATOR;
-  address immutable UNDERLYING_ASSET;
+  address immutable UNDERLYING_ASSET_FROZEN;
+  address immutable UNDERLYING_ASSET_NOT_FROZEN;
   address immutable DATA_PROVIDER;
 
   constructor(
@@ -21,14 +22,16 @@ abstract contract V2PoolConfiguratorTestBase is Test {
     address emergencyAdmin,
     address poolConfigurator,
     address dataProvider,
-    address underlyingAsset
+    address underlyingAssetFrozen,
+    address underlyingAssetNotfrozen
   ) public {
     PAYLOADS_CONTROLLER = payloadsController;
     EXECUTOR_LVL_1 = executorLvl1;
     POOL_ADMIN = executorLvl1;
     EMERGENCY_ADMIN = emergencyAdmin;
     POOL_CONFIGURATOR = poolConfigurator;
-    UNDERLYING_ASSET = underlyingAsset;
+    UNDERLYING_ASSET_FROZEN = underlyingAssetFrozen;
+    UNDERLYING_ASSET_NOT_FROZEN = underlyingAssetNotfrozen;
     DATA_PROVIDER = dataProvider;
   }
 
@@ -37,7 +40,7 @@ abstract contract V2PoolConfiguratorTestBase is Test {
 
     vm.expectRevert(bytes(Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
-    ILendingPoolConfigurator(POOL_CONFIGURATOR).freezeReserve(UNDERLYING_ASSET);
+    ILendingPoolConfigurator(POOL_CONFIGURATOR).freezeReserve(UNDERLYING_ASSET_NOT_FROZEN);
     vm.stopPrank();
   }
 
@@ -46,47 +49,63 @@ abstract contract V2PoolConfiguratorTestBase is Test {
 
     vm.expectRevert(bytes(Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
-    ILendingPoolConfigurator(POOL_CONFIGURATOR).unfreezeReserve(UNDERLYING_ASSET);
+    ILendingPoolConfigurator(POOL_CONFIGURATOR).unfreezeReserve(UNDERLYING_ASSET_NOT_FROZEN);
     vm.stopPrank();
   }
 
   function test_freezeReserve_emergencyAdmin() public {
+    (, , , , , , , , , bool isFrozenBefore) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_NOT_FROZEN);
+    assertEq(isFrozenBefore, false);
+
     vm.startPrank(EMERGENCY_ADMIN);
-    ILendingPoolConfigurator(POOL_CONFIGURATOR).freezeReserve(UNDERLYING_ASSET);
+    ILendingPoolConfigurator(POOL_CONFIGURATOR).freezeReserve(UNDERLYING_ASSET_NOT_FROZEN);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(DATA_PROVIDER)
-      .getReserveConfigurationData(UNDERLYING_ASSET);
-    assertEq(isFrozen, true);
+    (, , , , , , , , , bool isFrozenAfter) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_NOT_FROZEN);
+    assertEq(isFrozenAfter, true);
   }
 
   function test_freezeReserve_poolAdmin() public {
+    (, , , , , , , , , bool isFrozenBefore) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_NOT_FROZEN);
+    assertEq(isFrozenBefore, false);
+
     vm.startPrank(POOL_ADMIN);
-    ILendingPoolConfigurator(POOL_CONFIGURATOR).freezeReserve(UNDERLYING_ASSET);
+    ILendingPoolConfigurator(POOL_CONFIGURATOR).freezeReserve(UNDERLYING_ASSET_NOT_FROZEN);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(DATA_PROVIDER)
-      .getReserveConfigurationData(UNDERLYING_ASSET);
-    assertEq(isFrozen, true);
+    (, , , , , , , , , bool isFrozenAfter) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_NOT_FROZEN);
+    assertEq(isFrozenAfter, true);
   }
 
   function test_unfreezeReserve_emergencyAdmin() public {
+    (, , , , , , , , , bool isFrozenBefore) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_FROZEN);
+    assertEq(isFrozenBefore, true);
+
     vm.startPrank(EMERGENCY_ADMIN);
-    ILendingPoolConfigurator(POOL_CONFIGURATOR).unfreezeReserve(UNDERLYING_ASSET);
+    ILendingPoolConfigurator(POOL_CONFIGURATOR).unfreezeReserve(UNDERLYING_ASSET_FROZEN);
     vm.stopPrank();
 
-    (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(DATA_PROVIDER)
-      .getReserveConfigurationData(UNDERLYING_ASSET);
-    assertEq(isFrozen, false);
+    (, , , , , , , , , bool isFrozenAfter) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_FROZEN);
+    assertEq(isFrozenAfter, false);
   }
 
   function test_unfreezeReserve_poolAdmin() public {
+    (, , , , , , , , , bool isFrozenBefore) = IAaveProtocolDataProvider(DATA_PROVIDER)
+      .getReserveConfigurationData(UNDERLYING_ASSET_FROZEN);
+    assertEq(isFrozenBefore, true);
+
     vm.startPrank(POOL_ADMIN);
-    ILendingPoolConfigurator(POOL_CONFIGURATOR).unfreezeReserve(UNDERLYING_ASSET);
+    ILendingPoolConfigurator(POOL_CONFIGURATOR).unfreezeReserve(UNDERLYING_ASSET_FROZEN);
     vm.stopPrank();
 
     (, , , , , , , , , bool isFrozen) = IAaveProtocolDataProvider(DATA_PROVIDER)
-      .getReserveConfigurationData(UNDERLYING_ASSET);
+      .getReserveConfigurationData(UNDERLYING_ASSET_FROZEN);
     assertEq(isFrozen, false);
   }
 }
