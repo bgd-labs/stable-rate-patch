@@ -15,12 +15,14 @@ abstract contract V2PoolConfiguratorTestBase is Test {
   address immutable UNDERLYING_ASSET_FROZEN;
   address immutable UNDERLYING_ASSET_NOT_FROZEN;
   address immutable DATA_PROVIDER;
+  address immutable ADDRESSES_PROVIDER;
 
   constructor(
     address payloadsController,
     address executorLvl1,
     address emergencyAdmin,
     address poolConfigurator,
+    address addressesProvider,
     address dataProvider,
     address underlyingAssetFrozen,
     address underlyingAssetNotfrozen
@@ -30,13 +32,14 @@ abstract contract V2PoolConfiguratorTestBase is Test {
     POOL_ADMIN = executorLvl1;
     EMERGENCY_ADMIN = emergencyAdmin;
     POOL_CONFIGURATOR = poolConfigurator;
+    ADDRESSES_PROVIDER = addressesProvider;
     UNDERLYING_ASSET_FROZEN = underlyingAssetFrozen;
     UNDERLYING_ASSET_NOT_FROZEN = underlyingAssetNotfrozen;
     DATA_PROVIDER = dataProvider;
   }
 
   function test_reverts_freezeReserve(address caller) public {
-    vm.assume(caller != EMERGENCY_ADMIN && caller != POOL_ADMIN);
+    vm.assume(caller != EMERGENCY_ADMIN && caller != POOL_ADMIN && caller != ADDRESSES_PROVIDER);
 
     vm.expectRevert(bytes(Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);
@@ -45,7 +48,7 @@ abstract contract V2PoolConfiguratorTestBase is Test {
   }
 
   function test_reverts_unfreezeReserve(address caller) public {
-    vm.assume(caller != EMERGENCY_ADMIN && caller != POOL_ADMIN);
+    vm.assume(caller != EMERGENCY_ADMIN && caller != POOL_ADMIN && caller != ADDRESSES_PROVIDER);
 
     vm.expectRevert(bytes(Errors.LPC_CALLER_NOT_POOL_OR_EMERGENCY_ADMIN));
     vm.startPrank(caller);

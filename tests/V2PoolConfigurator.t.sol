@@ -19,6 +19,7 @@ contract V2EthPoolConfiguratorTest is V2PoolConfiguratorTestBase {
       0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A, // EXECUTOR_LVL_1
       0xCA76Ebd8617a03126B6FB84F9b1c1A0fB71C2633, // EMERGENCY_ADMIN
       address(AaveV2Ethereum.POOL_CONFIGURATOR),
+      address(AaveV2Ethereum.POOL_ADDRESSES_PROVIDER),
       address(AaveV2Ethereum.AAVE_PROTOCOL_DATA_PROVIDER),
       AaveV2EthereumAssets.LINK_UNDERLYING, // FROZEN ASSET
       AaveV2EthereumAssets.USDC_UNDERLYING // NOT FROZEN ASSET
@@ -45,6 +46,7 @@ contract V2AmmEthPoolConfiguratorTest is V2PoolConfiguratorTestBase {
       0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A, // EXECUTOR_LVL_1
       0xB9062896ec3A615a4e4444DF183F0531a77218AE, // EMERGENCY_ADMIN
       address(AaveV2EthereumAMM.POOL_CONFIGURATOR),
+      address(AaveV2EthereumAMM.POOL_ADDRESSES_PROVIDER),
       0xc443AD9DDE3cecfB9dfC5736578f447aFE3590ba, // DATA_PROVIDER
       AaveV2EthereumAMMAssets.DAI_UNDERLYING, // FROZEN ASSET
       AaveV2EthereumAMMAssets.USDC_UNDERLYING // NOT FROZEN ASSET
@@ -77,6 +79,7 @@ contract V2PolPoolConfiguratorTest is V2PoolConfiguratorTestBase {
       0xDf7d0e6454DB638881302729F5ba99936EaAB233, // EXECUTOR_LVL_1
       0x1450F2898D6bA2710C98BE9CAF3041330eD5ae58, // EMERGENCY_ADMIN
       address(AaveV2Polygon.POOL_CONFIGURATOR),
+      address(AaveV2Polygon.POOL_ADDRESSES_PROVIDER),
       address(AaveV2Polygon.AAVE_PROTOCOL_DATA_PROVIDER),
       AaveV2PolygonAssets.LINK_UNDERLYING, // FROZEN ASSET
       AaveV2PolygonAssets.USDC_UNDERLYING // NOT FROZEN ASSET
@@ -103,6 +106,7 @@ contract V2AvaPoolConfiguratorTest is V2PoolConfiguratorTestBase {
       0x3C06dce358add17aAf230f2234bCCC4afd50d090, // EXECUTOR_LVL_1
       0xa35b76E4935449E33C56aB24b23fcd3246f13470, // EMERGENCY_ADMIN
       address(AaveV2Avalanche.POOL_CONFIGURATOR),
+      address(AaveV2Avalanche.POOL_ADDRESSES_PROVIDER),
       address(AaveV2Avalanche.AAVE_PROTOCOL_DATA_PROVIDER),
       AaveV2AvalancheAssets.USDCe_UNDERLYING, // FROZEN ASSET
       AaveV2AvalancheAssets.WETHe_UNDERLYING // NOT FROZEN ASSET
