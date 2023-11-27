@@ -127,8 +127,6 @@ diff-contracts :;
 	make git-diff before=etherscan/flattened/v2AmmEthPoolConfigurator after=etherscan/flattened/v2AvaPoolConfigurator out=v2EthAmmAvaPoolConfigurator
 
 	make git-diff before=etherscan/v2EthPoolConfigurator after=src/v2EthPoolConfigurator out=v2EthPoolConfigurator
-	make git-diff before=etherscan/v2PolPoolConfigurator after=src/v2PolPoolConfigurator out=v2PolPoolConfigurator
-	make git-diff before=etherscan/v2AvaPoolConfigurator after=src/v2AvaPoolConfigurator out=v2AvaPoolConfigurator
 	make git-diff before=etherscan/v2AmmEthPoolConfigurator after=src/v2AmmEthPoolConfigurator out=v2AmmEthPoolConfigurator
 
 	make git-diff before=etherscan/v3PolStableDebtToken after=etherscan/v3ArbStableDebtToken out=v3PolArbStableDebtToken
@@ -253,6 +251,7 @@ deploy-v2-polygon :; forge script scripts/deploy_scripts.s.sol:DeployPol --fork-
 deploy-v2-optimism :; forge script scripts/deploy_scripts.s.sol:DeployOpt --fork-url optimism $(common-flags)
 
 deploy-configurator-mainnet :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployMainnet --rpc-url mainnet $(common-flags)
+deploy-configurator-mainnet-amm :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployMainnetAMM --rpc-url mainnet $(common-flags)
 deploy-configurator-polygon :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployPolygon --rpc-url polygon $(common-flags)
 deploy-configurator-avalanche :; forge script ./scripts/DeployPoolConfigurator.s.sol:DeployAvalanche --rpc-url avalanche $(common-flags)
 
